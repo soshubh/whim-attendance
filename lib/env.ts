@@ -8,9 +8,11 @@ function requireEnv(name: string) {
 
 export function getEnv() {
   return {
-    supabaseUrl: requireEnv("SUPABASE_URL"),
+    appUrl: requireEnv("NEXT_PUBLIC_APP_URL"),
+    supabaseUrl: requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
+    supabasePublishableKey: requireEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
     supabaseServiceRoleKey: requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
-    adminPin: requireEnv("ADMIN_PIN"),
-    adminSessionSecret: requireEnv("ADMIN_SESSION_SECRET"),
+    adminPin: process.env.ADMIN_PIN ?? "",
+    adminSessionSecret: process.env.ADMIN_SESSION_SECRET ?? "",
   };
 }

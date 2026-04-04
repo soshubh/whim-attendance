@@ -1,0 +1,374 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--foundation-font-sans), var(--font-geist-sans), system-ui, sans-serif;
+  background: var(--foundation-color-background);
+  color: var(--foundation-color-text-primary);
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: var(--foundation-space-40) var(--foundation-space-32) var(--foundation-space-72);
+  background:
+    radial-gradient(circle at top right, rgb(255 76 0 / 0.12), transparent 28%),
+    linear-gradient(180deg, var(--foundation-color-surface), var(--foundation-color-background));
+}
+
+.app-auth-shell,
+.app-flow-shell,
+.app-dashboard-shell {
+  display: grid;
+  align-content: start;
+  gap: var(--foundation-space-32);
+}
+
+.app-auth-card,
+.app-panel {
+  width: min(100%, 720px);
+  margin: 0 auto;
+  padding: var(--foundation-space-40);
+  background: rgb(255 255 255 / 0.92);
+  border: 1px solid var(--foundation-stroke-soft);
+  border-radius: var(--foundation-radius-24);
+}
+
+.app-auth-copy,
+.app-panel-heading {
+  display: grid;
+  gap: var(--foundation-space-12);
+  margin-bottom: var(--foundation-space-28);
+}
+
+.app-eyebrow,
+.app-label {
+  margin: 0;
+  font-size: var(--foundation-type-12);
+  font-weight: var(--foundation-weight-semibold);
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--foundation-color-brand-strong);
+}
+
+.app-title,
+.app-subtitle,
+.app-copy,
+.app-field span,
+.app-step-item span,
+.app-list-item p,
+.app-data-row span,
+.app-empty-box,
+.app-inline-links a,
+.app-inline-actions a,
+.app-success,
+.app-error {
+  margin: 0;
+}
+
+.app-title {
+  font-family: var(--foundation-font-display), var(--font-geist-sans), sans-serif;
+  font-size: clamp(var(--foundation-type-32), 5vw, 64px);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+  color: var(--foundation-color-text-primary);
+}
+
+.app-subtitle {
+  font-size: var(--foundation-type-24);
+  font-weight: var(--foundation-weight-semibold);
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  color: var(--foundation-color-text-primary);
+}
+
+.app-copy {
+  font-size: var(--foundation-type-18);
+  line-height: 1.6;
+  color: var(--foundation-color-text-secondary);
+}
+
+.app-form,
+.app-grid-two,
+.app-flow-grid,
+.app-dashboard-grid,
+.app-stat-grid,
+.app-step-list,
+.app-list,
+.app-data-list,
+.app-shortcut-box {
+  display: grid;
+  gap: var(--foundation-space-20);
+}
+
+.app-grid-two,
+.app-stat-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app-field {
+  display: grid;
+  gap: var(--foundation-space-12);
+}
+
+.app-field span {
+  font-size: var(--foundation-type-14);
+  font-weight: var(--foundation-weight-medium);
+  color: var(--foundation-color-text-secondary);
+}
+
+.app-input {
+  width: 100%;
+  padding: var(--foundation-space-16);
+  border: 1px solid var(--foundation-stroke-default);
+  border-radius: var(--foundation-radius-16);
+  background: rgb(255 255 255 / 0.96);
+  color: var(--foundation-color-text-primary);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.app-input:focus {
+  outline: none;
+  border-color: var(--foundation-color-brand);
+  background: var(--foundation-color-surface);
+}
+
+.app-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding-inline: var(--foundation-space-24);
+  border: 1px solid transparent;
+  border-radius: var(--foundation-radius-full);
+  font-size: var(--foundation-type-16);
+  font-weight: var(--foundation-weight-semibold);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.app-button-primary {
+  background: var(--foundation-color-brand);
+  color: var(--foundation-color-text-inverse);
+}
+
+.app-button-secondary {
+  background: var(--foundation-color-surface);
+  border-color: var(--foundation-stroke-brand);
+  color: var(--foundation-color-brand-strong);
+}
+
+.app-inline-links,
+.app-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--foundation-space-16);
+  margin-top: var(--foundation-space-24);
+}
+
+.app-inline-links a,
+.app-inline-actions a {
+  text-decoration: none;
+  color: var(--foundation-color-text-secondary);
+}
+
+.app-error,
+.app-success,
+.app-empty-box {
+  padding: var(--foundation-space-16);
+  border-radius: var(--foundation-radius-16);
+  font-size: var(--foundation-type-14);
+  line-height: 1.6;
+}
+
+.app-error {
+  background: color-mix(in srgb, var(--foundation-primary-100) 36%, white);
+  border: 1px solid var(--foundation-primary-200);
+  color: var(--foundation-primary-800);
+}
+
+.app-success {
+  background: color-mix(in srgb, var(--foundation-primary-50) 68%, white);
+  border: 1px solid var(--foundation-primary-200);
+  color: var(--foundation-primary-800);
+}
+
+.app-flow-grid,
+.app-dashboard-grid {
+  grid-template-columns: 360px minmax(0, 1fr);
+  align-items: start;
+  width: min(100%, 1220px);
+  margin: 0 auto;
+}
+
+.app-panel {
+  width: 100%;
+  padding: var(--foundation-space-32);
+}
+
+.app-panel-sticky {
+  position: sticky;
+  top: var(--foundation-space-32);
+}
+
+.app-step-item,
+.app-list-item,
+.app-data-row,
+.app-stat-card,
+.app-shortcut-box {
+  border: 1px solid var(--foundation-stroke-soft);
+  border-radius: var(--foundation-radius-16);
+  background: rgb(255 255 255 / 0.82);
+}
+
+.app-step-item,
+.app-list-item,
+.app-data-row,
+.app-shortcut-box {
+  padding: var(--foundation-space-20);
+}
+
+.app-step-item {
+  display: grid;
+  gap: var(--foundation-space-8);
+}
+
+.app-step-item strong,
+.app-list-item strong,
+.app-data-row strong,
+.app-stat-card strong {
+  color: var(--foundation-color-text-primary);
+}
+
+.app-step-item span,
+.app-list-item p,
+.app-data-row span {
+  color: var(--foundation-color-text-secondary);
+  line-height: 1.6;
+}
+
+.app-shortcut-box code {
+  display: block;
+  width: 100%;
+  padding: var(--foundation-space-16);
+  border-radius: var(--foundation-radius-12);
+  background: var(--foundation-neutral-950);
+  color: var(--foundation-color-text-inverse);
+  font-size: var(--foundation-type-14);
+  line-height: 1.6;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.app-dashboard-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--foundation-space-24);
+  width: min(100%, 1220px);
+  margin: 0 auto var(--foundation-space-32);
+}
+
+.app-stat-grid {
+  width: min(100%, 1220px);
+  margin: 0 auto var(--foundation-space-24);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.app-stat-card {
+  padding: var(--foundation-space-24);
+  display: grid;
+  gap: var(--foundation-space-12);
+}
+
+.app-stat-card span {
+  color: var(--foundation-color-text-tertiary);
+  font-size: var(--foundation-type-12);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.app-stat-card strong {
+  font-size: clamp(var(--foundation-type-32), 4vw, 40px);
+  letter-spacing: -0.05em;
+}
+
+.app-data-row,
+.app-list-item {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--foundation-space-20);
+}
+
+.app-list-item span {
+  color: var(--foundation-color-text-tertiary);
+  text-align: right;
+}
+
+@media (max-width: 1100px) {
+  .app-shell {
+    padding-inline: var(--foundation-space-24);
+  }
+
+  .app-flow-grid,
+  .app-dashboard-grid,
+  .app-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-panel-sticky {
+    position: static;
+  }
+
+  .app-dashboard-topbar {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 720px) {
+  .app-shell {
+    padding: var(--foundation-space-24) var(--foundation-space-16) var(--foundation-space-48);
+  }
+
+  .app-auth-card,
+  .app-panel {
+    padding: var(--foundation-space-24);
+    border-radius: var(--foundation-radius-24);
+  }
+
+  .app-grid-two,
+  .app-data-row,
+  .app-list-item {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .app-title {
+    font-size: 40px;
+  }
+
+  .app-subtitle {
+    font-size: var(--foundation-type-20);
+  }
+}

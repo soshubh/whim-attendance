@@ -1,0 +1,355 @@
+.marketing-shell {
+  min-height: 100vh;
+  padding: var(--foundation-space-32);
+  background: var(--foundation-color-background);
+  color: var(--foundation-color-text-primary);
+  font-family: var(--foundation-font-sans);
+}
+
+.marketing-topbar-wrap,
+.marketing-hero,
+.marketing-banner,
+.marketing-section {
+  position: relative;
+  z-index: 1;
+  width: min(100%, var(--foundation-layout-max));
+  margin: 0 auto;
+}
+
+.marketing-topbar-wrap {
+  padding-top: var(--foundation-space-28);
+}
+
+.marketing-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--foundation-space-24);
+  padding: var(--foundation-space-24) var(--foundation-space-32);
+  border: 1px solid var(--foundation-stroke-soft);
+  border-radius: var(--foundation-radius-36);
+  background: var(--foundation-color-surface);
+}
+
+.marketing-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--foundation-space-16);
+  text-decoration: none;
+}
+
+.marketing-brand-icon {
+  width: calc(var(--foundation-space-20) + var(--foundation-space-24));
+  height: calc(var(--foundation-space-20) + var(--foundation-space-24));
+  border-radius: var(--foundation-radius-12);
+  object-fit: cover;
+}
+
+.marketing-brand-wordmark {
+  width: auto;
+  height: var(--foundation-space-28);
+}
+
+.marketing-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--foundation-space-32);
+}
+
+.marketing-nav a,
+.marketing-pill-link {
+  font-size: var(--foundation-type-18);
+  color: var(--foundation-color-text-secondary);
+  text-decoration: none;
+}
+
+.marketing-topbar-actions,
+.marketing-hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--foundation-space-16);
+}
+
+.marketing-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--foundation-space-24) + var(--foundation-space-32));
+  padding: 0 var(--foundation-space-24);
+  border: 1px solid transparent;
+  border-radius: var(--foundation-radius-full);
+  font-size: var(--foundation-type-18);
+  font-weight: var(--foundation-weight-semibold);
+  text-decoration: none;
+}
+
+.marketing-button-primary {
+  background: var(--foundation-color-brand);
+  color: var(--foundation-color-text-inverse);
+}
+
+.marketing-button-secondary {
+  border-color: var(--foundation-stroke-brand);
+  background: var(--foundation-color-surface);
+  color: var(--foundation-color-brand-strong);
+}
+
+.marketing-hero {
+  display: grid;
+  justify-items: center;
+  gap: var(--foundation-space-24);
+  padding: var(--foundation-space-120) 0 var(--foundation-space-72);
+  text-align: center;
+}
+
+.marketing-kicker,
+.marketing-section-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--foundation-space-48);
+  padding: 0 var(--foundation-space-20);
+  border: 1px solid var(--foundation-stroke-soft);
+  border-radius: var(--foundation-radius-full);
+  background: var(--foundation-color-surface);
+  font-size: var(--foundation-type-18);
+  color: var(--foundation-color-text-secondary);
+}
+
+.marketing-hero-title,
+.marketing-section h2,
+.marketing-info-card h3 {
+  margin: 0;
+  letter-spacing: -0.06em;
+  color: var(--foundation-color-text-primary);
+}
+
+.marketing-hero-title {
+  width: min(100%, var(--foundation-layout-hero));
+  font-family: var(--foundation-font-display);
+  font-size: clamp(var(--foundation-type-48), 9vw, calc(var(--foundation-type-80) + var(--foundation-space-40)));
+  line-height: 0.94;
+}
+
+.marketing-hero-copy,
+.marketing-section-copy p,
+.marketing-step-card p,
+.marketing-info-card p,
+.marketing-banner p,
+.marketing-highlight-list li {
+  margin: 0;
+  font-size: var(--foundation-type-24);
+  line-height: 1.6;
+  color: var(--foundation-color-text-secondary);
+}
+
+.marketing-hero-copy {
+  width: min(100%, var(--foundation-layout-copy));
+}
+
+.marketing-pill-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: calc(var(--foundation-space-24) + var(--foundation-space-32));
+  padding: 0 var(--foundation-space-20);
+  border: 1px solid var(--foundation-stroke-brand);
+  border-radius: var(--foundation-radius-full);
+  background: var(--foundation-color-surface);
+}
+
+.marketing-banner {
+  padding: var(--foundation-space-24) var(--foundation-space-32);
+  border: 1px solid var(--foundation-stroke-brand);
+  border-radius: var(--foundation-radius-24);
+  background: var(--foundation-color-brand);
+}
+
+.marketing-banner p {
+  color: var(--foundation-color-text-inverse);
+  text-align: center;
+}
+
+.marketing-section {
+  display: grid;
+  gap: var(--foundation-space-32);
+  padding: var(--foundation-space-96) 0 0;
+}
+
+.marketing-section-copy {
+  display: grid;
+  gap: var(--foundation-space-16);
+  width: min(100%, var(--foundation-layout-section));
+}
+
+.marketing-section h2 {
+  font-family: var(--foundation-font-display);
+  font-size: clamp(var(--foundation-type-32), 6vw, var(--foundation-space-72));
+  line-height: 0.98;
+}
+
+.marketing-workflow-panel,
+.marketing-card-grid,
+.marketing-highlight-list {
+  display: grid;
+  gap: var(--foundation-space-20);
+}
+
+.marketing-workflow-panel,
+.marketing-card-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.marketing-step-card,
+.marketing-info-card,
+.marketing-highlight-list li {
+  padding: var(--foundation-space-24);
+  border: 1px solid var(--foundation-stroke-soft);
+  border-radius: var(--foundation-radius-24);
+  background: var(--foundation-color-surface);
+}
+
+.marketing-step-card {
+  display: grid;
+  gap: var(--foundation-space-24);
+}
+
+.marketing-step-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--foundation-space-48);
+  height: var(--foundation-space-48);
+  border-radius: var(--foundation-radius-full);
+  background: var(--foundation-color-brand-soft);
+  color: var(--foundation-color-brand-strong);
+  font-size: var(--foundation-type-18);
+  font-weight: var(--foundation-weight-semibold);
+}
+
+.marketing-info-card {
+  display: grid;
+  gap: var(--foundation-space-16);
+}
+
+.marketing-info-card h3 {
+  font-size: var(--foundation-type-32);
+  line-height: 1.08;
+}
+
+.marketing-section-inline {
+  grid-template-columns: minmax(0, var(--foundation-layout-split)) minmax(0, 1fr);
+  align-items: start;
+}
+
+.marketing-highlight-list {
+  list-style: none;
+  padding: 0;
+}
+
+.marketing-highlight-list li {
+  position: relative;
+  padding-left: calc(var(--foundation-space-24) + var(--foundation-space-24));
+}
+
+.marketing-highlight-list li::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--foundation-space-24);
+  width: var(--foundation-space-12);
+  height: var(--foundation-space-12);
+  border-radius: var(--foundation-radius-full);
+  background: var(--foundation-color-brand);
+  transform: translateY(-50%);
+}
+
+@media (max-width: 1120px) {
+  .marketing-shell {
+    padding: var(--foundation-space-24);
+  }
+
+  .marketing-topbar,
+  .marketing-workflow-panel,
+  .marketing-card-grid,
+  .marketing-section-inline {
+    grid-template-columns: 1fr;
+  }
+
+  .marketing-topbar {
+    display: grid;
+    justify-items: start;
+  }
+
+  .marketing-nav {
+    flex-wrap: wrap;
+    gap: var(--foundation-space-20);
+  }
+}
+
+@media (max-width: 720px) {
+  .marketing-shell {
+    padding: var(--foundation-space-16);
+  }
+
+  .marketing-topbar-wrap {
+    padding-top: var(--foundation-space-16);
+  }
+
+  .marketing-topbar {
+    padding: var(--foundation-space-20);
+    border-radius: var(--foundation-radius-24);
+  }
+
+  .marketing-brand-icon {
+    width: var(--foundation-space-40);
+    height: var(--foundation-space-40);
+  }
+
+  .marketing-brand-wordmark {
+    height: var(--foundation-space-24);
+  }
+
+  .marketing-nav {
+    display: none;
+  }
+
+  .marketing-hero {
+    justify-items: start;
+    padding: var(--foundation-space-60) 0 var(--foundation-space-48);
+    text-align: left;
+  }
+
+  .marketing-hero-copy,
+  .marketing-section-copy,
+  .marketing-banner p {
+    width: 100%;
+  }
+
+  .marketing-hero-copy,
+  .marketing-section-copy p,
+  .marketing-step-card p,
+  .marketing-info-card p,
+  .marketing-banner p,
+  .marketing-highlight-list li {
+    font-size: var(--foundation-type-18);
+  }
+
+  .marketing-button,
+  .marketing-pill-link,
+  .marketing-kicker,
+  .marketing-section-label {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .marketing-section {
+    padding-top: var(--foundation-space-72);
+  }
+
+  .marketing-step-card,
+  .marketing-info-card,
+  .marketing-highlight-list li,
+  .marketing-banner {
+    border-radius: var(--foundation-radius-16);
+  }
+}
