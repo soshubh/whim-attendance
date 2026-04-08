@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import { Inter } from "next/font/google";
-import { cn } from "@/lib/utils";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "WHIM - Attendance",
   description:
     "Self-serve attendance software with private workspaces, fixed iPhone Shortcut URLs, and a secure dashboard.",
   icons: {
-    icon: "/brand/FBFLogo.png",
-    shortcut: "/brand/FBFLogo.png",
-    apple: "/brand/FBFLogo.png",
+    icon: "/brand/FBFLogo-OR.png",
+    shortcut: "/brand/FBFLogo-OR.png",
+    apple: "/brand/FBFLogo-OR.png",
   },
 };
 
@@ -22,8 +22,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("h-full antialiased", "font-sans", inter.variable)}>
-      <body>{children}</body>
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+      <body>
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="light"
+          themes={["light", "dark"]}
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster position="top-center" closeButton />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

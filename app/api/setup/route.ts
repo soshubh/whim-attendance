@@ -5,6 +5,8 @@ import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 type ExistingOfficeSettings = {
+  office_name: string | null;
+  office_address: string | null;
   office_lat: number;
   office_lng: number;
   radius_meters: number;
@@ -24,8 +26,6 @@ export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as
     | {
         fullName?: string;
-        officeName?: string;
-        officeAddress?: string;
       }
     | null;
 
@@ -34,14 +34,9 @@ export async function POST(request: Request) {
   }
 
   const fullName = body.fullName?.trim() ?? "";
-  const officeName = body.officeName?.trim() ?? "";
-  const officeAddress = body.officeAddress?.trim() ?? "";
 
-  if (!fullName || !officeName || !officeAddress) {
-    return NextResponse.json(
-      { error: "Full name, office name, and office address are required." },
-      { status: 400 },
-    );
+  if (!fullName) {
+    return NextResponse.json({ error: "Full name is required." }, { status: 400 });
   }
 
   const admin = createSupabaseAdminClient();
@@ -49,7 +44,7 @@ export async function POST(request: Request) {
 
   const { data: existingOfficeSettings } = await admin
     .from("office_settings")
-    .select("office_lat, office_lng, radius_meters, timezone")
+    .select("office_name, office_address, office_lat, office_lng, radius_meters, timezone")
     .eq("user_id", user.id)
     .maybeSingle<ExistingOfficeSettings>();
 
@@ -78,8 +73,8 @@ export async function POST(request: Request) {
   const officeResult = await admin.from("office_settings").upsert(
     {
       user_id: user.id,
-      office_name: officeName,
-      office_address: officeAddress,
+      office_name: existingOfficeSettings?.office_name ?? null,
+      office_address: existingOfficeSettings?.office_address ?? null,
       office_lat: existingOfficeSettings?.office_lat ?? 0,
       office_lng: existingOfficeSettings?.office_lng ?? 0,
       radius_meters: existingOfficeSettings?.radius_meters ?? 300,

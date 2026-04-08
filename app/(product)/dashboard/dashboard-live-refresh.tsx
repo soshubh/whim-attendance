@@ -35,18 +35,7 @@ export function DashboardLiveRefresh({ userId }: DashboardLiveRefreshProps) {
       )
       .subscribe();
 
-    function handleVisibilityChange() {
-      if (document.visibilityState === "visible") {
-        refreshDashboard();
-      }
-    }
-
-    window.addEventListener("focus", refreshDashboard);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
     return () => {
-      window.removeEventListener("focus", refreshDashboard);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
       void supabase.removeChannel(channel);
     };
   }, [router, userId]);

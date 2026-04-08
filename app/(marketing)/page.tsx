@@ -1,153 +1,283 @@
-import Image from "next/image";
-import Link from "next/link";
+import { MarketingPageShell } from "./components/marketing-page-shell";
 
-const shortcuts = [
-  "Create your workspace in under two minutes.",
-  "Copy the fixed IN and OUT shortcut URLs.",
-  "Use one iPhone arrival automation and one leave automation.",
-  "Watch the dashboard update with each attendance event.",
-];
-
-const benefits = [
+const setupMetrics = [
   {
-    title: "Private workspace per user",
-    copy:
-      "Every user gets a separate dashboard, personal shortcut URLs, and their own attendance history.",
+    value: "~2 min",
+    label: "From signup to first check-in",
   },
   {
-    title: "Shortcut-first logging",
-    copy:
-      "No headers, no JSON payloads, and no manual event body. Each automation only posts to one fixed URL.",
+    value: "0 apps",
+    label: "No extra download required",
   },
   {
-    title: "Built for real operations",
-    copy:
-      "Track attendance, leave, and WFH activity in one place without exposing database credentials in the client.",
+    value: "1 URL",
+    label: "That does everything",
   },
 ];
 
-const highlights = [
-  "Email/password auth with workspace onboarding",
-  "Dedicated IN and OUT URLs for iPhone automations",
-  "Live dashboard updates via Supabase Realtime",
-  "Single-user and multi-user expansion path from one codebase",
+const onboardingSteps = [
+  {
+    index: "01",
+    title: "Create account",
+    copy: "Email and password. That's it. No forms, no setup calls.",
+    meta: "~30 sec",
+  },
+  {
+    index: "02",
+    title: "Get your URL",
+    copy: "One URL for IN. One for OUT. Both ready instantly.",
+    meta: "Instant",
+  },
+  {
+    index: "03",
+    title: "Paste into Shortcuts",
+    copy: "Open iPhone Shortcuts. Paste. Takes 60 seconds.",
+    meta: "~60 sec",
+  },
+  {
+    index: "04",
+    title: "Done",
+    copy: "Walk in. Walk out. Dashboard updates on its own.",
+    meta: "Forever",
+  },
 ];
+
+const audiences = [
+  {
+    title: "Workplaces with no proper system",
+    copy: "No login machine. No HR software. Paste a URL and your office has attendance from today.",
+    icon: (
+      <svg
+        viewBox="0 0 14 14"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="2" y="3" width="10" height="9" rx="2" />
+        <path d="M4 1.5v3M10 1.5v3M2 6h10" />
+      </svg>
+    ),
+  },
+  {
+    title: "Teams where tracking is too hectic",
+    copy: "Stop chasing people for updates. Your phone marks you present the moment you arrive.",
+    icon: (
+      <svg
+        viewBox="0 0 14 14"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="7" cy="4" r="2.5" />
+        <path d="M2.5 12c.8-2.3 2.3-3.5 4.5-3.5S10.7 9.7 11.5 12" />
+      </svg>
+    ),
+  },
+  {
+    title: "People planning their month",
+    copy: "See your leave, your WFH days, your full attendance, all in one place before the month ends.",
+    icon: (
+      <svg
+        viewBox="0 0 14 14"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="7" cy="7" r="5" />
+        <path d="M7 4v3l2 2" />
+      </svg>
+    ),
+  },
+  {
+    title: "Anyone who wants to know their pattern",
+    copy: "How many days did you actually come in? Your dashboard already knows.",
+    icon: (
+      <svg
+        viewBox="0 0 14 14"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M2 10l3-3 2 2 5-6" />
+      </svg>
+    ),
+  },
+];
+
+const essentials = [
+  "No extra app on your phone",
+  "Works from day one, no training needed",
+  "Private dashboard per person",
+  "Plan leave and WFH in advance",
+  "Real-time, updates the second you arrive",
+  "Nothing to maintain, nothing to break",
+];
+
+const updates = [
+  {
+    meta: "Experience",
+    title: "Navigation now has dedicated marketing pages",
+    copy: "The top navigation no longer jumps between anchor sections only. It now routes to focused pages for product audience, product approach, and ongoing changes.",
+  },
+  {
+    meta: "Layout",
+    title: "Desktop width is standardized at 1200px",
+    copy: "Marketing and product surfaces now use the same layout cap so the interface feels more deliberate and less stretched on larger screens.",
+  },
+  {
+    meta: "Interaction",
+    title: "Landing navigation stays visible while scrolling",
+    copy: "The header remains pinned during page scroll so navigation is available without forcing the user back to the top.",
+  },
+] as const;
+
+function CheckIcon() {
+  return (
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 10 10"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M1.5 5.5l2.5 2.5 4.5-5" />
+    </svg>
+  );
+}
 
 export default function LandingPage() {
   return (
-    <main className="marketing-shell">
-      <div className="marketing-grid" aria-hidden="true" />
-      <header className="marketing-topbar-wrap">
-        <div className="marketing-topbar">
-          <Link href="/" className="marketing-brand" aria-label="WHIM home">
-            <Image
-              src="/brand/FBFLogo.png"
-              alt="WHIM logo"
-              width={44}
-              height={44}
-              className="marketing-brand-icon"
-              priority
-            />
-            <Image
-              src="/brand/wordmark/WordMark.svg"
-              alt="WHIM"
-              width={134}
-              height={28}
-              className="marketing-brand-wordmark"
-              priority
-            />
-          </Link>
-
-          <nav className="marketing-nav" aria-label="Landing navigation">
-            <a href="#workflow">How it works</a>
-            <a href="#benefits">Why Attend</a>
-            <a href="#highlights">Highlights</a>
-          </nav>
-
-          <div className="marketing-topbar-actions">
-            <Link href="/login" className="marketing-button marketing-button-secondary">
-              Log in
-            </Link>
-            <Link href="/signup" className="marketing-button marketing-button-primary">
-              Start free
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <section className="marketing-hero">
-        <div className="marketing-kicker">Attendance software for shortcut-first teams</div>
-        <h1 className="marketing-hero-title">
-          Turn iPhone automations into a clean, private attendance workspace.
+    <MarketingPageShell className="marketing-home-page">
+      <section className="marketing-home-hero">
+        <h1 className="marketing-home-title">
+          Turn iPhone automations
+          <br />
+          into a <em>live dashboard.</em>
         </h1>
-        <p className="marketing-hero-copy">
-          Attend gives each user a secure workspace, fixed shortcut URLs, and a live dashboard for
-          attendance activity without exposing backend keys or forcing technical setup.
+
+        <p className="marketing-home-copy">
+          Fixed shortcut URLs. Private dashboards. No backend keys in the
+          client, no manual setup.
         </p>
-        <div className="marketing-hero-actions">
-          <Link href="/signup" className="marketing-button marketing-button-primary">
-            Create workspace
-          </Link>
-          <Link href="/login" className="marketing-pill-link">
-            Existing user? Open dashboard
-          </Link>
-        </div>
-      </section>
 
-      <section className="marketing-banner" aria-label="Product summary">
-        <p>
-          Launch personal attendance workspaces with one shared product shell, two fixed shortcut
-          URLs, and marketing pages that stay visually separate from the dashboard application.
-        </p>
-      </section>
-
-      <section id="workflow" className="marketing-section">
-        <div className="marketing-section-copy">
-          <p className="marketing-section-label">Workflow</p>
-          <h2>One onboarding flow, then automation does the rest.</h2>
-        </div>
-
-        <div className="marketing-workflow-panel">
-          {shortcuts.map((item, index) => (
-            <div key={item} className="marketing-step-card">
-              <span className="marketing-step-index">0{index + 1}</span>
-              <p>{item}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="benefits" className="marketing-section">
-        <div className="marketing-section-copy">
-          <p className="marketing-section-label">Made for product teams</p>
-          <h2>Separate the marketing surface from the application surface.</h2>
-          <p>
-            The landing layer speaks in positioning, conversion, and onboarding. The app layer stays
-            focused on auth, setup, and operational attendance data.
-          </p>
-        </div>
-
-        <div className="marketing-card-grid">
-          {benefits.map((benefit) => (
-            <article key={benefit.title} className="marketing-info-card">
-              <h3>{benefit.title}</h3>
-              <p>{benefit.copy}</p>
+        <div className="marketing-home-metric-row">
+          {setupMetrics.map((metric) => (
+            <article key={metric.label} className="marketing-home-metric-card">
+              <strong>{metric.value}</strong>
+              <span>{metric.label}</span>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="highlights" className="marketing-section marketing-section-inline">
-        <div className="marketing-section-copy">
-          <p className="marketing-section-label">Highlights</p>
-          <h2>A simpler operator experience from signup to attendance logs.</h2>
+      <section className="marketing-home-section">
+        <div className="marketing-home-section-header">
+          <h2 className="marketing-home-section-title">
+            Two minutes.
+            <br />
+            Then <em className="marketing-home-title-chip">never think about it</em>{" "}
+            again.
+          </h2>
+          <p className="marketing-home-section-copy">
+            Email and password to get started. One URL to paste. Your iPhone does
+            the rest every single day.
+          </p>
         </div>
-        <ul className="marketing-highlight-list">
-          {highlights.map((highlight) => (
-            <li key={highlight}>{highlight}</li>
+        <div className="marketing-home-step-grid">
+          {onboardingSteps.map((step) => (
+            <article key={step.index} className="marketing-home-step-card">
+              <span className="marketing-home-step-index">{step.index}</span>
+              <div className="marketing-home-step-body">
+                <h3>{step.title}</h3>
+                <p>{step.copy}</p>
+              </div>
+              <span className="marketing-home-step-meta">{step.meta}</span>
+            </article>
           ))}
-        </ul>
+        </div>
       </section>
-    </main>
+
+      <section className="marketing-home-section" id="benefits">
+        <div className="marketing-home-section-header">
+          <h2 className="marketing-home-section-title">
+            Built for people
+            <br />
+            who just want it{" "}
+            <em className="marketing-home-title-chip">to work.</em>
+          </h2>
+          <p className="marketing-home-section-copy">
+            No IT setup. No training. Works for a team of one or a full office.
+          </p>
+        </div>
+        <div className="marketing-home-audience-grid">
+          {audiences.map((audience) => (
+            <article key={audience.title} className="marketing-home-audience-card">
+              <div className="marketing-home-audience-icon">{audience.icon}</div>
+              <h3>{audience.title}</h3>
+              <p>{audience.copy}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="marketing-home-section" id="highlights">
+        <div className="marketing-home-section-header">
+          <h2 className="marketing-home-section-title">
+            Everything you need.
+            <br />
+            <em className="marketing-home-title-chip">Nothing you don't.</em>
+          </h2>
+          <p className="marketing-home-section-copy">
+            No training. No maintenance. No extra app. Just attendance that works
+            every day.
+          </p>
+        </div>
+        <div className="marketing-home-essential-grid">
+          {essentials.map((item) => (
+            <div key={item} className="marketing-home-essential-card">
+              <div className="marketing-home-highlight-check">
+                <CheckIcon />
+              </div>
+              <span>{item}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="marketing-home-section" id="updates">
+        <div className="marketing-home-section-header">
+          <h2 className="marketing-home-section-title">
+            Product updates.
+            <br />
+            <em className="marketing-home-title-chip">Shipped in public.</em>
+          </h2>
+          <p className="marketing-home-section-copy">
+            Recent changes across the marketing surface and the product flow.
+          </p>
+        </div>
+        <div className="marketing-home-update-grid">
+          {updates.map((update) => (
+            <article key={update.title} className="marketing-home-update-card">
+              <div className="marketing-home-update-meta">{update.meta}</div>
+              <div className="marketing-home-update-body">
+                <h3>{update.title}</h3>
+                <p>{update.copy}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </MarketingPageShell>
   );
 }

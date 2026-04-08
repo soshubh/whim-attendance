@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
   } catch {
     return NextResponse.redirect(
       new URL(
-        "/login?message=We%20could%20not%20complete%20that%20email%20action.%20Please%20try%20again.",
+        "/get-access?message=We%20could%20not%20complete%20that%20email%20action.%20Please%20try%20again.",
         requestUrl.origin,
       ),
     );

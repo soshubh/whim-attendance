@@ -2,6 +2,51 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { assertAdminSession } from "@/lib/admin-session";
 import { COLUMNS, TABLES, supabaseRequest } from "@/lib/supabase-rest";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
+
+function getMonthRange(monthKey: string) {
+  const [year, month] = monthKey.split("-").map(Number);
+  const start = new Date(year, month - 1, 1);
+  const end = new Date(year, month, 1);
+
+  return {
+    start: start.toISOString(),
+    end: end.toISOString(),
+  };
+}
+
+export async function GET(request: NextRequest) {
+  const monthKey = request.nextUrl.searchParams.get("month");
+
+  if (!monthKey || !/^\d{4}-\d{2}$/.test(monthKey)) {
+    return NextResponse.json({ error: "Invalid month" }, { status: 400 });
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { start, end } = getMonthRange(monthKey);
+
+  const { data, error } = await supabase
+    .from("attendance_logs")
+    .select("id, event_type, event_time, leave_category, event_label")
+    .eq("user_id", user.id)
+    .gte("event_time", start)
+    .lt("event_time", end)
+    .order("event_time", { ascending: true });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ logs: data ?? [] });
+}
 
 export async function POST(request: NextRequest) {
   const unauthorized = await assertAdminSession();

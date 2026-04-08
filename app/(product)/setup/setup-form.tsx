@@ -1,109 +1,51 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 
-type OfficeSettings = {
-  office_name: string | null;
-  office_address: string | null;
-} | null;
+type SetupFormProps = {
+  showActions?: boolean;
+};
 
-export function SetupForm({
-  fullName,
-  officeSettings,
-}: {
-  fullName: string;
-  officeSettings: OfficeSettings;
-  shortcutToken: string | null;
-}) {
+export function SetupForm({ showActions = true }: SetupFormProps) {
   const router = useRouter();
-  const [state, setState] = useState({
-    fullName,
-    officeName: officeSettings?.office_name ?? "",
-    officeAddress: officeSettings?.office_address ?? "",
-  });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleComplete() {
     setSubmitting(true);
     setError("");
-    setSuccess("");
 
-    const response = await fetch("/api/setup", {
+    const response = await fetch("/api/setup/complete", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(state),
     });
 
-    const payload = (await response.json().catch(() => ({}))) as {
-      error?: string;
-      token?: string;
-    };
+    const payload = (await response.json().catch(() => ({}))) as { error?: string };
 
     if (!response.ok) {
-      setError(payload.error ?? "Could not save setup.");
+      setError(payload.error ?? "Could not complete setup.");
       setSubmitting(false);
       return;
     }
 
-    setSuccess("Setup saved. Redirecting to your dashboard...");
-
-    setTimeout(() => {
-      router.replace("/dashboard");
-      router.refresh();
-    }, 900);
+    router.replace("/dashboard");
   }
 
   return (
-    <section className="app-panel app-panel-form">
-      <div className="app-panel-heading">
-        <p className="app-eyebrow">Workspace details</p>
-        <h2 className="app-subtitle">Save the basic details your shortcut workspace will use.</h2>
-      </div>
-
+    <>
       {error ? <div className="app-error">{error}</div> : null}
-      {success ? <div className="app-success">{success}</div> : null}
-
-      <form className="app-form" onSubmit={handleSubmit}>
-        <label className="app-field">
-          <span>Full name</span>
-          <input
-            className="app-input"
-            value={state.fullName}
-            onChange={(event) => setState((current) => ({ ...current, fullName: event.target.value }))}
-            required
-          />
-        </label>
-
-        <label className="app-field">
-          <span>Office name</span>
-          <input
-            className="app-input"
-            value={state.officeName}
-            onChange={(event) => setState((current) => ({ ...current, officeName: event.target.value }))}
-            required
-          />
-        </label>
-
-        <label className="app-field">
-          <span>Office address</span>
-          <input
-            className="app-input"
-            value={state.officeAddress}
-            onChange={(event) => setState((current) => ({ ...current, officeAddress: event.target.value }))}
-            required
-          />
-        </label>
-
-        <button className="app-button app-button-primary" type="submit" disabled={submitting}>
-          {submitting ? "Saving setup..." : "Save setup and continue"}
-        </button>
-      </form>
-    </section>
+      {showActions ? (
+        <>
+          <button className="app-button app-button-primary" type="button" disabled={submitting} onClick={handleComplete}>
+            {submitting ? "Opening dashboard..." : "Open dashboard"}
+          </button>
+          <div className="app-inline-actions">
+            <a className="app-button app-button-secondary" href="/logout">
+              Log out
+            </a>
+          </div>
+        </>
+      ) : null}
+    </>
   );
 }
