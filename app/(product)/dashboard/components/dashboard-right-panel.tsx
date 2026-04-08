@@ -104,7 +104,7 @@ export function DashboardRightPanel({
               </button>
             </div>
 
-            <div className="app-attendance-right-panel-body">
+            <div className={`app-attendance-right-panel-body${pendingDeleteEntry ? " is-locked" : ""}`}>
               <SettingsForm
                 showBackLink={false}
                 initialSettings={settingsState}
@@ -132,7 +132,9 @@ export function DashboardRightPanel({
 
             <div className="app-attendance-right-panel-body">
               {selectedDateDetail.entries.length ? (
-                <div className="app-attendance-sidebar-detail-list">
+                <div
+                  className={`app-attendance-sidebar-detail-list${pendingDeleteEntry ? " is-locked" : ""}`}
+                >
                   {selectedDateDetail.entries.map((entry) => (
                     <article key={entry.id} className="app-attendance-sidebar-detail-item">
                       <div className="app-attendance-sidebar-detail-item-copy">

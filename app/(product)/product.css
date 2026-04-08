@@ -749,11 +749,11 @@ select {
   display: grid;
   gap: var(--foundation-space-12);
   padding: var(--foundation-space-16);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 0.6px solid var(--app-dashboard-section-stroke);
   border-radius: var(--foundation-radius-24);
-
+  box-shadow: var(--app-dashboard-section-shadow);
   background: var(--foundation-color-brand);
-  box-shadow: 0 0 20px 16px rgba(255, 255, 255, 0.5) inset;
+
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1012,9 +1012,6 @@ select {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  margin-right: calc(var(--foundation-space-24) * -1);
-  padding-left: 0;
-  padding-right: var(--foundation-space-24);
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -1282,6 +1279,11 @@ select {
   scrollbar-color: var(--app-dashboard-scrollbar) transparent;
 }
 
+.app-attendance-sidebar-detail-list.is-locked {
+  overflow: hidden;
+  touch-action: none;
+}
+
 .app-attendance-sidebar-detail-list::-webkit-scrollbar {
   width: 8px;
 }
@@ -1306,10 +1308,10 @@ select {
   justify-content: space-between;
   gap: var(--foundation-space-16);
   padding: var(--foundation-space-12);
-  border: 1px solid rgb(255 255 255 / 0.5);
+  border: var(--app-dashboard-section-stroke);
   border-radius: var(--foundation-radius-16);
   background: transparent;
-  box-shadow: inset 0 0 24px 10px #ffffff3c;
+  box-shadow: var(--app-dashboard-section-shadow);
 }
 
 .app-attendance-right-panel-body .app-settings-section,
@@ -1427,9 +1429,10 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--foundation-space-16);
-  background: rgb(255 76 0 / 0.18);
+  background: rgb(255 76 0 / 0.2);
   backdrop-filter: blur(6px);
+
+  padding: var(--foundation-space-8);
 }
 
 .app-attendance-right-panel-confirm-card {
@@ -1437,10 +1440,10 @@ select {
   display: grid;
   gap: var(--foundation-space-16);
   padding: var(--foundation-space-16);
-  border: 1px solid rgb(255 255 255 / 0.52);
-  border-radius: var(--foundation-radius-20);
+  border: var(--app-dashboard-section-stroke);
+  border-radius: var(--foundation-radius-16);
   background: rgb(255 255 255 / 0.08);
-  box-shadow: inset 0 0 18px 8px rgb(255 255 255 / 0.18);
+  box-shadow: var(--app-dashboard-section-shadow);
 }
 
 .app-attendance-right-panel-confirm-copy {
