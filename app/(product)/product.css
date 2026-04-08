@@ -1910,18 +1910,51 @@ html[data-theme="light"] .app-attendance-day-badge.is-wfh {
 
   .app-attendance-weekdays,
   .app-attendance-grid {
-    gap: var(--foundation-space-8);
+    gap: var(--foundation-space-6);
     height: auto;
   }
 
+  .app-attendance-weekday {
+    padding: var(--foundation-space-8) 0;
+    font-size: 10px;
+  }
+
   .app-attendance-cell {
-    min-height: 96px;
+    min-height: 88px;
     height: auto;
-    padding: var(--foundation-space-10);
+    padding: var(--foundation-space-8);
+    gap: var(--foundation-space-6);
+    border-radius: 12px;
+    box-shadow: 0 0 18px 8px rgba(255, 255, 255, 0.22) inset;
   }
 
   .app-attendance-grid {
     height: auto;
+  }
+
+  .app-attendance-day-meta {
+    gap: var(--foundation-space-6);
+  }
+
+  .app-attendance-day-badges {
+    gap: 4px;
+  }
+
+  .app-attendance-day-badge {
+    min-height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .app-attendance-day-badge.is-present-in,
+  .app-attendance-day-badge.is-present-out,
+  .app-attendance-day-badge.is-leave,
+  .app-attendance-day-badge.is-weekoff,
+  .app-attendance-day-badge.is-wfh,
+  .app-attendance-day-badge.is-summary {
+    color: rgb(255 255 255 / 0.96);
   }
 
   .app-attendance-sidebar-detail-list {
