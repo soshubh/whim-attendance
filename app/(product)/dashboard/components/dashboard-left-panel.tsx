@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { DashboardListEntry, DashboardStatSummary } from "../dashboard-shared";
 import { DashboardSurfaceCard } from "./dashboard-surface-card";
@@ -28,7 +28,27 @@ export function DashboardLeftPanel({
   onAddLeave,
   onAddWfh,
 }: DashboardLeftPanelProps) {
-  const [openSection, setOpenSection] = useState<"present" | "leave" | "wfh">("present");
+  const [openSection, setOpenSection] = useState<"present" | "leave" | "wfh" | null>(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 1100px)");
+
+    function syncOpenSection(event?: MediaQueryList | MediaQueryListEvent) {
+      const isMobile = ("matches" in (event ?? mediaQuery) ? (event ?? mediaQuery).matches : mediaQuery.matches);
+      setOpenSection((current) => {
+        if (isMobile) {
+          return null;
+        }
+
+        return current ?? "present";
+      });
+    }
+
+    syncOpenSection();
+
+    mediaQuery.addEventListener("change", syncOpenSection);
+    return () => mediaQuery.removeEventListener("change", syncOpenSection);
+  }, []);
 
   function renderEntries(entries: DashboardListEntry[], fallbackDetail: string) {
     if (!entries.length) {
@@ -58,7 +78,7 @@ export function DashboardLeftPanel({
         type="button"
         className={`app-attendance-stat-card-dropdown${isOpen ? " is-open" : ""}`}
         aria-expanded={isOpen}
-        onClick={() => setOpenSection(section)}
+        onClick={() => setOpenSection((current) => (current === section ? null : section))}
       >
         <span className="app-attendance-stat-card-dropdown-label">{label}</span>
       </button>

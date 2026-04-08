@@ -1799,13 +1799,15 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   }
 
   .app-attendance-sidebar-stack {
-    grid-template-rows: auto;
+    grid-template-rows: auto minmax(0, 1fr);
     min-height: 0;
-    height: auto;
+    height: 100%;
   }
 
   .app-attendance-sidebar-card {
-    height: min(72vh, 860px);
+    height: auto;
+    min-height: fit-content;
+    max-height: min(60vh, 700px);
     overflow: hidden;
   }
 
@@ -1820,8 +1822,19 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
     overscroll-behavior: contain;
     margin-right: 0;
     padding-right: calc(var(--foundation-space-4));
+    padding-bottom: var(--foundation-space-20);
     scrollbar-width: thin;
     scrollbar-color: var(--app-dashboard-scrollbar) transparent;
+  }
+
+  .app-attendance-stats-sidebar {
+    gap: var(--foundation-space-20);
+  }
+
+  .app-attendance-stat-card {
+    padding-bottom: calc(
+      var(--foundation-space-20) + var(--foundation-space-16)
+    );
   }
 
   .app-attendance-sidebar-scroll::-webkit-scrollbar {
