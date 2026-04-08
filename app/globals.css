@@ -101,6 +101,8 @@
   --foundation-radius-full: 999px;
 
   /* Spacing */
+  --foundation-space-4: 4px;
+  --foundation-space-6: 6px;
   --foundation-space-8: 8px;
   --foundation-space-12: 12px;
   --foundation-space-16: 16px;
@@ -141,54 +143,35 @@
   );
   --app-dashboard-text-soft: rgb(114 114 114 / 0.42);
   --app-dashboard-selection-stroke: var(--foundation-primary-600);
-  --app-dashboard-dot: var(--foundation-primary-600);
+  --app-dashboard-dot: rgb(255 255 255 / 1);
   --app-dashboard-scrollbar: rgb(255 100 10 / 0.26);
   --app-dashboard-scrollbar-hover: rgb(255 100 10 / 0.42);
-  --app-dashboard-present-accent: #1f8f4c;
-  --app-dashboard-present-bg: rgb(123 228 149 / 0.12);
-  --app-dashboard-present-stroke: rgb(123 228 149 / 0.3);
-  --app-dashboard-leave-accent: #dc2626;
-  --app-dashboard-leave-bg: rgb(255 107 107 / 0.14);
-  --app-dashboard-leave-stroke: rgb(255 107 107 / 0.3);
-  --app-dashboard-weekoff-accent: #6b7280;
-  --app-dashboard-weekoff-bg: rgb(209 213 219 / 0.12);
-  --app-dashboard-weekoff-stroke: rgb(209 213 219 / 0.28);
-  --app-dashboard-wfh-accent: #2563eb;
-  --app-dashboard-wfh-bg: rgb(124 196 255 / 0.14);
-  --app-dashboard-wfh-stroke: rgb(124 196 255 / 0.3);
-}
 
-html[data-theme="light"] {
-  --app-dashboard-background: var(--foundation-neutral-0);
-  --app-dashboard-noise-image: none;
-  --app-dashboard-noise-size: auto;
-  --app-dashboard-noise-position: 0 0;
-  --app-dashboard-surface-bg: rgb(255 246 236 / 0.92);
-  --app-dashboard-surface-stroke: rgb(255 177 109 / 0.42);
-  --app-dashboard-text-primary: var(--foundation-neutral-950);
-  --app-dashboard-text-secondary: var(--foundation-neutral-700);
-  --app-dashboard-text-muted: color-mix(
-    in srgb,
-    var(--foundation-primary-700) 42%,
-    var(--foundation-neutral-700)
-  );
-  --app-dashboard-text-soft: rgb(114 114 114 / 0.42);
-  --app-dashboard-selection-stroke: var(--foundation-primary-600);
-  --app-dashboard-dot: var(--foundation-primary-600);
-  --app-dashboard-scrollbar: rgb(255 100 10 / 0.26);
-  --app-dashboard-scrollbar-hover: rgb(255 100 10 / 0.42);
-  --app-dashboard-present-accent: #1f8f4c;
-  --app-dashboard-present-bg: rgb(123 228 149 / 0.12);
-  --app-dashboard-present-stroke: rgb(123 228 149 / 0.3);
-  --app-dashboard-leave-accent: #dc2626;
-  --app-dashboard-leave-bg: rgb(255 107 107 / 0.14);
-  --app-dashboard-leave-stroke: rgb(255 107 107 / 0.3);
-  --app-dashboard-weekoff-accent: #6b7280;
-  --app-dashboard-weekoff-bg: rgb(209 213 219 / 0.12);
-  --app-dashboard-weekoff-stroke: rgb(209 213 219 / 0.28);
-  --app-dashboard-wfh-accent: #2563eb;
-  --app-dashboard-wfh-bg: rgb(124 196 255 / 0.14);
-  --app-dashboard-wfh-stroke: rgb(124 196 255 / 0.3);
+  --app-dashboard-present-accent: #ffffff;
+  --app-dashboard-present-bg: transparent;
+  --app-dashboard-present-stroke: rgba(255, 255, 255, 0.4);
+  --app-dashboard-present-shadow: inset 0 0 24px 10px rgba(255, 255, 255, 0.3);
+  --app-dashboard-checkin-accent: rgb(0, 255, 148);
+  --app-dashboard-checkin-bg: transparent;
+  --app-dashboard-checkin-stroke: rgb(0, 255, 148);
+  --app-dashboard-checkout-accent: rgb(224, 208, 255);
+  --app-dashboard-checkout-bg: transparent;
+  --app-dashboard-checkout-stroke: rgb(224, 208, 255);
+
+  --app-dashboard-leave-accent: #ffd36b;
+  --app-dashboard-leave-bg: transparent;
+  --app-dashboard-leave-stroke: #ffd36b5e;
+  --app-dashboard-leave-shadow: inset 0 0 24px 10px rgb(255 211 107 / 0.18);
+
+  --app-dashboard-weekoff-accent: #ffd36b7a;
+  --app-dashboard-weekoff-bg: transparent;
+  --app-dashboard-weekoff-stroke: #ffd36b5e;
+  --app-dashboard-weekoff-shadow: inset 0 0 24px 10px rgb(255 211 107 / 0.1);
+
+  --app-dashboard-wfh-accent: #7dd3fc;
+  --app-dashboard-wfh-bg: transparent;
+  --app-dashboard-wfh-stroke: #7dd4fc83;
+  --app-dashboard-wfh-shadow: inset 0 0 24px 10px rgb(125 211 252 / 0.1);
 }
 
 html[data-theme="dark"] {
@@ -207,18 +190,6 @@ html[data-theme="dark"] {
   --app-dashboard-dot: rgb(255 255 255 / 1);
   --app-dashboard-scrollbar: rgb(255 255 255 / 0.4);
   --app-dashboard-scrollbar-hover: rgb(255 255 255 / 0.56);
-  --app-dashboard-present-accent: #7be495;
-  --app-dashboard-present-bg: rgb(123 228 149 / 0.14);
-  --app-dashboard-present-stroke: rgb(123 228 149 / 0.34);
-  --app-dashboard-leave-accent: #ff6b6b;
-  --app-dashboard-leave-bg: rgb(255 107 107 / 0.16);
-  --app-dashboard-leave-stroke: rgb(255 107 107 / 0.36);
-  --app-dashboard-weekoff-accent: #d1d5db;
-  --app-dashboard-weekoff-bg: rgb(209 213 219 / 0.14);
-  --app-dashboard-weekoff-stroke: rgb(209 213 219 / 0.28);
-  --app-dashboard-wfh-accent: #7cc4ff;
-  --app-dashboard-wfh-bg: rgb(124 196 255 / 0.16);
-  --app-dashboard-wfh-stroke: rgb(124 196 255 / 0.34);
 }
 
 .toaster {

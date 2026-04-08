@@ -27,7 +27,6 @@ export type DashboardStatSummary = {
   presentDays: number;
   leaveDays: number;
   wfhDays: number;
-  averageWorkingHours: string;
 };
 
 export type DashboardListEntry = {
@@ -53,6 +52,7 @@ export type SelectedDateEntry = {
   title: string;
   value?: string;
   meta: string;
+  deletable: boolean;
 };
 
 export type SelectedDateDetail = {

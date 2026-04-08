@@ -1,9 +1,14 @@
+"use client";
+
+import { useState } from "react";
+
 import type { DashboardListEntry, DashboardStatSummary } from "../dashboard-shared";
 import { DashboardSurfaceCard } from "./dashboard-surface-card";
 
 type DashboardLeftPanelProps = {
   monthLabel: string;
   stats: DashboardStatSummary;
+  presentEntries: DashboardListEntry[];
   leaveEntries: DashboardListEntry[];
   wfhEntries: DashboardListEntry[];
   onPreviousMonth: () => void;
@@ -15,6 +20,7 @@ type DashboardLeftPanelProps = {
 export function DashboardLeftPanel({
   monthLabel,
   stats,
+  presentEntries,
   leaveEntries,
   wfhEntries,
   onPreviousMonth,
@@ -22,6 +28,43 @@ export function DashboardLeftPanel({
   onAddLeave,
   onAddWfh,
 }: DashboardLeftPanelProps) {
+  const [openSection, setOpenSection] = useState<"present" | "leave" | "wfh">("present");
+
+  function renderEntries(entries: DashboardListEntry[], fallbackDetail: string) {
+    if (!entries.length) {
+      return <div className="app-attendance-stat-empty">No dates added.</div>;
+    }
+
+    return (
+      <div className="app-attendance-stat-list">
+        {entries.map((entry) => (
+          <div className="app-attendance-stat-list-item" key={entry.dateKey}>
+            <b>{entry.dateLabel}</b>
+            <small>{entry.detail ?? fallbackDetail}</small>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  function renderDropdownTrigger(
+    section: "present" | "leave" | "wfh",
+    label: string,
+  ) {
+    const isOpen = openSection === section;
+
+    return (
+      <button
+        type="button"
+        className={`app-attendance-stat-card-dropdown${isOpen ? " is-open" : ""}`}
+        aria-expanded={isOpen}
+        onClick={() => setOpenSection(section)}
+      >
+        <span className="app-attendance-stat-card-dropdown-label">{label}</span>
+      </button>
+    );
+  }
+
   return (
     <DashboardSurfaceCard as="aside" variant="sidebar" className="app-attendance-sidebar-card">
       <div className="app-attendance-sidebar-stack">
@@ -47,32 +90,24 @@ export function DashboardLeftPanel({
               </button>
             </div>
           </div>
-
-          <section className="app-attendance-stats app-attendance-stats-sidebar">
-            <article className="app-attendance-stat-card app-attendance-stat-card-present">
-              <span>Days Present</span>
-              <strong>{stats.presentDays}</strong>
-            </article>
-            <article className="app-attendance-stat-card app-attendance-stat-card-leave">
-              <span>Leave Days</span>
-              <strong>{stats.leaveDays}</strong>
-            </article>
-            <article className="app-attendance-stat-card app-attendance-stat-card-wfh">
-              <span>WFH Days</span>
-              <strong>{stats.wfhDays}</strong>
-            </article>
-            <article className="app-attendance-stat-card app-attendance-stat-card-hours">
-              <span>Avg Working Hours</span>
-              <strong>{stats.averageWorkingHours}</strong>
-            </article>
-          </section>
         </div>
 
         <div className="app-attendance-sidebar-scroll">
-          <div className="app-attendance-sidebar-actions">
-            <div className="app-attendance-action-group">
-              <div className="app-attendance-action-row">
-                <span className="app-attendance-action-label">Add leave</span>
+          <section className="app-attendance-stats app-attendance-stats-sidebar">
+            <article className={`app-attendance-stat-card${openSection === "present" ? " is-open" : ""}`}>
+              <div className="app-attendance-stat-card-head">
+                <span className="app-attendance-stat-card-title">{`Days Present (${stats.presentDays})`}</span>
+              </div>
+              <div className={`app-attendance-stat-card-panel${openSection === "present" ? " is-open" : ""}`}>
+                <div className="app-attendance-stat-card-panel-inner">
+                  {renderEntries(presentEntries, "Present")}
+                </div>
+              </div>
+              {renderDropdownTrigger("present", `${stats.presentDays} Days`)}
+            </article>
+            <article className={`app-attendance-stat-card${openSection === "leave" ? " is-open" : ""}`}>
+              <div className="app-attendance-stat-card-head">
+                <span className="app-attendance-stat-card-title">{`Leave Days (${stats.leaveDays})`}</span>
                 <button
                   type="button"
                   className="app-attendance-action-trigger"
@@ -82,21 +117,16 @@ export function DashboardLeftPanel({
                   +
                 </button>
               </div>
-              {leaveEntries.length ? (
-                <div className="app-attendance-sidebar-entry-list">
-                  {leaveEntries.map((entry) => (
-                    <div className="app-attendance-stat-list-item" key={entry.dateKey}>
-                      <b>{entry.dateLabel}</b>
-                      <small>{entry.detail}</small>
-                    </div>
-                  ))}
+              <div className={`app-attendance-stat-card-panel${openSection === "leave" ? " is-open" : ""}`}>
+                <div className="app-attendance-stat-card-panel-inner">
+                  {renderEntries(leaveEntries, "Leave")}
                 </div>
-              ) : null}
-            </div>
-
-            <div className="app-attendance-action-group">
-              <div className="app-attendance-action-row">
-                <span className="app-attendance-action-label">Add WFH</span>
+              </div>
+              {renderDropdownTrigger("leave", `${stats.leaveDays} Days`)}
+            </article>
+            <article className={`app-attendance-stat-card${openSection === "wfh" ? " is-open" : ""}`}>
+              <div className="app-attendance-stat-card-head">
+                <span className="app-attendance-stat-card-title">{`WFH Days (${stats.wfhDays})`}</span>
                 <button
                   type="button"
                   className="app-attendance-action-trigger"
@@ -106,18 +136,14 @@ export function DashboardLeftPanel({
                   +
                 </button>
               </div>
-              {wfhEntries.length ? (
-                <div className="app-attendance-sidebar-entry-list">
-                  {wfhEntries.map((entry) => (
-                    <div className="app-attendance-stat-list-item" key={entry.dateKey}>
-                      <b>{entry.dateLabel}</b>
-                      <small>WFH</small>
-                    </div>
-                  ))}
+              <div className={`app-attendance-stat-card-panel${openSection === "wfh" ? " is-open" : ""}`}>
+                <div className="app-attendance-stat-card-panel-inner">
+                  {renderEntries(wfhEntries, "WFH")}
                 </div>
-              ) : null}
-            </div>
-          </div>
+              </div>
+              {renderDropdownTrigger("wfh", `${stats.wfhDays} Days`)}
+            </article>
+          </section>
         </div>
       </div>
     </DashboardSurfaceCard>

@@ -61,10 +61,6 @@ export function DashboardSidebarSection({
               <span>WFH Days</span>
               <strong>{stats.wfhDays}</strong>
             </article>
-            <article className="app-attendance-stat-card app-attendance-stat-card-hours">
-              <span>Avg Working Hours</span>
-              <strong>{stats.averageWorkingHours}</strong>
-            </article>
           </section>
         </div>
 

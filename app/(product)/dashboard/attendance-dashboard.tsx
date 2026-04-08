@@ -165,16 +165,6 @@ function getUserInitial(fullName: string | null, email: string | null) {
   return firstName.charAt(0).toUpperCase() || "U";
 }
 
-function formatDuration(totalMinutes: number) {
-  if (totalMinutes <= 0) {
-    return "0h 0m";
-  }
-
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  return `${hours}h ${minutes}m`;
-}
-
 function isWeeklyOffLog(log: DashboardAttendanceLog) {
   return log.event_type === "LEAVE" && log.leave_category === "Weekly Off";
 }
@@ -266,7 +256,6 @@ export function AttendanceDashboard({
   const firstName = getFirstName(fullName, email);
   const userInitial = getUserInitial(fullName, email);
   const identityName = fullName ?? firstName;
-  const [hasMounted, setHasMounted] = useState(false);
   const [localDateTime, setLocalDateTime] = useState("");
   const [monthKey, setMonthKey] = useState(initialMonthKey);
   const [logs, setLogs] = useState(initialLogs);
@@ -282,6 +271,8 @@ export function AttendanceDashboard({
   const [quickLeaveNote, setQuickLeaveNote] = useState("");
   const [quickSaving, setQuickSaving] = useState(false);
   const [quickError, setQuickError] = useState("");
+  const [deletingEntryId, setDeletingEntryId] = useState<number | null>(null);
+  const [deleteEntryError, setDeleteEntryError] = useState("");
   const [settingsState, setSettingsState] = useState(initialSettings);
   const monthCacheRef = useRef(new Map<string, DashboardAttendanceLog[]>(Object.entries(initialMonthCache)));
   const refreshTimeoutRef = useRef<number | null>(null);
@@ -406,10 +397,6 @@ export function AttendanceDashboard({
   }, [monthKey]);
 
   useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
-  useEffect(() => {
     function updateLocalClock() {
       setLocalDateTime(
         new Intl.DateTimeFormat("en-IN", {
@@ -525,6 +512,47 @@ export function AttendanceDashboard({
       setLogs(nextLogs);
       setSelectedDateKey((current) => (current?.startsWith(monthKey) ? current : null));
     });
+  }
+
+  async function refreshSettingsState() {
+    const response = await fetch("/api/settings/attendance", {
+      method: "GET",
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const payload = (await response.json().catch(() => null)) as AttendanceSettingsPayload | null;
+    if (payload) {
+      setSettingsState(payload);
+    }
+  }
+
+  async function handleDeleteEntry(entryId: number) {
+    setDeletingEntryId(entryId);
+    setDeleteEntryError("");
+
+    try {
+      const response = await fetch(`/api/attendance/${entryId}`, {
+        method: "DELETE",
+      });
+      const payload = (await response.json().catch(() => ({}))) as { error?: string };
+
+      if (!response.ok) {
+        setDeleteEntryError(payload.error ?? "Could not delete entry.");
+        return false;
+      }
+
+      const nextLogs = logs.filter((log) => log.id !== entryId);
+      setLogs(nextLogs);
+      monthCacheRef.current.set(monthKey, nextLogs);
+      await refreshSettingsState();
+      return true;
+    } finally {
+      setDeletingEntryId(null);
+    }
   }
 
   function openQuickAction(action: QuickActionType) {
@@ -713,7 +741,6 @@ export function AttendanceDashboard({
     const presentDays = new Set<string>();
     const leaveDays = new Set<string>();
     const wfhDays = new Set<string>();
-    const workingDurations: number[] = [];
 
     for (const [dateKey, dateLogs] of logsByDate) {
       for (const log of dateLogs) {
@@ -729,36 +756,12 @@ export function AttendanceDashboard({
           wfhDays.add(dateKey);
         }
       }
-
-      const inLogs = dateLogs.filter((log) => log.event_type === "IN");
-      const outLogs = dateLogs.filter((log) => log.event_type === "OUT");
-
-      if (!inLogs.length || !outLogs.length) {
-        continue;
-      }
-
-      const firstIn = new Date(inLogs[0].event_time).getTime();
-      const lastOut = new Date(outLogs[outLogs.length - 1].event_time).getTime();
-
-      if (Number.isNaN(firstIn) || Number.isNaN(lastOut) || lastOut <= firstIn) {
-        continue;
-      }
-
-      workingDurations.push(Math.round((lastOut - firstIn) / 60000));
     }
-
-    const averageMinutes =
-      workingDurations.length > 0
-        ? Math.round(
-            workingDurations.reduce((sum, duration) => sum + duration, 0) / workingDurations.length,
-          )
-        : 0;
 
     return {
       presentDays: presentDays.size,
       leaveDays: leaveDays.size,
       wfhDays: wfhDays.size,
-      averageWorkingHours: formatDuration(averageMinutes),
     };
   }, [logsByDate]);
 
@@ -784,6 +787,26 @@ export function AttendanceDashboard({
       dateLabel: getShortDateLabel(dateKey),
       detail: meta.category || meta.label || "Leave",
     }));
+  }, [logs]);
+
+  const presentEntries = useMemo<DashboardListEntry[]>(() => {
+    const grouped = new Set<string>();
+
+    for (const log of logs) {
+      if (log.event_type !== "IN" && log.event_type !== "OUT") {
+        continue;
+      }
+
+      grouped.add(getDateKeyFromTimestamp(log.event_time));
+    }
+
+    return [...grouped]
+      .sort((left, right) => left.localeCompare(right))
+      .map((dateKey) => ({
+        dateKey,
+        dateLabel: getShortDateLabel(dateKey),
+        detail: "Present",
+      }));
   }, [logs]);
 
   const wfhEntries = useMemo<DashboardListEntry[]>(() => {
@@ -943,6 +966,7 @@ export function AttendanceDashboard({
       return [
         {
           id: log.id,
+          deletable: !isWeeklyOffLog(log),
           ...getSelectedDateEntry(log),
         },
       ];
@@ -997,10 +1021,8 @@ export function AttendanceDashboard({
       <section className={`app-attendance-board${sidePanel ? " has-right-panel" : ""}`}>
         <DashboardLeftPanel
           monthLabel={getMonthLabel(monthKey)}
-          stats={{
-            ...stats,
-            averageWorkingHours: hasMounted ? stats.averageWorkingHours : "--",
-          }}
+          stats={stats}
+          presentEntries={presentEntries}
           leaveEntries={leaveEntries}
           wfhEntries={wfhEntries}
           onPreviousMonth={() => changeMonth(-1)}
@@ -1028,11 +1050,15 @@ export function AttendanceDashboard({
             settingsState={settingsState}
             arrivalUrl={arrivalUrl}
             leaveUrl={leaveUrl}
+            deletingEntryId={deletingEntryId}
+            deleteEntryError={deleteEntryError}
             onClose={() => setActivePanel(null)}
             onCloseActivity={() => {
+              setDeleteEntryError("");
               setActivePanel(null);
               setSelectedDateKey(null);
             }}
+            onDeleteEntry={handleDeleteEntry}
             onSettingsSaved={handleSettingsSaved}
           />
         </div>
