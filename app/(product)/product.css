@@ -1901,12 +1901,11 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
 
 @media (max-width: 720px) {
   .app-shell {
-    padding: var(--foundation-space-24) var(--foundation-space-16)
-      var(--foundation-space-48);
+    padding: var(--foundation-space-24) 14px var(--foundation-space-48);
   }
 
   .app-shell.app-dashboard-shell {
-    padding: var(--foundation-space-16);
+    padding: 14px;
   }
 
   .app-dashboard-shell {
@@ -1923,19 +1922,25 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   }
 
   .app-attendance-board {
-    gap: var(--foundation-space-16);
+    gap: 14px;
   }
 
   .app-attendance-calendar-shell,
   .app-attendance-right-panel-card {
-    border-radius: var(--foundation-radius-24);
+    border-radius: 16px;
+  }
+
+  .app-attendance-calendar-card {
+    border-radius: 16px;
+    overflow-x: hidden;
   }
 
   .app-dashboard-identity-panel {
     flex-direction: column;
     align-items: center;
-    gap: var(--foundation-space-12);
-    padding: var(--foundation-space-16);
+    gap: 10px;
+    padding: 14px;
+    border-radius: 16px;
   }
 
   .app-dashboard-identity-panel.has-mobile-panel {
@@ -1960,13 +1965,13 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   }
 
   .app-dashboard-identity-actions {
-    gap: var(--foundation-space-8);
+    gap: 6px;
   }
 
   .app-dashboard-settings-trigger,
   .app-dashboard-profile-badge {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     font-size: var(--foundation-type-14);
   }
 
@@ -1975,13 +1980,13 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   }
 
   .app-dashboard-mobile-panel.is-open {
-    margin-top: var(--foundation-space-12);
+    margin-top: 10px;
   }
 
   .app-dashboard-mobile-panel-inner {
     display: grid;
-    gap: var(--foundation-space-16);
-    padding-top: var(--foundation-space-4);
+    gap: 14px;
+    padding-top: 2px;
   }
 
   .app-dashboard-mobile-panel-inner .app-error,
@@ -2083,18 +2088,21 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
 
   .app-attendance-weekdays,
   .app-attendance-grid {
-    gap: var(--foundation-space-6);
+    gap: 4px;
     height: auto;
   }
 
   .app-attendance-weekday {
-    padding: var(--foundation-space-8) 0;
+    padding: 4px 0;
     font-size: 10px;
   }
 
   .app-attendance-cell {
-    min-height: 80px;
+    min-height: 60px;
     height: auto;
+    padding: 4px;
+    border-radius: 10px;
+    gap: 2px;
   }
 
   .app-attendance-grid {
@@ -2102,19 +2110,30 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   }
 
   .app-attendance-day-meta {
-    gap: var(--foundation-space-6);
+    gap: 4px;
   }
 
   .app-attendance-day-badges {
+    width: auto;
+    min-height: 8px;
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 4px;
   }
 
   .app-attendance-day-badge {
-    min-height: 20px;
-    padding: 0 6px;
+    min-height: 8px;
+    width: 8px;
+    height: 8px;
+    padding: 0;
     border-radius: 999px;
-    font-size: 10px;
-    line-height: 1.1;
+    font-size: 0;
+    line-height: 0;
+    border-width: 0;
+    flex: none;
+    box-shadow: none;
   }
 
   .app-attendance-day-badge.is-present-in,
@@ -2123,21 +2142,103 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   .app-attendance-day-badge.is-weekoff,
   .app-attendance-day-badge.is-wfh,
   .app-attendance-day-badge.is-summary {
-    color: rgb(255 255 255 / 0.96);
+    color: transparent;
+  }
+
+  .app-attendance-day-badge.is-present-in {
+    background: var(--app-dashboard-checkin-accent);
+  }
+
+  .app-attendance-day-badge.is-present-out {
+    background: var(--app-dashboard-checkout-accent);
+  }
+
+  .app-attendance-day-badge.is-leave {
+    background: var(--app-dashboard-leave-accent);
+  }
+
+  .app-attendance-day-badge.is-weekoff {
+    background: var(--app-dashboard-weekoff-accent);
+  }
+
+  .app-attendance-day-badge.is-wfh {
+    background: var(--app-dashboard-wfh-accent);
+  }
+
+  .app-attendance-day-badge.is-summary {
+    display: none;
   }
 
   .app-attendance-sidebar-detail-list {
-    gap: var(--foundation-space-12);
+    gap: 10px;
     padding-right: 0;
     margin-right: 0;
   }
 
+  .app-attendance-sidebar-card,
+  .app-attendance-right-panel-card {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .app-attendance-stat-card {
+    border-radius: var(--foundation-radius-16);
+    padding: 12px 12px calc(12px + 14px);
+  }
+
+  .app-attendance-stat-card-head {
+    gap: 10px;
+  }
+
+  .app-attendance-stat-card-dropdown {
+    min-height: 32px;
+    padding: 0 16px;
+    border-radius: var(--foundation-radius-16);
+  }
+
+  .app-attendance-stat-card-dropdown-label,
+  .app-attendance-stat-card-title {
+    font-size: var(--foundation-type-14);
+  }
+
+  .app-attendance-stat-card-panel-inner {
+    padding-top: 2px;
+  }
+
+  .app-attendance-stat-list-item {
+    gap: 8px;
+  }
+
+  .app-attendance-stat-list-item b {
+    font-size: var(--foundation-type-14);
+  }
+
+  .app-attendance-stat-list-item small {
+    font-size: var(--foundation-type-12);
+  }
+
+  .app-attendance-sidebar-detail-item {
+    gap: 10px;
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .app-attendance-sidebar-detail-title,
+  .app-attendance-sidebar-detail-value {
+    font-size: var(--foundation-type-14);
+  }
+
+  .app-attendance-sidebar-detail-meta {
+    font-size: var(--foundation-type-12);
+  }
+
   .app-dashboard-modal-backdrop {
-    padding: var(--foundation-space-20);
+    padding: 14px;
   }
 
   .app-dashboard-modal {
-    padding: var(--foundation-space-20);
+    padding: 14px;
+    border-radius: var(--foundation-radius-20);
   }
 
   .app-dashboard-modal-header {
