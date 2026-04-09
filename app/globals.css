@@ -146,6 +146,8 @@
   --app-dashboard-dot: rgb(255 255 255 / 1);
   --app-dashboard-scrollbar: rgb(255 100 10 / 0.26);
   --app-dashboard-scrollbar-hover: rgb(255 100 10 / 0.42);
+  --app-dashboard-modal-overlay: rgb(255 76 0 / 0.2);
+  --app-dashboard-modal-bg: rgb(255 255 255 / 0.08);
 
   --app-dashboard-present-accent: #ffffff;
   --app-dashboard-present-bg: transparent;
@@ -190,6 +192,8 @@ html[data-theme="dark"] {
   --app-dashboard-dot: rgb(255 255 255 / 1);
   --app-dashboard-scrollbar: rgb(255 255 255 / 0.4);
   --app-dashboard-scrollbar-hover: rgb(255 255 255 / 0.56);
+  --app-dashboard-modal-overlay: rgb(0 0 0 / 0.42);
+  --app-dashboard-modal-bg: rgb(255 255 255 / 0.06);
 }
 
 .toaster {

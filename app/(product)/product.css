@@ -1429,7 +1429,7 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgb(255 76 0 / 0.2);
+  background: var(--app-dashboard-modal-overlay);
   backdrop-filter: blur(6px);
 
   padding: var(--foundation-space-8);
@@ -1442,7 +1442,7 @@ select {
   padding: var(--foundation-space-16);
   border: var(--app-dashboard-section-stroke);
   border-radius: var(--foundation-radius-16);
-  background: rgb(255 255 255 / 0.08);
+  background: var(--app-dashboard-modal-bg);
   box-shadow: var(--app-dashboard-section-shadow);
 }
 
