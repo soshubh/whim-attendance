@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 
-import "./globals.css";
+import "./foundation.css";
 
 export const metadata: Metadata = {
   title: "WHIM - Attendance",

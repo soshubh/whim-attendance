@@ -337,12 +337,12 @@ export function EmailOtpAuthForm({
             <form className="grid gap-[var(--foundation-space-20)]" onSubmit={requestCode}>
               <label className="grid gap-[var(--foundation-space-12)]">
                 {emailLabel ? (
-                  <span className="text-[length:var(--foundation-type-14)] font-medium text-[color:var(--foundation-color-text-secondary)]">
+                  <span className="text-[length:var(--foundation-type-14)] font-medium text-[color:var(--foundation-neutral-700)]">
                     {emailLabel}
                   </span>
                 ) : null}
                 {submitCtaMode === "inline" && !hideEmailSubmitButton ? (
-                  <div className="relative overflow-hidden rounded-[var(--foundation-radius-full)] border border-[color:var(--foundation-stroke-soft)] bg-[color:var(--foundation-color-surface-muted)]">
+                  <div className="relative overflow-hidden rounded-[var(--foundation-radius-full)] border border-[color:var(--foundation-stroke-neutral)] bg-[color:var(--foundation-neutral-100)]">
                     <Input
                       type="email"
                       value={email}
@@ -375,7 +375,7 @@ export function EmailOtpAuthForm({
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     placeholder={emailPlaceholder}
-                    className="min-h-[56px] rounded-[var(--foundation-radius-16)] border-[color:var(--foundation-stroke-default)] bg-white/96 px-[var(--foundation-space-16)] text-[length:var(--foundation-type-16)] md:text-[length:var(--foundation-type-16)]"
+                    className="min-h-[56px] rounded-[var(--foundation-radius-16)] border-[color:var(--foundation-stroke-neutral)] bg-white/96 px-[var(--foundation-space-16)] text-[length:var(--foundation-type-16)] md:text-[length:var(--foundation-type-16)]"
                     required
                   />
                 )}
@@ -397,10 +397,10 @@ export function EmailOtpAuthForm({
               <>
                 {googleCtaMode === "default" ? (
                   <>
-                    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-[var(--foundation-space-12)] text-[length:var(--foundation-type-14)] text-[color:var(--foundation-color-text-secondary)]">
-                      <span className="h-px bg-[color:var(--foundation-stroke-soft)]" />
+                    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-[var(--foundation-space-12)] text-[length:var(--foundation-type-14)] text-[color:var(--foundation-neutral-700)]">
+                      <span className="h-px bg-[color:var(--foundation-stroke-neutral)]" />
                       <span>or</span>
-                      <span className="h-px bg-[color:var(--foundation-stroke-soft)]" />
+                      <span className="h-px bg-[color:var(--foundation-stroke-neutral)]" />
                     </div>
 
                     <Button
@@ -455,10 +455,10 @@ export function EmailOtpAuthForm({
         ) : isNameStep ? (
           <form className="grid gap-[var(--foundation-space-20)]" onSubmit={saveName}>
             <div className="grid gap-[var(--foundation-space-12)]">
-              <p className="text-[length:var(--foundation-type-14)] leading-[1.6] text-[color:var(--foundation-color-text-secondary)]">
+              <p className="text-[length:var(--foundation-type-14)] leading-[1.6] text-[color:var(--foundation-neutral-700)]">
                 Add your name once to finish access.
               </p>
-              <div className="relative overflow-hidden rounded-[var(--foundation-radius-full)] border border-[color:var(--foundation-stroke-soft)] bg-[color:var(--foundation-color-surface-muted)]">
+              <div className="relative overflow-hidden rounded-[var(--foundation-radius-full)] border border-[color:var(--foundation-stroke-neutral)] bg-[color:var(--foundation-neutral-100)]">
                 <Input
                   type="text"
                   value={fullName}
@@ -492,10 +492,10 @@ export function EmailOtpAuthForm({
         ) : (
           <form className="grid gap-[var(--foundation-space-24)]" onSubmit={verifyCode}>
             <div className="grid gap-[var(--foundation-space-12)]">
-              <div className="flex items-center gap-[var(--foundation-space-8)] text-[length:var(--foundation-type-16)] leading-[1.5] text-[color:var(--foundation-color-text-secondary)]">
+              <div className="flex items-center gap-[var(--foundation-space-8)] text-[length:var(--foundation-type-16)] leading-[1.5] text-[color:var(--foundation-neutral-700)]">
                 <p>
                   Enter the code sent to{" "}
-                  <span className="font-medium text-[color:var(--foundation-color-text-primary)]">
+                  <span className="font-medium text-[color:var(--foundation-color-text)]">
                     {codeSentTo}
                   </span>
                 </p>
@@ -503,13 +503,13 @@ export function EmailOtpAuthForm({
                   type="button"
                   onClick={resetToEmailStep}
                   disabled={verifying || submitting}
-                  className="inline-flex size-[var(--foundation-space-24)] shrink-0 items-center justify-center rounded-[var(--foundation-radius-full)] text-[color:var(--foundation-color-text-secondary)] transition-colors hover:text-[color:var(--foundation-color-brand-strong)] disabled:pointer-events-none disabled:opacity-50"
+                  className="inline-flex size-[var(--foundation-space-24)] shrink-0 items-center justify-center rounded-[var(--foundation-radius-full)] text-[color:var(--foundation-neutral-700)] transition-colors hover:text-[color:var(--foundation-color-text-inverse)] disabled:pointer-events-none disabled:opacity-50"
                   aria-label="Edit email"
                 >
                   <HugeiconsIcon icon={Edit02Icon} strokeWidth={2.1} className="size-4 shrink-0" />
                 </button>
               </div>
-              <div className="relative overflow-hidden rounded-[var(--foundation-radius-full)] border border-[color:var(--foundation-stroke-soft)] bg-[color:var(--foundation-color-surface-muted)]">
+              <div className="relative overflow-hidden rounded-[var(--foundation-radius-full)] border border-[color:var(--foundation-stroke-neutral)] bg-[color:var(--foundation-neutral-100)]">
                 <Input
                   type="text"
                   inputMode="numeric"
@@ -538,7 +538,7 @@ export function EmailOtpAuthForm({
                   aria-label="Resend code"
                 >
                   {resendCooldown > 0 ? (
-                    <span className="text-[length:var(--foundation-type-12)] font-medium tabular-nums text-[color:var(--foundation-color-text-secondary)]">
+                    <span className="text-[length:var(--foundation-type-12)] font-medium tabular-nums text-[color:var(--foundation-neutral-700)]">
                       {resendCooldown}s
                     </span>
                   ) : (
@@ -578,7 +578,7 @@ export function EmailOtpAuthForm({
             <Link
               key={link.href}
               href={link.href}
-              className="text-[length:var(--foundation-type-14)] text-[color:var(--foundation-color-text-secondary)] no-underline transition-colors hover:text-[color:var(--foundation-color-brand-strong)]"
+              className="text-[length:var(--foundation-type-14)] text-[color:var(--foundation-neutral-700)] no-underline transition-colors hover:text-[color:var(--foundation-color-text-inverse)]"
             >
               {link.label}
             </Link>

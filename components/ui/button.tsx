@@ -10,14 +10,14 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "border-transparent bg-[var(--foundation-color-brand)] text-[color:var(--foundation-color-text-inverse)] visited:text-[color:var(--foundation-color-text-inverse)] hover:bg-[var(--foundation-color-brand-strong)]",
+          "border-transparent bg-[var(--foundation-color-background-inverse)] text-white visited:text-white hover:bg-[var(--foundation-primary-700)]",
         inverse:
           "border-[rgb(255_255_255_/_0.88)] bg-white text-[color:var(--foundation-primary-700)] visited:text-[color:var(--foundation-primary-700)] hover:bg-[rgb(255_255_255_/_0.88)] hover:text-[color:var(--foundation-primary-800)]",
         secondary:
-          "border-[color:var(--foundation-stroke-default)] bg-white text-[color:var(--foundation-color-text-primary)] visited:text-[color:var(--foundation-color-text-primary)] hover:bg-[color:var(--foundation-color-surface)]",
-        pill: "border-[color:var(--foundation-stroke-default)] bg-white text-[color:var(--foundation-color-text-secondary)] visited:text-[color:var(--foundation-color-text-secondary)] hover:bg-[color:var(--foundation-color-surface)]",
+          "border-[color:var(--foundation-stroke-neutral)] bg-white text-[color:var(--foundation-color-text)] visited:text-[color:var(--foundation-color-text)] hover:bg-[color:var(--foundation-color-background)]",
+        pill: "border-[color:var(--foundation-stroke-neutral)] bg-white text-[color:var(--foundation-neutral-700)] visited:text-[color:var(--foundation-neutral-700)] hover:bg-[color:var(--foundation-color-background)]",
         ghost:
-          "border-transparent bg-transparent text-[color:var(--foundation-color-text-secondary)] visited:text-[color:var(--foundation-color-text-secondary)] hover:bg-[var(--foundation-color-brand-soft)] hover:text-[color:var(--foundation-color-brand-strong)]",
+          "border-transparent bg-transparent text-[color:var(--foundation-neutral-700)] visited:text-[color:var(--foundation-neutral-700)] hover:bg-[var(--foundation-primary-50)] hover:text-[color:var(--foundation-color-text-inverse)]",
       },
       size: {
         default: "",

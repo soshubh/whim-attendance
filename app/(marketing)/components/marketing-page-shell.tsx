@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 import { MarketingFooter } from "./marketing-footer";
-import { MarketingNavigation } from "./marketing-navigation";
+import { Navigation } from "./navigation";
 
 type MarketingPageShellProps = {
   children: ReactNode;
@@ -16,7 +16,7 @@ export function MarketingPageShell({
 }: MarketingPageShellProps) {
   return (
     <main className={cn("marketing-page", className)}>
-      <MarketingNavigation />
+      <Navigation />
       {children}
       <MarketingFooter />
     </main>

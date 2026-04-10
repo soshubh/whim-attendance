@@ -37,7 +37,7 @@ const onboardingSteps = [
   {
     index: "04",
     title: "Done",
-    copy: "Walk in. Walk out. Dashboard updates on its own.",
+    copy: "Walk in. Walk out. Dashboard updated.",
     meta: "Forever",
   },
 ];
@@ -124,16 +124,22 @@ const essentials = [
 const updates = [
   {
     meta: "Experience",
+    date: "9 Apr 2026",
+    time: "8:10 pm",
     title: "Navigation now has dedicated marketing pages",
     copy: "The top navigation no longer jumps between anchor sections only. It now routes to focused pages for product audience, product approach, and ongoing changes.",
   },
   {
     meta: "Layout",
+    date: "8 Apr 2026",
+    time: "11:40 pm",
     title: "Desktop width is standardized at 1200px",
     copy: "Marketing and product surfaces now use the same layout cap so the interface feels more deliberate and less stretched on larger screens.",
   },
   {
     meta: "Interaction",
+    date: "8 Apr 2026",
+    time: "7:20 pm",
     title: "Landing navigation stays visible while scrolling",
     copy: "The header remains pinned during page scroll so navigation is available without forcing the user back to the top.",
   },
@@ -182,26 +188,25 @@ export default function LandingPage() {
       </section>
 
       <section className="marketing-home-section">
-        <div className="marketing-home-section-header">
-          <h2 className="marketing-home-section-title">
-            Two minutes.
-            <br />
-            Then <em className="marketing-home-title-chip">never think about it</em>{" "}
-            again.
-          </h2>
-          <p className="marketing-home-section-copy">
-            Email and password to get started. One URL to paste. Your iPhone does
-            the rest every single day.
-          </p>
-        </div>
+        <h2 className="marketing-home-section-title">
+          Two minutes.
+          <br />
+          Then{" "}
+          <em className="marketing-home-title-chip">
+            never think about it
+          </em>{" "}
+          again.
+        </h2>
+        <p className="marketing-home-section-copy">
+          Email and password to get started. One URL to paste. Your iPhone does
+          the rest every single day.
+        </p>
         <div className="marketing-home-step-grid">
           {onboardingSteps.map((step) => (
             <article key={step.index} className="marketing-home-step-card">
               <span className="marketing-home-step-index">{step.index}</span>
-              <div className="marketing-home-step-body">
-                <h3>{step.title}</h3>
-                <p>{step.copy}</p>
-              </div>
+              <h3>{step.title}</h3>
+              <p>{step.copy}</p>
               <span className="marketing-home-step-meta">{step.meta}</span>
             </article>
           ))}
@@ -209,21 +214,24 @@ export default function LandingPage() {
       </section>
 
       <section className="marketing-home-section" id="benefits">
-        <div className="marketing-home-section-header">
-          <h2 className="marketing-home-section-title">
-            Built for people
-            <br />
-            who just want it{" "}
-            <em className="marketing-home-title-chip">to work.</em>
-          </h2>
-          <p className="marketing-home-section-copy">
-            No IT setup. No training. Works for a team of one or a full office.
-          </p>
-        </div>
+        <h2 className="marketing-home-section-title">
+          Built for people
+          <br />
+          who just want it{" "}
+          <em className="marketing-home-title-chip">to work.</em>
+        </h2>
+        <p className="marketing-home-section-copy">
+          No IT setup. No training. Works for a team of one or a full office.
+        </p>
         <div className="marketing-home-audience-grid">
           {audiences.map((audience) => (
-            <article key={audience.title} className="marketing-home-audience-card">
-              <div className="marketing-home-audience-icon">{audience.icon}</div>
+            <article
+              key={audience.title}
+              className="marketing-home-audience-card"
+            >
+              <div className="marketing-home-audience-icon">
+                {audience.icon}
+              </div>
               <h3>{audience.title}</h3>
               <p>{audience.copy}</p>
             </article>
@@ -232,17 +240,15 @@ export default function LandingPage() {
       </section>
 
       <section className="marketing-home-section" id="highlights">
-        <div className="marketing-home-section-header">
-          <h2 className="marketing-home-section-title">
-            Everything you need.
-            <br />
-            <em className="marketing-home-title-chip">Nothing you don't.</em>
-          </h2>
-          <p className="marketing-home-section-copy">
-            No training. No maintenance. No extra app. Just attendance that works
-            every day.
-          </p>
-        </div>
+        <h2 className="marketing-home-section-title">
+          Everything you need.
+          <br />
+          <em className="marketing-home-title-chip">Nothing you don't.</em>
+        </h2>
+        <p className="marketing-home-section-copy">
+          No training. No maintenance. No extra app. Just attendance that works
+          every day.
+        </p>
         <div className="marketing-home-essential-grid">
           {essentials.map((item) => (
             <div key={item} className="marketing-home-essential-card">
@@ -256,24 +262,25 @@ export default function LandingPage() {
       </section>
 
       <section className="marketing-home-section" id="updates">
-        <div className="marketing-home-section-header">
-          <h2 className="marketing-home-section-title">
-            Product updates.
-            <br />
-            <em className="marketing-home-title-chip">Shipped in public.</em>
-          </h2>
-          <p className="marketing-home-section-copy">
-            Recent changes across the marketing surface and the product flow.
-          </p>
-        </div>
+        <h2 className="marketing-home-section-title">
+          Product updates.
+          <br />
+          <em className="marketing-home-title-chip">Shipped in public.</em>
+        </h2>
+        <p className="marketing-home-section-copy">
+          Recent changes across the marketing surface and the product flow.
+        </p>
         <div className="marketing-home-update-grid">
           {updates.map((update) => (
             <article key={update.title} className="marketing-home-update-card">
-              <div className="marketing-home-update-meta">{update.meta}</div>
-              <div className="marketing-home-update-body">
-                <h3>{update.title}</h3>
-                <p>{update.copy}</p>
+              <div className="marketing-home-update-top">
+                <span className="marketing-home-update-tag">{update.meta}</span>
+                <time className="marketing-home-update-time" dateTime={update.date}>
+                  {update.date} · {update.time}
+                </time>
               </div>
+              <h3>{update.title}</h3>
+              <p>{update.copy}</p>
             </article>
           ))}
         </div>

@@ -215,7 +215,7 @@ https://your-domain.com/auth/callback
 ### Product UI
 
 - `app/(product)/product.css`
-- `app/globals.css`
+- `app/foundation.css`
 
 ### Shared product logic
 
@@ -239,7 +239,7 @@ https://your-domain.com/auth/callback
 
 The dashboard styling is token-first and driven through:
 
-- `app/globals.css` for shared color/radius/shadow tokens
+- `app/foundation.css` for shared color/radius/shadow tokens
 - `app/(product)/product.css` for product-level component styling
 
 Current theme model:

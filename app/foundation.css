@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@font-face {
+  font-family: "GT Walsheim";
+  src: url("/fonts/gt-walsheim/GT-Walsheim-Light-Trial-BF651b7fc714941.otf")
+    format("opentype");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GT Walsheim";
+  src: url("/fonts/gt-walsheim/GT-Walsheim-Regular-Trial-BF651b7fc71a47d.otf")
+    format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GT Walsheim";
+  src: url("/fonts/gt-walsheim/GT-Walsheim-Medium-Trial-BF651b7fc728fb3.otf")
+    format("opentype");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GT Walsheim";
+  src: url("/fonts/gt-walsheim/GT-Walsheim-Bold-Trial-BF651b7fc737c57.otf")
+    format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  /* Color: primary */
+  --foundation-primary-50: #fff6ec;
+  --foundation-primary-100: #ffead3;
+  --foundation-primary-200: #ffd1a5;
+  --foundation-primary-300: #ffb16d;
+  --foundation-primary-400: #ff8532;
+  --foundation-primary-500: #ff640a;
+  --foundation-primary-600: #ff4c00;
+  --foundation-primary-700: #cc3402;
+  --foundation-primary-800: #a12a0b;
+  --foundation-primary-900: #82250c;
+  --foundation-primary-950: #460f04;
+
+  /* Color: neutral */
+  --foundation-neutral-0: #ffffff;
+  --foundation-neutral-50: #fafafa;
+  --foundation-neutral-100: #f5f5f5;
+  --foundation-neutral-200: #e6e6e6;
+  --foundation-neutral-300: #d3d3d3;
+  --foundation-neutral-400: #a3a3a3;
+  --foundation-neutral-500: #727272;
+  --foundation-neutral-600: #535353;
+  --foundation-neutral-700: #404040;
+  --foundation-neutral-800: #272727;
+  --foundation-neutral-900: #1a1a1a;
+  --foundation-neutral-950: #121212;
+
+  /* Color: semantic */
+  --foundation-color-background: var(--foundation-neutral-0);
+  --foundation-color-background-inverse: var(--foundation-primary-600);
+  --foundation-color-text: var(--foundation-neutral-950);
+  --foundation-color-text-inverse: var(--foundation-primary-600);
+  --foundation-color-text-tertiary: var(--foundation-neutral-0);
+
+  /* Stroke tokens */
+  --foundation-stroke-neutral: var(--foundation-neutral-100);
+  --foundation-stroke-primary: var(--foundation-primary-100);
+
+  /* Typography */
+  --foundation-font-sans: "GT Walsheim", sans-serif;
+  --foundation-type-12: 12px;
+  --foundation-type-14: 14px;
+  --foundation-type-16: 16px;
+  --foundation-type-18: 18px;
+  --foundation-type-20: 20px;
+  --foundation-type-24: 24px;
+  --foundation-type-32: 32px;
+  --foundation-type-40: 40px;
+  --foundation-type-48: 48px;
+  --foundation-type-80: 80px;
+  --foundation-weight-light: 300;
+  --foundation-weight-regular: 400;
+  --foundation-weight-medium: 500;
+  --foundation-weight-semibold: 600;
+  --foundation-weight-bold: 700;
+
+  /* Corner radius */
+  --foundation-radius-4: 4px;
+  --foundation-radius-6: 6px;
+  --foundation-radius-8: 8px;
+  --foundation-radius-12: 12px;
+  --foundation-radius-16: 16px;
+  --foundation-radius-24: 24px;
+  --foundation-radius-36: 36px;
+  --foundation-radius-full: 999px;
+
+  /* Spacing */
+  --foundation-space-4: 4px;
+  --foundation-space-6: 6px;
+  --foundation-space-8: 8px;
+  --foundation-space-12: 12px;
+  --foundation-space-16: 16px;
+  --foundation-space-20: 20px;
+  --foundation-space-24: 24px;
+  --foundation-space-28: 28px;
+  --foundation-space-32: 32px;
+  --foundation-space-40: 40px;
+  --foundation-space-48: 48px;
+  --foundation-space-60: 60px;
+  --foundation-space-72: 72px;
+  --foundation-space-96: 96px;
+  --foundation-space-120: 120px;
+  --foundation-space-144: 144px;
+
+  --landing-page-scroll-offset: 72px;
+  --landing-layout-desktop: 1005px;
+  --landing-layout-tablet: 780px;
+  --landing-layout-mobile: 100%;
+}
+
+html[data-theme="dark"] {
+  --foundation-color-background: var(--foundation-neutral-950);
+  --foundation-color-background-inverse: var(--foundation-primary-950);
+  --foundation-color-text: var(--foundation-neutral-0);
+  --foundation-color-text-inverse: var(--foundation-primary-600);
+  --foundation-stroke-neutral: var(--foundation-neutral-600);
+  --foundation-stroke-primary: var(--foundation-primary-900);
+}
+
+html,
+body {
+  font-family: var(--foundation-font-sans);
+  background-color: var(--foundation-color-background);
+  color: var(--foundation-color-text);
+}

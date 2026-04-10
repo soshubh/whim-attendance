@@ -3,15 +3,11 @@ export function MarketingFooter() {
 
   return (
     <footer className="marketing-footer">
-      <div className="marketing-footer-top">
-        <div className="marketing-footer-copy">
-          <h2 className="marketing-footer-title">
-            Log Smarter.
-            <br />
-            Move Lighter.
-          </h2>
-        </div>
-      </div>
+      <h2 className="marketing-footer-title">
+        Log Smarter.
+        <br />
+        Move Lighter.
+      </h2>
 
       <div className="marketing-footer-bottom">
         <span className="marketing-footer-meta">{`© ${year} WHIM`}</span>
