@@ -138,3 +138,24 @@ body {
   background-color: var(--foundation-color-background);
   color: var(--foundation-color-text);
 }
+
+.grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--foundation-stroke-neutral) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      var(--foundation-stroke-neutral) 1px,
+      transparent 1px
+    );
+  background-size:
+    140px 140px,
+    140px 140px;
+  background-position:
+    -1px -1px,
+    -1px -1px;
+  opacity: 1;
+}

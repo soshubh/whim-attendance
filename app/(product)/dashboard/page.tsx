@@ -7,6 +7,7 @@ import {
   requireAuthenticatedContext,
 } from "@/lib/auth";
 import { getEnv } from "@/lib/env";
+import { GridBackground } from "@/app/components/grid-background";
 import { AttendanceDashboard, type DashboardAttendanceLog } from "./attendance-dashboard";
 
 const INITIAL_MONTH_WINDOW = {
@@ -89,19 +90,22 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="app-shell app-dashboard-shell">
-      <AttendanceDashboard
-        initialLogs={initialMonthCache[initialMonthKey] ?? []}
-        initialMonthCache={initialMonthCache}
-        initialMonthKey={initialMonthKey}
-        todayKey={getDateKey(now)}
-        userId={user.id}
-        fullName={profile?.full_name ?? null}
-        email={user.email ?? null}
-        initialSettings={settings}
-        arrivalUrl={arrivalUrl}
-        leaveUrl={leaveUrl}
-      />
-    </main>
+    <div className="product-surface">
+      <GridBackground />
+      <main className="app-shell app-dashboard-shell">
+        <AttendanceDashboard
+          initialLogs={initialMonthCache[initialMonthKey] ?? []}
+          initialMonthCache={initialMonthCache}
+          initialMonthKey={initialMonthKey}
+          todayKey={getDateKey(now)}
+          userId={user.id}
+          fullName={profile?.full_name ?? null}
+          email={user.email ?? null}
+          initialSettings={settings}
+          arrivalUrl={arrivalUrl}
+          leaveUrl={leaveUrl}
+        />
+      </main>
+    </div>
   );
 }

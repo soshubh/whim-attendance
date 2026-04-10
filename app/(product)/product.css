@@ -4,53 +4,6 @@
   box-sizing: border-box;
 }
 
-:root {
-  --app-dashboard-background: var(--foundation-neutral-0);
-  --app-dashboard-noise-image: none;
-  --app-dashboard-noise-size: auto;
-  --app-dashboard-noise-position: 0 0;
-  --app-dashboard-surface-bg: rgb(255 255 255 / 0.92);
-  --app-dashboard-surface-stroke: rgb(255 76 0 / 0.22);
-  --app-dashboard-surface-blur: 18px;
-  --app-dashboard-text-primary: var(--foundation-primary-700);
-  --app-dashboard-text-secondary: color-mix(
-    in srgb,
-    var(--foundation-primary-700) 78%,
-    var(--foundation-neutral-700)
-  );
-  --app-dashboard-text-muted: color-mix(
-    in srgb,
-    var(--foundation-primary-700) 42%,
-    var(--foundation-neutral-700)
-  );
-  --app-dashboard-text-soft: rgb(114 114 114 / 0.42);
-  --app-dashboard-selection-stroke: var(--foundation-primary-600);
-  --app-dashboard-dot: rgb(255 255 255 / 1);
-  --app-dashboard-scrollbar: rgb(255 100 10 / 0.26);
-  --app-dashboard-scrollbar-hover: rgb(255 100 10 / 0.42);
-  --app-dashboard-modal-overlay: rgb(255 76 0 / 0.2);
-  --app-dashboard-modal-bg: rgb(255 255 255 / 0.08);
-}
-
-html[data-theme="dark"] {
-  --app-dashboard-background: var(--foundation-neutral-950);
-  --app-dashboard-noise-image: none;
-  --app-dashboard-noise-size: auto;
-  --app-dashboard-noise-position: 0 0;
-  --app-dashboard-surface-bg: rgb(255 255 255 / 0.1);
-  --app-dashboard-surface-stroke: rgb(255 255 255 / 0.24);
-  --app-dashboard-text-primary: var(--foundation-color-text-inverse);
-  --app-dashboard-text-secondary: rgb(255 255 255 / 0.86);
-  --app-dashboard-text-muted: rgb(255 255 255 / 0.68);
-  --app-dashboard-text-soft: rgb(255 255 255 / 0.32);
-  --app-dashboard-selection-stroke: rgb(255 255 255 / 1);
-  --app-dashboard-dot: rgb(255 255 255 / 1);
-  --app-dashboard-scrollbar: rgb(255 255 255 / 0.4);
-  --app-dashboard-scrollbar-hover: rgb(255 255 255 / 0.56);
-  --app-dashboard-modal-overlay: rgb(0 0 0 / 0.42);
-  --app-dashboard-modal-bg: rgb(255 255 255 / 0.06);
-}
-
 html,
 body {
   min-height: 100%;
@@ -60,8 +13,21 @@ body {
   margin: 0;
   font-family:
     var(--foundation-font-sans), var(--font-geist-sans), system-ui, sans-serif;
-  background: var(--app-dashboard-background);
+  background: var(--foundation-color-background);
   color: var(--foundation-color-text);
+}
+
+.app-dashboard-identity-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--foundation-space-16);
+  padding: var(--foundation-space-20);
+  border-radius: var(--foundation-radius-36);
+  border: 1px solid var(--foundation-stroke-neutral);
+  background: var(--foundation-color-background);
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
+  align-items: flex-start;
 }
 
 a {
@@ -79,10 +45,18 @@ select {
   min-height: 100vh;
   padding: var(--foundation-space-40) var(--foundation-space-32)
     var(--foundation-space-72);
-  background: var(--app-dashboard-background);
+  background: transparent;
+}
+
+.product-surface {
+  min-height: 100vh;
+  position: relative;
+  overflow: clip;
 }
 
 .app-shell.app-dashboard-shell {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: none;
   padding: var(--foundation-space-20);
@@ -106,34 +80,12 @@ select {
 }
 
 .app-dashboard-shell {
+  position: relative;
+  z-index: 1;
   gap: var(--foundation-space-20);
   height: 100vh;
   min-height: 100vh;
   grid-template-rows: auto minmax(0, 1fr);
-  --app-dashboard-section-stroke: var(--app-dashboard-surface-stroke);
-  --app-dashboard-section-shadow: inset 0 0 24px 10px rgb(255 76 0 / 0.08);
-  --app-dashboard-present-accent: #ffffff;
-  --app-dashboard-present-bg: transparent;
-  --app-dashboard-present-stroke: rgb(255 255 255 / 0.4);
-  --app-dashboard-present-shadow: inset 0 0 24px 10px rgb(255 255 255 / 0.3);
-  --app-dashboard-checkin-accent: rgb(0 255 148);
-  --app-dashboard-checkin-bg: transparent;
-  --app-dashboard-checkin-stroke: rgb(0 255 148);
-  --app-dashboard-checkout-accent: rgb(224 208 255);
-  --app-dashboard-checkout-bg: transparent;
-  --app-dashboard-checkout-stroke: rgb(224 208 255);
-  --app-dashboard-leave-accent: #ffd36b;
-  --app-dashboard-leave-bg: transparent;
-  --app-dashboard-leave-stroke: #ffd36b5e;
-  --app-dashboard-leave-shadow: inset 0 0 24px 10px rgb(255 211 107 / 0.18);
-  --app-dashboard-weekoff-accent: #ffd36b7a;
-  --app-dashboard-weekoff-bg: transparent;
-  --app-dashboard-weekoff-stroke: #ffd36b5e;
-  --app-dashboard-weekoff-shadow: inset 0 0 24px 10px rgb(255 211 107 / 0.1);
-  --app-dashboard-wfh-accent: #7dd3fc;
-  --app-dashboard-wfh-bg: transparent;
-  --app-dashboard-wfh-stroke: #7dd4fc83;
-  --app-dashboard-wfh-shadow: inset 0 0 24px 10px rgb(125 211 252 / 0.1);
 }
 
 .app-auth-card,
@@ -141,7 +93,7 @@ select {
   width: min(100%, 720px);
   margin: 0 auto;
   padding: var(--foundation-space-40);
-  background: rgb(255 255 255 / 0.92);
+  background: var(--foundation-color-background);
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-24);
 }
@@ -162,8 +114,7 @@ select {
 }
 
 .app-title {
-  font-family:
-    var(--foundation-font-sans), var(--font-geist-sans), sans-serif;
+  font-family: var(--foundation-font-sans), var(--font-geist-sans), sans-serif;
   font-size: clamp(var(--foundation-type-32), 5vw, 64px);
   line-height: 0.95;
   letter-spacing: -0.06em;
@@ -225,7 +176,7 @@ select {
   padding: var(--foundation-space-16);
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-16);
-  background: rgb(255 255 255 / 0.96);
+  background: var(--foundation-color-background);
   color: var(--foundation-color-text);
   transition:
     border-color 0.2s ease,
@@ -315,7 +266,11 @@ select {
 }
 
 .app-success {
-  background: color-mix(in srgb, var(--foundation-primary-50) 68%, white);
+  background: color-mix(
+    in srgb,
+    var(--foundation-primary-50) 68%,
+    var(--foundation-color-background)
+  );
   border: 1px solid var(--foundation-primary-200);
   color: var(--foundation-primary-800);
 }
@@ -324,7 +279,7 @@ select {
 .app-dashboard-grid {
   grid-template-columns: 360px minmax(0, 1fr);
   align-items: start;
-  width: min(100%, var(--foundation-layout-max));
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -355,7 +310,7 @@ select {
 .app-shortcut-box {
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-16);
-  background: rgb(255 255 255 / 0.82);
+  background: var(--foundation-color-background);
 }
 
 .app-list-item,
@@ -388,7 +343,7 @@ select {
 .app-settings-list-item {
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-16);
-  background: rgb(255 255 255 / 0.82);
+  background: var(--foundation-color-background);
 }
 
 .app-settings-section {
@@ -461,7 +416,7 @@ select {
   display: grid;
   gap: var(--foundation-space-12);
   padding-bottom: var(--foundation-space-12);
-  border-bottom: 1px solid rgb(255 255 255 / 0.14);
+  border-bottom: 1px solid var(--foundation-stroke-neutral);
 }
 
 .app-settings-weekday-item:last-child {
@@ -480,7 +435,7 @@ select {
   padding: var(--foundation-space-20);
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-16);
-  background: white;
+  background: var(--foundation-color-background);
 }
 
 .app-settings-rule-copy {
@@ -511,14 +466,18 @@ select {
   padding: 0 var(--foundation-space-20);
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-full);
-  background: white;
+  background: var(--foundation-color-background);
   cursor: pointer;
 }
 
 .app-settings-chip.is-active,
 .app-settings-toggle.is-active {
   border-color: var(--foundation-color-background-inverse);
-  background: color-mix(in srgb, white 84%, var(--foundation-primary-100));
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background) 84%,
+    var(--foundation-primary-100)
+  );
   color: var(--foundation-primary-800);
 }
 
@@ -544,8 +503,12 @@ select {
   height: 20px;
   flex: none;
   border-radius: var(--foundation-radius-full);
-  border: 1px solid rgb(255 255 255 / 0.42);
-  background: rgb(255 255 255 / 0.08);
+  border: 1px solid var(--foundation-stroke-neutral);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 8%,
+    var(--foundation-color-background)
+  );
   transition:
     background 0.2s ease,
     border-color 0.2s ease;
@@ -558,13 +521,17 @@ select {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--foundation-color-background);
   transition: transform 0.2s ease;
 }
 
 .app-settings-switch.is-active .app-settings-switch-track {
-  border-color: #fff;
-  background: rgb(255 255 255 / 0.18);
+  border-color: var(--foundation-color-text-inverse);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 18%,
+    var(--foundation-color-background)
+  );
 }
 
 .app-settings-switch.is-active .app-settings-switch-thumb {
@@ -638,8 +605,8 @@ select {
 
   word-break: break-all;
   overflow-wrap: anywhere;
-  box-shadow: inset 0 0 24px 10px #ffffff3c;
-  border: 1px solid #fff9;
+  box-shadow: none;
+  border: 1px solid var(--foundation-stroke-primary);
 }
 
 .app-shortcut-code-copy {
@@ -652,7 +619,11 @@ select {
   padding: 0;
   border: 0;
   border-radius: var(--foundation-radius-full);
-  background: #ffffff1a;
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 10%,
+    var(--foundation-color-background)
+  );
   color: var(--foundation-color-text-inverse);
   display: inline-flex;
   align-items: center;
@@ -662,7 +633,7 @@ select {
 }
 
 .app-shortcut-code-copy.is-success {
-  background: #fff;
+  background: var(--foundation-color-background);
 }
 
 .app-shortcut-feedback {
@@ -677,7 +648,7 @@ select {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--foundation-space-24);
-  width: min(100%, var(--foundation-layout-max));
+  width: 100%;
   margin: 0 auto var(--foundation-space-32);
 }
 
@@ -694,7 +665,7 @@ select {
   padding: var(--foundation-space-20);
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-16);
-  background: rgb(255 255 255 / 0.82);
+  background: var(--foundation-color-background);
 }
 
 .app-account-summary-item span {
@@ -710,13 +681,6 @@ select {
   font-weight: var(--foundation-weight-semibold);
 }
 
-.app-dashboard-identity-panel,
-.app-attendance-board {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-}
-
 .app-dashboard-surface-card {
   width: 100%;
 }
@@ -726,19 +690,6 @@ select {
 .app-dashboard-surface-card.is-panel {
   min-width: 0;
   min-height: 0;
-}
-
-.app-dashboard-identity-panel {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--foundation-space-16);
-  padding: var(--foundation-space-20) var(--foundation-space-24);
-  border-radius: var(--foundation-radius-36);
-  border: 1px solid var(--app-dashboard-section-stroke);
-  box-shadow: var(--app-dashboard-section-shadow);
 }
 
 .app-dashboard-identity-main {
@@ -758,17 +709,15 @@ select {
   margin: 0;
   font-size: var(--foundation-type-14);
   line-height: 1.5;
-  color: var(--app-dashboard-text-secondary);
+  color: color-mix(in srgb, var(--foundation-color-text) 70%, transparent);
 }
 
 .app-dashboard-identity-title {
   margin: 0;
-  font-family:
-    var(--foundation-font-sans), var(--font-geist-sans), sans-serif;
   font-size: clamp(16px, 1.75vw, 24px);
   line-height: 1;
   letter-spacing: -0.06em;
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text-inverse);
 }
 
 .app-dashboard-identity-actions {
@@ -783,30 +732,31 @@ select {
   z-index: 30;
 }
 
-.app-dashboard-settings-trigger,
-.app-dashboard-profile-badge {
+.app-dashboard-settings-trigger {
   width: 46px;
   height: 46px;
-  padding: 0;
-  border: 0;
   border-radius: var(--foundation-radius-full);
-
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--foundation-type-16);
-  font-weight: var(--foundation-weight-semibold);
-  line-height: 1;
-
-  box-shadow: inset 0 0 12px 2px rgb(255 76 0 / 0.08);
-  border: 1px solid var(--app-dashboard-section-stroke);
+  box-shadow: none;
+  border: 1px solid var(--foundation-stroke-neutral);
   cursor: pointer;
 }
-
 .app-dashboard-profile-badge {
-  border: 1px solid rgb(255 76 0 / 0.28);
-  box-shadow: inset 0 0 12px 2px rgb(255 76 0 / 0.14);
+  width: 46px;
+  height: 46px;
+  border-radius: var(--foundation-radius-full);
+  color: var(--foundation-color-text-inverse);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--foundation-type-20);
+  font-weight: var(--foundation-weight-medium);
+  border: 1px solid var(--foundation-stroke-primary);
+  box-shadow: inset 0 0 12px 4px #ff4c0024;
+  cursor: pointer;
 }
 
 .app-dashboard-profile-popover {
@@ -818,10 +768,10 @@ select {
   display: grid;
   gap: var(--foundation-space-12);
   padding: var(--foundation-space-16);
-  border: 0.6px solid var(--app-dashboard-section-stroke);
+  border: 0.6px solid var(--foundation-stroke-primary);
   border-radius: var(--foundation-radius-24);
-  box-shadow: var(--app-dashboard-section-shadow);
-  background: var(--app-dashboard-surface-bg);
+  box-shadow: none;
+  background: var(--foundation-color-background);
 
   opacity: 0;
   visibility: hidden;
@@ -870,13 +820,13 @@ select {
 }
 
 .app-dashboard-profile-popover-copy strong {
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
   font-size: var(--foundation-type-16);
   font-weight: var(--foundation-weight-semibold);
 }
 
 .app-dashboard-profile-popover-copy span {
-  color: var(--app-dashboard-text-secondary);
+  color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
   font-size: var(--foundation-type-14);
   line-height: 1.5;
   overflow-wrap: anywhere;
@@ -892,7 +842,7 @@ select {
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-full);
 
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
   text-decoration: none;
 }
 
@@ -903,7 +853,11 @@ select {
   display: grid;
   place-items: center;
   padding: var(--foundation-space-32);
-  background: rgb(15 23 42 / 0.18);
+  background: color-mix(
+    in srgb,
+    var(--foundation-neutral-950) 18%,
+    transparent
+  );
   backdrop-filter: blur(10px);
 }
 
@@ -916,8 +870,8 @@ select {
   padding: var(--foundation-space-28);
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-24);
-  background: rgb(255 255 255 / 0.98);
-  box-shadow: 0 24px 64px rgb(15 23 42 / 0.16);
+  background: var(--foundation-color-background);
+  box-shadow: none;
 }
 
 .app-dashboard-quick-modal {
@@ -979,11 +933,13 @@ select {
   padding: var(--foundation-space-20);
 
   border-radius: var(--foundation-radius-36);
-  border: 1px solid var(--app-dashboard-section-stroke);
-  box-shadow: var(--app-dashboard-section-shadow);
+  border: 1px solid var(--foundation-stroke-neutral);
+  background: transparent;
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
   min-height: 0;
   height: 100%;
   overflow: hidden;
+  background: var(--foundation-color-background);
 }
 
 .app-attendance-right-panel-card {
@@ -1011,7 +967,12 @@ select {
   padding-left: 0;
   padding-right: var(--foundation-space-20);
   scrollbar-width: thin;
-  scrollbar-color: var(--app-dashboard-scrollbar) transparent;
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--foundation-color-text-inverse) 26%,
+      transparent
+    )
+    transparent;
 }
 
 .app-attendance-sidebar-scroll::-webkit-scrollbar {
@@ -1023,12 +984,20 @@ select {
 }
 
 .app-attendance-sidebar-scroll::-webkit-scrollbar-thumb {
-  background: var(--app-dashboard-scrollbar);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-text-inverse) 26%,
+    transparent
+  );
   border-radius: var(--foundation-radius-full);
 }
 
 .app-attendance-sidebar-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--app-dashboard-scrollbar-hover);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-text-inverse) 42%,
+    transparent
+  );
 }
 
 .app-attendance-calendar-shell {
@@ -1074,7 +1043,7 @@ select {
 .app-attendance-right-panel-copy {
   display: grid;
   gap: var(--foundation-space-8);
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-right-panel-body {
@@ -1084,9 +1053,14 @@ select {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: var(--app-dashboard-scrollbar) transparent;
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--foundation-color-text-inverse) 26%,
+      transparent
+    )
+    transparent;
   gap: var(--foundation-space-12);
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-right-panel-body .app-title,
@@ -1097,11 +1071,11 @@ select {
 .app-attendance-right-panel-body .app-settings-list-item p,
 .app-attendance-right-panel-body .app-shortcut-feedback,
 .app-attendance-right-panel-body .app-settings-status {
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-right-panel-body .app-shortcut-link-label {
-  color: var(--app-dashboard-text-secondary);
+  color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
 }
 
 .app-attendance-right-panel-body::-webkit-scrollbar {
@@ -1113,12 +1087,20 @@ select {
 }
 
 .app-attendance-right-panel-body::-webkit-scrollbar-thumb {
-  background: var(--app-dashboard-scrollbar);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-text-inverse) 26%,
+    transparent
+  );
   border-radius: var(--foundation-radius-full);
 }
 
 .app-attendance-right-panel-body::-webkit-scrollbar-thumb:hover {
-  background: var(--app-dashboard-scrollbar-hover);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-text-inverse) 42%,
+    transparent
+  );
 }
 
 .app-attendance-month-panel {
@@ -1147,7 +1129,7 @@ select {
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
   cursor: pointer;
   font-size: 24px;
   line-height: 1;
@@ -1170,7 +1152,7 @@ select {
   text-align: center;
   font-size: var(--foundation-type-18);
   font-weight: var(--foundation-weight-semibold);
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-stats {
@@ -1191,9 +1173,9 @@ select {
   display: grid;
 
   border-radius: var(--foundation-radius-24);
-  background: var(--app-dashboard-surface-bg);
-  border: 1px solid var(--app-dashboard-section-stroke);
-  box-shadow: var(--app-dashboard-section-shadow);
+  background: var(--foundation-color-background);
+  border: 1px solid var(--foundation-stroke-primary);
+  box-shadow: none;
 }
 
 .app-attendance-stat-card-head {
@@ -1207,20 +1189,20 @@ select {
   font-size: var(--foundation-type-16);
   font-weight: var(--foundation-weight-semibold);
   text-transform: none;
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-stat-card-dropdown-label {
   font-size: var(--foundation-type-12);
   font-weight: var(--foundation-weight-bold);
 
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-stat-card strong {
   font-size: var(--foundation-type-14);
   font-weight: var(--foundation-weight-bold);
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
   text-align: right;
 }
 
@@ -1240,7 +1222,7 @@ select {
   padding: 4px var(--foundation-space-16);
   border-radius: var(--foundation-radius-16);
   background: var(--foundation-color-background);
-  box-shadow: inset 0 0 8px 0px rgb(255 76 0 / 0.08);
+  box-shadow: none;
 
   display: inline-flex;
   align-items: center;
@@ -1285,26 +1267,26 @@ select {
 .app-attendance-stat-list-item b {
   font-size: var(--foundation-type-16);
   font-weight: var(--foundation-weight-medium);
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-stat-list-item small {
   font-size: var(--foundation-type-14);
   font-weight: var(--foundation-weight-regular);
-  color: var(--app-dashboard-text-secondary);
+  color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
   text-align: right;
 }
 
 .app-attendance-stat-empty {
   font-size: var(--foundation-type-14);
-  color: var(--app-dashboard-text-secondary);
+  color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
 }
 
 .app-attendance-action-group {
   display: grid;
   gap: var(--foundation-space-6);
   padding-bottom: var(--foundation-space-12);
-  border-bottom: 1px solid var(--app-dashboard-section-stroke);
+  border-bottom: 1px solid var(--foundation-stroke-primary);
 }
 
 .app-attendance-action-row {
@@ -1318,13 +1300,13 @@ select {
   font-size: var(--foundation-type-16);
   font-weight: var(--foundation-weight-semibold);
 
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-action-trigger {
   padding: 0;
   background: transparent;
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
   align-items: center;
   justify-content: center;
   font-size: 24px;
@@ -1345,7 +1327,12 @@ select {
   gap: var(--foundation-space-16);
   padding-bottom: var(--foundation-space-8);
   scrollbar-width: thin;
-  scrollbar-color: var(--app-dashboard-scrollbar) transparent;
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--foundation-color-text-inverse) 26%,
+      transparent
+    )
+    transparent;
 }
 
 .app-attendance-sidebar-detail-list.is-locked {
@@ -1362,12 +1349,20 @@ select {
 }
 
 .app-attendance-sidebar-detail-list::-webkit-scrollbar-thumb {
-  background: var(--app-dashboard-scrollbar);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-text-inverse) 26%,
+    transparent
+  );
   border-radius: var(--foundation-radius-full);
 }
 
 .app-attendance-sidebar-detail-list::-webkit-scrollbar-thumb:hover {
-  background: var(--app-dashboard-scrollbar-hover);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-text-inverse) 42%,
+    transparent
+  );
 }
 
 .app-attendance-sidebar-detail-item {
@@ -1377,10 +1372,10 @@ select {
   justify-content: space-between;
   gap: var(--foundation-space-16);
   padding: var(--foundation-space-12);
-  border: var(--app-dashboard-section-stroke);
+  border: 1px solid var(--foundation-stroke-primary);
   border-radius: var(--foundation-radius-16);
   background: transparent;
-  box-shadow: var(--app-dashboard-section-shadow);
+  box-shadow: none;
 }
 
 .app-attendance-right-panel-body .app-settings-section,
@@ -1403,16 +1398,24 @@ select {
 .app-attendance-right-panel-body .app-settings-chip,
 .app-attendance-right-panel-body .app-settings-toggle,
 .app-attendance-right-panel-body .app-button-secondary {
-  border-color: var(--app-dashboard-section-stroke);
-  background: rgb(255 76 0 / 0.04);
-  color: var(--app-dashboard-text-primary);
+  border-color: var(--foundation-stroke-primary);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 4%,
+    var(--foundation-color-background)
+  );
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-right-panel-body .app-settings-chip.is-active,
 .app-attendance-right-panel-body .app-settings-toggle.is-active {
-  border-color: rgb(255 76 0 / 0.4);
-  background: rgb(255 76 0 / 0.1);
-  color: var(--app-dashboard-text-primary);
+  border-color: var(--foundation-color-text-inverse);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 10%,
+    var(--foundation-color-background)
+  );
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-right-panel-body .app-button-primary {
@@ -1455,10 +1458,14 @@ select {
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid var(--app-dashboard-section-stroke);
+  border: 1px solid var(--foundation-stroke-primary);
   border-radius: var(--foundation-radius-full);
-  background: rgb(255 76 0 / 0.04);
-  color: var(--app-dashboard-text-primary);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 4%,
+    var(--foundation-color-background)
+  );
+  color: var(--foundation-color-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1470,8 +1477,12 @@ select {
 }
 
 .app-attendance-sidebar-detail-delete:hover:not(:disabled) {
-  border-color: rgb(255 76 0 / 0.4);
-  background: rgb(255 76 0 / 0.1);
+  border-color: var(--foundation-color-text-inverse);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 10%,
+    var(--foundation-color-background)
+  );
 }
 
 .app-attendance-sidebar-detail-delete:disabled {
@@ -1483,7 +1494,7 @@ select {
   padding: var(--foundation-space-20);
   border: 1px dashed var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-16);
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
   font-size: var(--foundation-type-16);
   text-align: center;
 }
@@ -1498,7 +1509,11 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--app-dashboard-modal-overlay);
+  background: color-mix(
+    in srgb,
+    var(--foundation-neutral-950) 20%,
+    transparent
+  );
   backdrop-filter: blur(6px);
 
   padding: var(--foundation-space-8);
@@ -1509,16 +1524,16 @@ select {
   display: grid;
   gap: var(--foundation-space-16);
   padding: var(--foundation-space-16);
-  border: var(--app-dashboard-section-stroke);
+  border: 1px solid var(--foundation-stroke-primary);
   border-radius: var(--foundation-radius-16);
-  background: var(--app-dashboard-modal-bg);
-  box-shadow: var(--app-dashboard-section-shadow);
+  background: var(--foundation-color-background);
+  box-shadow: none;
 }
 
 .app-attendance-right-panel-confirm-copy {
   display: grid;
   gap: var(--foundation-space-6);
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-right-panel-confirm-copy strong {
@@ -1532,7 +1547,7 @@ select {
 }
 
 .app-attendance-right-panel-confirm-error {
-  color: var(--app-dashboard-text-secondary);
+  color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
 }
 
 .app-attendance-right-panel-confirm-actions {
@@ -1546,13 +1561,15 @@ select {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: var(--foundation-space-4);
-  border: 1px solid var(--app-dashboard-section-stroke);
+  border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-36);
-  background: transparent;
-  box-shadow: var(--app-dashboard-section-shadow);
+  background: var(--foundation-color-background);
+
+  box-shadow: none;
   flex: 1 1 auto;
   height: 100%;
   overflow: hidden;
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
 }
 
 .app-attendance-calendar-body {
@@ -1585,7 +1602,7 @@ select {
   align-items: center;
   font-size: var(--foundation-type-14);
   font-weight: var(--foundation-weight-medium);
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-grid.is-loading {
@@ -1601,10 +1618,10 @@ select {
 .app-attendance-cell {
   height: 100%;
   padding: var(--foundation-space-8);
-  border: 1px solid var(--app-dashboard-section-stroke);
+  border: 1px solid var(--foundation-stroke-primary);
   border-radius: var(--foundation-radius-16);
   background: transparent;
-  box-shadow: var(--app-dashboard-section-shadow);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -1622,31 +1639,31 @@ select {
 
 .app-attendance-cell:hover {
   transform: translateY(-1px);
-  box-shadow: inset 0 0 32px 12px rgb(255 76 0 / 0.14);
+  box-shadow: none;
 }
 
 .app-attendance-cell.is-leave {
   background: transparent;
-  border-color: var(--app-dashboard-leave-stroke);
-  box-shadow: var(--app-dashboard-leave-shadow);
+  border-color: var(--foundation-primary-300);
+  box-shadow: none;
 }
 
 .app-attendance-cell.is-weekoff {
   background: transparent;
-  border-color: var(--app-dashboard-weekoff-stroke);
-  box-shadow: var(--app-dashboard-weekoff-shadow);
+  border-color: var(--foundation-primary-200);
+  box-shadow: none;
 }
 
 .app-attendance-cell.is-wfh {
   background: transparent;
-  border-color: var(--app-dashboard-wfh-stroke);
-  box-shadow: var(--app-dashboard-wfh-shadow);
+  border-color: var(--foundation-primary-100);
+  box-shadow: none;
 }
 
 .app-attendance-cell.is-present:not(.is-leave):not(.is-wfh):not(.is-weekoff) {
   background: transparent;
-  border-color: var(--app-dashboard-present-stroke);
-  box-shadow: var(--app-dashboard-present-shadow);
+  border-color: var(--foundation-stroke-primary);
+  box-shadow: none;
 }
 
 .app-attendance-cell.is-muted {
@@ -1657,15 +1674,15 @@ select {
 }
 
 .app-attendance-cell.is-selected {
-  border-color: rgb(255 76 0 / 0.48);
-  box-shadow: inset 0 0 32px 14px rgb(255 76 0 / 0.16);
+  border-color: var(--foundation-color-text-inverse);
+  box-shadow: none;
 }
 
 .app-attendance-cell.is-selected.is-present:not(.is-leave):not(.is-wfh):not(
     .is-weekoff
   ) {
-  border-color: rgb(255 76 0 / 0.48);
-  box-shadow: inset 0 0 32px 14px rgb(255 76 0 / 0.16);
+  border-color: var(--foundation-color-text-inverse);
+  box-shadow: none;
 }
 
 .app-attendance-cell.is-today {
@@ -1714,71 +1731,65 @@ select {
 }
 
 .app-attendance-day-badge.is-present-in {
-  background: var(--app-dashboard-checkin-bg);
-  border-color: var(--app-dashboard-checkin-stroke);
-  color: var(--app-dashboard-checkin-accent);
+  background: transparent;
+  border-color: var(--foundation-color-text-inverse);
+  color: var(--foundation-color-text-inverse);
 }
 
 .app-attendance-day-badge.is-present-out {
-  background: var(--app-dashboard-checkout-bg);
-  border-color: var(--app-dashboard-checkout-stroke);
-  color: var(--app-dashboard-checkout-accent);
+  background: transparent;
+  border-color: var(--foundation-color-text);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-day-badge.is-leave {
-  background: var(--app-dashboard-leave-bg);
-  border-color: var(--app-dashboard-leave-stroke);
-  color: var(--app-dashboard-leave-accent);
+  background: transparent;
+  border-color: var(--foundation-primary-300);
+  color: var(--foundation-primary-700);
 }
 
 .app-attendance-day-badge.is-weekoff {
-  background: var(--app-dashboard-weekoff-bg);
-  border-color: var(--app-dashboard-weekoff-stroke);
-  color: var(--app-dashboard-weekoff-accent);
+  background: transparent;
+  border-color: var(--foundation-primary-200);
+  color: var(--foundation-primary-500);
 }
 
 .app-attendance-day-badge.is-wfh {
-  background: var(--app-dashboard-wfh-bg);
-  border-color: var(--app-dashboard-wfh-stroke);
-  color: var(--app-dashboard-wfh-accent);
-}
-
-html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
-  background: var(--app-dashboard-weekoff-bg);
-  border-color: var(--app-dashboard-weekoff-stroke);
-  color: var(--app-dashboard-weekoff-accent);
+  background: transparent;
+  border-color: var(--foundation-primary-100);
+  color: var(--foundation-primary-600);
 }
 
 .app-attendance-day-badge.is-summary {
   background: color-mix(
     in srgb,
-    var(--app-dashboard-surface-bg) 90%,
-    var(--foundation-neutral-950)
+    var(--foundation-color-background) 90%,
+    var(--foundation-color-text)
   );
   border-color: var(--foundation-stroke-neutral);
-  color: var(--app-dashboard-text-secondary);
+  color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
 }
 
 .app-attendance-day-number {
   font-size: var(--foundation-type-12);
   font-weight: var(--foundation-weight-medium);
-  color: var(--app-dashboard-text-primary);
+  color: var(--foundation-color-text);
 }
 
 .app-attendance-day-dot {
   width: 6px;
   height: 6px;
   border-radius: var(--foundation-radius-full);
-  background: var(--app-dashboard-dot);
+  background: var(--foundation-color-text-inverse);
   flex: none;
 }
 
 .app-attendance-cell.is-muted .app-attendance-day-number {
-  color: color-mix(in srgb, var(--app-dashboard-text-primary) 34%, transparent);
+  color: color-mix(in srgb, var(--foundation-color-text) 34%, transparent);
 }
 
 .app-stat-grid {
-  width: min(100%, var(--foundation-layout-max));
+  width: 100%;
   margin: 0 auto var(--foundation-space-24);
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -1839,11 +1850,6 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
     grid-template-columns: 1fr;
   }
 
-  .app-dashboard-identity-panel {
-    align-items: flex-start;
-    padding: var(--foundation-space-20);
-  }
-
   .app-dashboard-identity-copy {
     min-width: 0;
     flex: 1 1 auto;
@@ -1896,7 +1902,12 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
     padding-right: calc(var(--foundation-space-4));
     padding-bottom: var(--foundation-space-20);
     scrollbar-width: thin;
-    scrollbar-color: var(--app-dashboard-scrollbar) transparent;
+    scrollbar-color: color-mix(
+        in srgb,
+        var(--foundation-color-text-inverse) 26%,
+        transparent
+      )
+      transparent;
   }
 
   .app-attendance-stats-sidebar {
@@ -1919,11 +1930,19 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
 
   .app-attendance-sidebar-scroll::-webkit-scrollbar-thumb {
     border-radius: var(--foundation-radius-full);
-    background: var(--app-dashboard-scrollbar);
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-text-inverse) 26%,
+      transparent
+    );
   }
 
   .app-attendance-sidebar-scroll::-webkit-scrollbar-thumb:hover {
-    background: var(--app-dashboard-scrollbar-hover);
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-text-inverse) 42%,
+      transparent
+    );
   }
 
   .app-attendance-sidebar-card,
@@ -1970,7 +1989,8 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
 
 @media (max-width: 720px) {
   .app-shell {
-    padding: var(--foundation-space-24) 14px calc(140px + env(safe-area-inset-bottom, 0px));
+    padding: var(--foundation-space-24) 14px
+      calc(140px + env(safe-area-inset-bottom, 0px));
   }
 
   .app-shell.app-dashboard-shell {
@@ -2081,7 +2101,7 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   .app-dashboard-mobile-panel-inner .app-step-item strong,
   .app-dashboard-mobile-panel-inner .app-step-item span,
   .app-dashboard-mobile-panel-inner .app-shortcut-feedback {
-    color: #fff;
+    color: var(--foundation-color-text);
   }
 
   .app-dashboard-mobile-panel-inner .app-settings-form-shell,
@@ -2110,7 +2130,7 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   .app-dashboard-mobile-panel-inner .app-settings-weekday-item {
     gap: var(--foundation-space-12);
     padding-bottom: var(--foundation-space-12);
-    border-bottom: 1px solid rgb(255 255 255 / 0.16);
+    border-bottom: 1px solid var(--foundation-stroke-primary);
   }
 
   .app-dashboard-mobile-panel-inner .app-settings-rule-card {
@@ -2128,30 +2148,42 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   .app-dashboard-mobile-panel-inner .app-settings-toggle,
   .app-dashboard-mobile-panel-inner .app-settings-chip,
   .app-dashboard-mobile-panel-inner .app-button-secondary {
-    border-color: rgb(255 255 255 / 0.36);
-    background: rgb(255 255 255 / 0.08);
-    color: #fff;
+    border-color: var(--foundation-stroke-primary);
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-background-inverse) 8%,
+      var(--foundation-color-background)
+    );
+    color: var(--foundation-color-text);
   }
 
   .app-dashboard-mobile-panel-inner .app-settings-toggle.is-active,
   .app-dashboard-mobile-panel-inner .app-settings-chip.is-active {
-    border-color: #fff;
-    background: rgb(255 255 255 / 0.16);
-    color: #fff;
+    border-color: var(--foundation-color-text-inverse);
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-background-inverse) 16%,
+      var(--foundation-color-background)
+    );
+    color: var(--foundation-color-text);
   }
 
   .app-dashboard-mobile-panel-inner .app-shortcut-link-label {
-    color: rgb(255 255 255 / 0.72);
+    color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
   }
 
   .app-dashboard-mobile-panel-inner .app-shortcut-code-wrap {
-    border-color: rgb(255 255 255 / 0.42);
-    box-shadow: inset 0 0 24px 10px rgb(255 255 255 / 0.16);
+    border-color: var(--foundation-stroke-primary);
+    box-shadow: none;
   }
 
   .app-dashboard-mobile-panel-inner .app-shortcut-code-copy {
-    background: rgb(255 255 255 / 0.12);
-    color: #fff;
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-background-inverse) 12%,
+      var(--foundation-color-background)
+    );
+    color: var(--foundation-color-text);
   }
 
   .app-grid-two,
@@ -2229,23 +2261,23 @@ html[data-theme="light"] .app-attendance-day-badge.is-weekoff {
   }
 
   .app-attendance-day-badge.is-present-in {
-    background: var(--app-dashboard-checkin-accent);
+    background: var(--foundation-color-text-inverse);
   }
 
   .app-attendance-day-badge.is-present-out {
-    background: var(--app-dashboard-checkout-accent);
+    background: var(--foundation-color-text);
   }
 
   .app-attendance-day-badge.is-leave {
-    background: var(--app-dashboard-leave-accent);
+    background: var(--foundation-primary-700);
   }
 
   .app-attendance-day-badge.is-weekoff {
-    background: var(--app-dashboard-weekoff-accent);
+    background: var(--foundation-primary-500);
   }
 
   .app-attendance-day-badge.is-wfh {
-    background: var(--app-dashboard-wfh-accent);
+    background: var(--foundation-primary-600);
   }
 
   .app-attendance-day-badge.is-summary {

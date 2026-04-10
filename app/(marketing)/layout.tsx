@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import "./landingpage.css";
-import { MarketingGridBackground } from "./components/grid";
+import { GridBackground } from "@/app/components/grid-background";
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
     <div className="marketing-surface">
-      <MarketingGridBackground />
+      <GridBackground />
       <div className="marketing-shell">{children}</div>
     </div>
   );

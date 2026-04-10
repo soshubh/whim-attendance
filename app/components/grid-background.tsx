@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-export function MarketingGridBackground() {
+export function GridBackground() {
   useEffect(() => {
     const root = document.documentElement;
     let frameId = 0;
