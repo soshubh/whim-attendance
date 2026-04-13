@@ -2207,50 +2207,84 @@ select {
   }
 
   .app-attendance-day-badges {
-    width: auto;
-    min-height: 8px;
+    width: 100%;
+    min-height: 0;
     margin-top: auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    display: grid;
     gap: 4px;
   }
 
   .app-attendance-day-badge {
-    min-height: 8px;
-    width: 8px;
-    height: 8px;
-    padding: 0;
-    border-radius: 999px;
-    font-size: 0;
-    line-height: 0;
-    border-width: 0;
-    flex: none;
+    min-height: 14px;
+    width: 100%;
+    height: auto;
+    padding: 0 6px;
+    border-radius: var(--foundation-radius-6);
+    font-size: 9px;
+    line-height: 1.1;
+    border-width: 1px;
+    flex: initial;
     box-shadow: none;
   }
 
   .app-attendance-day-badge.is-present-in {
-    background: var(--foundation-color-text-inverse);
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-background-inverse) 10%,
+      var(--foundation-color-background)
+    );
+    border-color: var(--foundation-color-text-inverse);
+    color: var(--foundation-color-text-inverse);
   }
 
   .app-attendance-day-badge.is-present-out {
-    background: var(--foundation-color-text);
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-text) 6%,
+      var(--foundation-color-background)
+    );
+    border-color: var(--foundation-color-text);
+    color: var(--foundation-color-text);
   }
 
   .app-attendance-day-badge.is-leave {
-    background: var(--foundation-primary-700);
+    background: color-mix(
+      in srgb,
+      var(--foundation-primary-50) 68%,
+      var(--foundation-color-background)
+    );
+    border-color: var(--foundation-primary-300);
+    color: var(--foundation-primary-700);
   }
 
   .app-attendance-day-badge.is-weekoff {
-    background: var(--foundation-primary-500);
+    background: color-mix(
+      in srgb,
+      var(--foundation-primary-50) 48%,
+      var(--foundation-color-background)
+    );
+    border-color: var(--foundation-primary-200);
+    color: var(--foundation-primary-500);
   }
 
   .app-attendance-day-badge.is-wfh {
-    background: var(--foundation-primary-600);
+    background: color-mix(
+      in srgb,
+      var(--foundation-primary-50) 28%,
+      var(--foundation-color-background)
+    );
+    border-color: var(--foundation-primary-100);
+    color: var(--foundation-primary-600);
   }
 
   .app-attendance-day-badge.is-summary {
-    display: none;
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-background) 90%,
+      var(--foundation-color-text)
+    );
+    border-color: var(--foundation-stroke-neutral);
+    color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
   }
 
   .app-attendance-sidebar-detail-list {
