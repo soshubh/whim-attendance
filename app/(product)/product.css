@@ -2046,11 +2046,11 @@ select {
   }
 
   .app-dashboard-identity-panel.has-mobile-panel {
-    align-items: stretch;
+    align-items: center;
   }
 
   .app-dashboard-identity-panel.has-mobile-panel .app-dashboard-identity-main {
-    align-items: flex-start;
+    align-items: center;
   }
 
   .app-dashboard-identity-copy {
@@ -2084,17 +2084,64 @@ select {
   }
 
   .app-dashboard-mobile-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(100% + 10px);
+    width: 100%;
+    max-height: min(60vh, 520px);
     margin-top: 0;
+    pointer-events: none;
   }
 
   .app-dashboard-mobile-panel.is-open {
-    margin-top: 10px;
+    margin-top: 0;
+    pointer-events: auto;
   }
 
   .app-dashboard-mobile-panel-inner {
     display: grid;
     gap: 14px;
-    padding-top: 2px;
+    max-height: min(60vh, 520px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 16px 14px 14px;
+    border: 1px solid var(--foundation-stroke-neutral);
+    border-radius: 16px;
+    background: var(--foundation-color-background);
+    box-shadow: none;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(
+        in srgb,
+        var(--foundation-color-text-inverse) 26%,
+        transparent
+      )
+      transparent;
+  }
+
+  .app-dashboard-mobile-panel-inner::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .app-dashboard-mobile-panel-inner::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .app-dashboard-mobile-panel-inner::-webkit-scrollbar-thumb {
+    border-radius: var(--foundation-radius-full);
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-text-inverse) 26%,
+      transparent
+    );
+  }
+
+  .app-dashboard-mobile-panel-inner::-webkit-scrollbar-thumb:hover {
+    background: color-mix(
+      in srgb,
+      var(--foundation-color-text-inverse) 42%,
+      transparent
+    );
   }
 
   .app-dashboard-mobile-panel-inner .app-settings-preference-row {
