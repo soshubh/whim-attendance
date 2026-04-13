@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { GridBackground } from "@/app/components/grid-background";
 
 type AuthFormShellProps = {
   title: string;
@@ -20,13 +21,12 @@ export function AuthFormShell({
   children,
 }: AuthFormShellProps) {
   return (
-    <main className="app-shell app-auth-shell">
+    <main className="app-shell app-auth-shell product-surface">
+      <GridBackground />
       <Card className="app-auth-surface">
         <CardHeader className="app-auth-surface-header">
           <div className="app-auth-surface-copy">
-            <CardTitle className="app-auth-surface-title">
-              {title}
-            </CardTitle>
+            <CardTitle className="app-auth-surface-title">{title}</CardTitle>
             <CardDescription className="app-auth-surface-description">
               {description}
             </CardDescription>
