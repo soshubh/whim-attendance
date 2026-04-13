@@ -72,11 +72,60 @@ select {
 
 .app-auth-shell {
   align-content: center;
+  justify-items: center;
 }
 
 .app-flow-shell,
 .app-dashboard-shell {
   align-content: start;
+}
+
+.app-auth-surface {
+  width: 100%;
+  max-width: 560px;
+  margin-inline: auto;
+  padding: 0;
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-36);
+  background: var(--foundation-color-background);
+  color: inherit;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.app-auth-surface-header {
+  justify-content: start;
+  gap: var(--foundation-space-12);
+  padding: var(--foundation-space-24) var(--foundation-space-24)
+    var(--foundation-space-16);
+}
+
+.app-auth-surface-copy {
+  display: grid;
+  gap: var(--foundation-space-12);
+}
+
+.app-auth-surface-title {
+  font-family: var(--foundation-font-sans), var(--font-geist-sans), sans-serif;
+  font-size: var(--foundation-type-18);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  font-weight: var(--foundation-weight-semibold);
+  color: var(--foundation-color-text);
+}
+
+.app-auth-surface-description {
+  max-width: 28ch;
+  font-size: var(--foundation-type-14);
+  line-height: 1.6;
+  color: var(--foundation-neutral-700);
+}
+
+.app-auth-surface-content {
+  display: grid;
+  align-content: start;
+  gap: var(--foundation-space-20);
+  padding: 0 var(--foundation-space-24) var(--foundation-space-24);
 }
 
 .app-dashboard-shell {
@@ -2015,6 +2064,19 @@ select {
     border-radius: var(--foundation-radius-24);
   }
 
+  .app-auth-surface {
+    border-radius: var(--foundation-radius-24);
+  }
+
+  .app-auth-surface-header {
+    padding: var(--foundation-space-24) var(--foundation-space-24)
+      var(--foundation-space-16);
+  }
+
+  .app-auth-surface-content {
+    padding: 0 var(--foundation-space-24) var(--foundation-space-24);
+  }
+
   .app-attendance-board {
     gap: 14px;
   }
@@ -2081,6 +2143,17 @@ select {
     width: 38px;
     height: 38px;
     font-size: var(--foundation-type-14);
+  }
+
+  .app-dashboard-profile-popover {
+    top: auto;
+    bottom: calc(100% + var(--foundation-space-8));
+    transform: translateY(-8px);
+  }
+
+  .app-dashboard-profile-menu:hover .app-dashboard-profile-popover,
+  .app-dashboard-profile-menu:focus-within .app-dashboard-profile-popover {
+    transform: translateY(0);
   }
 
   .app-dashboard-mobile-panel {

@@ -37,5 +37,5 @@ export function GridBackground() {
     };
   }, []);
 
-  return <div aria-hidden="true" className="grid" />;
+  return <div aria-hidden="true" className="app-grid-background" />;
 }
