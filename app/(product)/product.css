@@ -121,14 +121,9 @@ select {
   color: var(--foundation-color-text);
 }
 
-.app-subtitle {
-  font-size: var(--foundation-type-18);
-  font-weight: var(--foundation-weight-semibold);
-}
-
 .app-settings-panel-title {
-  font-size: var(--foundation-type-18);
-  font-weight: var(--foundation-weight-semibold);
+  font-size: var(--foundation-type-16);
+  font-weight: var(--foundation-weight-medium);
 }
 
 .app-settings-section-title {
@@ -331,12 +326,12 @@ select {
 
 .app-step-item strong {
   font-size: var(--foundation-type-16);
-  font-weight: var(--foundation-weight-semibold);
+  font-weight: var(--foundation-weight-medium);
 }
 
 .app-step-item span {
   font-size: var(--foundation-type-14);
-  font-weight: var(--foundation-weight-medium);
+  font-weight: var(--foundation-weight-light);
 }
 
 .app-settings-section,
@@ -584,7 +579,9 @@ select {
 .app-shortcut-link-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--foundation-space-16);
+  width: 100%;
 }
 
 .app-shortcut-code-wrap {
@@ -630,6 +627,11 @@ select {
   justify-content: center;
   cursor: pointer;
   box-shadow: none;
+}
+
+.app-shortcut-code-copy-header {
+  position: static;
+  flex: none;
 }
 
 .app-shortcut-code-copy.is-success {
@@ -768,11 +770,10 @@ select {
   display: grid;
   gap: var(--foundation-space-12);
   padding: var(--foundation-space-16);
-  border: 0.6px solid var(--foundation-stroke-primary);
+  border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-24);
-  box-shadow: none;
   background: var(--foundation-color-background);
-
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -839,10 +840,10 @@ select {
   gap: var(--foundation-space-8);
   min-height: 40px;
   padding: 0 var(--foundation-space-16);
-  border: 1px solid var(--foundation-stroke-neutral);
+  border: 1px solid var(--foundation-stroke-primary);
   border-radius: var(--foundation-radius-full);
-
-  color: var(--foundation-color-text);
+  box-shadow: inset 0 0 12px 4px #ff4d000e;
+  color: var(--foundation-color-text-inverse);
   text-decoration: none;
 }
 
@@ -1103,11 +1104,6 @@ select {
   );
 }
 
-.app-attendance-month-panel {
-  display: grid;
-  gap: var(--foundation-space-8);
-}
-
 .app-attendance-month-nav {
   display: grid;
   grid-template-columns: var(--foundation-space-32) minmax(0, 1fr) var(
@@ -1150,8 +1146,8 @@ select {
 .app-attendance-month-label {
   min-width: 0;
   text-align: center;
-  font-size: var(--foundation-type-18);
-  font-weight: var(--foundation-weight-semibold);
+  font-size: var(--foundation-type-16);
+  font-weight: var(--foundation-weight-medium);
   color: var(--foundation-color-text);
 }
 
@@ -1169,13 +1165,13 @@ select {
 
 .app-attendance-stat-card {
   position: relative;
-  padding: var(--foundation-space-20);
+  padding: var(--foundation-space-12);
   display: grid;
 
-  border-radius: var(--foundation-radius-24);
+  border-radius: var(--foundation-radius-16);
   background: var(--foundation-color-background);
-  border: 1px solid var(--foundation-stroke-primary);
-  box-shadow: none;
+  border: 1px solid var(--foundation-stroke-neutral);
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
 }
 
 .app-attendance-stat-card-head {
@@ -1187,14 +1183,14 @@ select {
 
 .app-attendance-stat-card-title {
   font-size: var(--foundation-type-16);
-  font-weight: var(--foundation-weight-semibold);
+  font-weight: var(--foundation-weight-medium);
   text-transform: none;
   color: var(--foundation-color-text);
 }
 
 .app-attendance-stat-card-dropdown-label {
   font-size: var(--foundation-type-12);
-  font-weight: var(--foundation-weight-bold);
+  font-weight: var(--foundation-weight-medium);
 
   color: var(--foundation-color-text);
 }
@@ -1218,17 +1214,11 @@ select {
   left: 50%;
   bottom: 0;
   justify-self: center;
-
-  padding: 4px var(--foundation-space-16);
+  border: 1px solid var(--foundation-stroke-neutral);
+  padding: 2px var(--foundation-space-12);
   border-radius: var(--foundation-radius-16);
   background: var(--foundation-color-background);
-  box-shadow: none;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
   cursor: pointer;
   z-index: 1;
   transform: translate(-50%, 50%);
@@ -1265,15 +1255,15 @@ select {
 }
 
 .app-attendance-stat-list-item b {
-  font-size: var(--foundation-type-16);
-  font-weight: var(--foundation-weight-medium);
+  font-size: var(--foundation-type-14);
+  font-weight: var(--foundation-weight-regular);
   color: var(--foundation-color-text);
 }
 
 .app-attendance-stat-list-item small {
   font-size: var(--foundation-type-14);
   font-weight: var(--foundation-weight-regular);
-  color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
+  color: color-mix(in srgb, var(--foundation-color-text) 60%, transparent);
   text-align: right;
 }
 
@@ -1309,9 +1299,8 @@ select {
   color: var(--foundation-color-text);
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  line-height: 1;
   cursor: pointer;
+  width: 24px;
 }
 
 .app-attendance-sidebar-entry-list {
@@ -1370,12 +1359,11 @@ select {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   justify-content: space-between;
-  gap: var(--foundation-space-16);
   padding: var(--foundation-space-12);
-  border: 1px solid var(--foundation-stroke-primary);
   border-radius: var(--foundation-radius-16);
-  background: transparent;
-  box-shadow: none;
+  background: var(--foundation-color-background);
+  border: 1px solid var(--foundation-stroke-neutral);
+  position: relative;
 }
 
 .app-attendance-right-panel-body .app-settings-section,
@@ -1427,45 +1415,65 @@ select {
   display: grid;
 }
 
+.app-attendance-sidebar-detail-item.is-present-in {
+  background: #00b84416;
+  color: #00b843;
+}
+
+.app-attendance-sidebar-detail-item.is-present-out {
+  background: #f8717119;
+  color: #f87171;
+}
+
+.app-attendance-sidebar-detail-item.is-leave {
+  color: #dba400;
+  background: #ffde2129;
+}
+
+.app-attendance-sidebar-detail-item.is-weekoff {
+  background: var(--foundation-primary-50);
+  color: var(--foundation-primary-600);
+}
+
+.app-attendance-sidebar-detail-item.is-wfh {
+  color: #0062ff;
+  background: #0062ff12;
+}
+
 .app-attendance-sidebar-detail-actions {
-  display: grid;
-  justify-items: end;
-  align-content: start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: center;
   gap: var(--foundation-space-10);
 }
 
 .app-attendance-sidebar-detail-title {
   color: inherit;
-  font-size: var(--foundation-type-16);
-  font-weight: var(--foundation-weight-semibold);
+  font-size: var(--foundation-type-14);
+  font-weight: var(--foundation-weight-medium);
 }
 
 .app-attendance-sidebar-detail-meta {
   color: inherit;
   font-size: var(--foundation-type-14);
   font-weight: var(--foundation-weight-regular);
-  line-height: 1.5;
 }
 
 .app-attendance-sidebar-detail-value {
   color: inherit;
-  font-size: var(--foundation-type-16);
-  font-weight: var(--foundation-weight-semibold);
+  font-size: var(--foundation-type-14);
+  font-weight: var(--foundation-weight-medium);
   white-space: nowrap;
 }
 
 .app-attendance-sidebar-detail-delete {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   padding: 0;
-  border: 1px solid var(--foundation-stroke-primary);
-  border-radius: var(--foundation-radius-full);
-  background: color-mix(
-    in srgb,
-    var(--foundation-color-background-inverse) 4%,
-    var(--foundation-color-background)
-  );
-  color: var(--foundation-color-text);
+  border-radius: var(--foundation-radius-8);
+  background: #f8717119;
+  color: #f87171;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1600,7 +1608,7 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: var(--foundation-type-14);
+  font-size: var(--foundation-type-12);
   font-weight: var(--foundation-weight-medium);
   color: var(--foundation-color-text);
 }
@@ -1618,10 +1626,10 @@ select {
 .app-attendance-cell {
   height: 100%;
   padding: var(--foundation-space-8);
-  border: 1px solid var(--foundation-stroke-primary);
+  border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-16);
   background: transparent;
-  box-shadow: none;
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -1644,26 +1652,26 @@ select {
 
 .app-attendance-cell.is-leave {
   background: transparent;
-  border-color: var(--foundation-primary-300);
-  box-shadow: none;
+  border-color: var(--foundation-stroke-neutral);
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
 }
 
 .app-attendance-cell.is-weekoff {
   background: transparent;
-  border-color: var(--foundation-primary-200);
-  box-shadow: none;
+  border-color: var(--foundation-stroke-neutral);
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
 }
 
 .app-attendance-cell.is-wfh {
   background: transparent;
-  border-color: var(--foundation-primary-100);
-  box-shadow: none;
+  border-color: var(--foundation-stroke-neutral);
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
 }
 
 .app-attendance-cell.is-present:not(.is-leave):not(.is-wfh):not(.is-weekoff) {
   background: transparent;
-  border-color: var(--foundation-stroke-primary);
-  box-shadow: none;
+  border-color: var(--foundation-stroke-neutral);
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
 }
 
 .app-attendance-cell.is-muted {
@@ -1720,7 +1728,7 @@ select {
   padding: 0 10px;
   border: 1px solid transparent;
   border-radius: var(--foundation-radius-8);
-  font-size: var(--foundation-type-12);
+  font-size: var(--foundation-type-10);
   font-weight: var(--foundation-weight-medium);
   line-height: 1.2;
   white-space: nowrap;
@@ -1731,43 +1739,37 @@ select {
 }
 
 .app-attendance-day-badge.is-present-in {
-  background: transparent;
-  border-color: var(--foundation-color-text-inverse);
-  color: var(--foundation-color-text-inverse);
+  background: #00b84416;
+
+  color: #00b843;
 }
 
 .app-attendance-day-badge.is-present-out {
-  background: transparent;
-  border-color: var(--foundation-color-text);
-  color: var(--foundation-color-text);
+  background: #f8717119;
+
+  color: #f87171;
 }
 
 .app-attendance-day-badge.is-leave {
-  background: transparent;
-  border-color: var(--foundation-primary-300);
-  color: var(--foundation-primary-700);
+  background: #ffde2129;
+  color: #dba400;
 }
 
 .app-attendance-day-badge.is-weekoff {
-  background: transparent;
-  border-color: var(--foundation-primary-200);
-  color: var(--foundation-primary-500);
+  background: var(--foundation-primary-50);
+  color: var(--foundation-primary-200);
 }
 
 .app-attendance-day-badge.is-wfh {
-  background: transparent;
-  border-color: var(--foundation-primary-100);
-  color: var(--foundation-primary-600);
+  background: #0062ff12;
+  color: #0062ff;
 }
 
 .app-attendance-day-badge.is-summary {
-  background: color-mix(
-    in srgb,
-    var(--foundation-color-background) 90%,
-    var(--foundation-color-text)
-  );
   border-color: var(--foundation-stroke-neutral);
+  background: var(--foundation-neutral-100);
   color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
 }
 
 .app-attendance-day-number {
@@ -1777,11 +1779,14 @@ select {
 }
 
 .app-attendance-day-dot {
-  width: 6px;
+  width: 60%;
   height: 6px;
   border-radius: var(--foundation-radius-full);
-  background: var(--foundation-color-text-inverse);
-  flex: none;
+  background: linear-gradient(
+    90deg,
+    var(--foundation-primary-50),
+    var(--foundation-color-text-inverse)
+  );
 }
 
 .app-attendance-cell.is-muted .app-attendance-day-number {
@@ -2092,33 +2097,6 @@ select {
     padding-top: 2px;
   }
 
-  .app-dashboard-mobile-panel-inner .app-error,
-  .app-dashboard-mobile-panel-inner .app-empty-box,
-  .app-dashboard-mobile-panel-inner .app-title,
-  .app-dashboard-mobile-panel-inner .app-copy,
-  .app-dashboard-mobile-panel-inner .app-settings-section-title,
-  .app-dashboard-mobile-panel-inner .app-settings-day-title,
-  .app-dashboard-mobile-panel-inner .app-step-item strong,
-  .app-dashboard-mobile-panel-inner .app-step-item span,
-  .app-dashboard-mobile-panel-inner .app-shortcut-feedback {
-    color: var(--foundation-color-text);
-  }
-
-  .app-dashboard-mobile-panel-inner .app-settings-form-shell,
-  .app-dashboard-mobile-panel-inner .app-step-list {
-    gap: var(--foundation-space-16);
-  }
-
-  .app-dashboard-mobile-panel-inner .app-settings-block,
-  .app-dashboard-mobile-panel-inner .app-step-item,
-  .app-dashboard-mobile-panel-inner .app-shortcut-link-card {
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-  }
-
   .app-dashboard-mobile-panel-inner .app-settings-preference-row {
     align-items: flex-start;
   }
@@ -2251,15 +2229,6 @@ select {
     box-shadow: none;
   }
 
-  .app-attendance-day-badge.is-present-in,
-  .app-attendance-day-badge.is-present-out,
-  .app-attendance-day-badge.is-leave,
-  .app-attendance-day-badge.is-weekoff,
-  .app-attendance-day-badge.is-wfh,
-  .app-attendance-day-badge.is-summary {
-    color: transparent;
-  }
-
   .app-attendance-day-badge.is-present-in {
     background: var(--foundation-color-text-inverse);
   }
@@ -2309,11 +2278,6 @@ select {
     min-height: 32px;
     padding: 0 16px;
     border-radius: var(--foundation-radius-16);
-  }
-
-  .app-attendance-stat-card-dropdown-label,
-  .app-attendance-stat-card-title {
-    font-size: var(--foundation-type-14);
   }
 
   .app-attendance-stat-card-panel-inner {

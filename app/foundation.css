@@ -73,6 +73,7 @@
 
   /* Typography */
   --foundation-font-sans: "GT Walsheim", sans-serif;
+  --foundation-type-10: 10px;
   --foundation-type-12: 12px;
   --foundation-type-14: 14px;
   --foundation-type-16: 16px;

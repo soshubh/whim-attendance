@@ -89,26 +89,24 @@ export function DashboardLeftPanel({
     <DashboardSurfaceCard as="aside" variant="sidebar" className="app-attendance-sidebar-card">
       <div className="app-attendance-sidebar-stack">
         <div className="app-attendance-sidebar-fixed">
-          <div className="app-attendance-month-panel">
-            <div className="app-attendance-month-nav">
-              <button
-                type="button"
-                className="app-attendance-nav-button"
-                onClick={onPreviousMonth}
-                aria-label="Previous month"
-              >
-                &#8249;
-              </button>
-              <span className="app-attendance-month-label">{monthLabel}</span>
-              <button
-                type="button"
-                className="app-attendance-nav-button"
-                onClick={onNextMonth}
-                aria-label="Next month"
-              >
-                &#8250;
-              </button>
-            </div>
+          <div className="app-attendance-month-nav">
+            <button
+              type="button"
+              className="app-attendance-nav-button"
+              onClick={onPreviousMonth}
+              aria-label="Previous month"
+            >
+              &#8249;
+            </button>
+            <span className="app-attendance-month-label">{monthLabel}</span>
+            <button
+              type="button"
+              className="app-attendance-nav-button"
+              onClick={onNextMonth}
+              aria-label="Next month"
+            >
+              &#8250;
+            </button>
           </div>
         </div>
 
@@ -116,7 +114,7 @@ export function DashboardLeftPanel({
           <section className="app-attendance-stats app-attendance-stats-sidebar">
             <article className={`app-attendance-stat-card${openSection === "present" ? " is-open" : ""}`}>
               <div className="app-attendance-stat-card-head">
-                <span className="app-attendance-stat-card-title">{`Days Present (${stats.presentDays})`}</span>
+                <span className="app-attendance-stat-card-title">Days Present</span>
               </div>
               <div className={`app-attendance-stat-card-panel${openSection === "present" ? " is-open" : ""}`}>
                 <div className="app-attendance-stat-card-panel-inner">
@@ -127,7 +125,7 @@ export function DashboardLeftPanel({
             </article>
             <article className={`app-attendance-stat-card${openSection === "leave" ? " is-open" : ""}`}>
               <div className="app-attendance-stat-card-head">
-                <span className="app-attendance-stat-card-title">{`Leave Days (${stats.leaveDays})`}</span>
+                <span className="app-attendance-stat-card-title">Leave Days</span>
                 <button
                   type="button"
                   className="app-attendance-action-trigger"
@@ -146,7 +144,7 @@ export function DashboardLeftPanel({
             </article>
             <article className={`app-attendance-stat-card${openSection === "wfh" ? " is-open" : ""}`}>
               <div className="app-attendance-stat-card-head">
-                <span className="app-attendance-stat-card-title">{`WFH Days (${stats.wfhDays})`}</span>
+                <span className="app-attendance-stat-card-title">WFH Days</span>
                 <button
                   type="button"
                   className="app-attendance-action-trigger"

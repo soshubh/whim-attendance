@@ -49,6 +49,7 @@ export type CalendarCell = {
 
 export type SelectedDateEntry = {
   id: number;
+  tone: CalendarBadgeTone;
   title: string;
   value?: string;
   meta: string;

@@ -6,6 +6,7 @@ type ShortcutLinkCardProps = {
   label: string;
   url: string;
   showLabel?: boolean;
+  copyButtonPlacement?: "header" | "box";
 };
 
 async function copyTextToClipboard(text: string) {
@@ -62,6 +63,7 @@ export function ShortcutLinkCard({
   label,
   url,
   showLabel = true,
+  copyButtonPlacement = "box",
 }: ShortcutLinkCardProps) {
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
 
@@ -93,17 +95,29 @@ export function ShortcutLinkCard({
       {showLabel ? (
         <div className="app-shortcut-link-header">
           <span className="app-eyebrow">{label}</span>
+          {copyButtonPlacement === "header" ? (
+            <button
+              className={`app-shortcut-code-copy app-shortcut-code-copy-header${copyState === "copied" ? " is-success" : ""}`}
+              type="button"
+              onClick={handleCopy}
+              aria-label={`Copy ${label}`}
+            >
+              <CopyIcon />
+            </button>
+          ) : null}
         </div>
       ) : null}
       <div className="app-shortcut-code-wrap">
-        <button
-          className={`app-shortcut-code-copy${copyState === "copied" ? " is-success" : ""}`}
-          type="button"
-          onClick={handleCopy}
-          aria-label={`Copy ${label}`}
-        >
-          <CopyIcon />
-        </button>
+        {copyButtonPlacement === "box" ? (
+          <button
+            className={`app-shortcut-code-copy${copyState === "copied" ? " is-success" : ""}`}
+            type="button"
+            onClick={handleCopy}
+            aria-label={`Copy ${label}`}
+          >
+            <CopyIcon />
+          </button>
+        ) : null}
         <code>{url}</code>
       </div>
       {copyState === "error" ? <p className="app-shortcut-feedback">Copy failed. Copy the URL manually.</p> : null}

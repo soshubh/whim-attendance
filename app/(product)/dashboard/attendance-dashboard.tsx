@@ -172,16 +172,16 @@ function isWeeklyOffLog(log: DashboardAttendanceLog) {
 function getPresentEntry(log: DashboardAttendanceLog) {
   if (log.event_type === "IN") {
     return {
+      tone: "present-in" as const,
       title: "Check-in",
-      value: getTimeLabel(log.event_time),
-      meta: "Arrival recorded",
+      meta: getTimeLabel(log.event_time),
     };
   }
 
   return {
+    tone: "present-out" as const,
     title: "Check-out",
-    value: getTimeLabel(log.event_time),
-    meta: "Exit recorded",
+    meta: getTimeLabel(log.event_time),
   };
 }
 
@@ -192,8 +192,17 @@ function getSelectedDateEntry(log: DashboardAttendanceLog) {
 
   if (log.event_type === "WFH") {
     return {
+      tone: "wfh" as const,
       title: "WFH",
       meta: "Work from home recorded",
+    };
+  }
+
+  if (isWeeklyOffLog(log)) {
+    return {
+      tone: "weekoff" as const,
+      title: "Leave",
+      meta: "Weekly Off",
     };
   }
 
@@ -202,6 +211,7 @@ function getSelectedDateEntry(log: DashboardAttendanceLog) {
   const leaveMeta = [log.leave_category, cleanLeaveLabel].filter(Boolean).join(" · ");
 
   return {
+    tone: "leave" as const,
     title: "Leave",
     meta: leaveMeta || "Leave recorded",
   };

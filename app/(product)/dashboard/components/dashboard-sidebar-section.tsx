@@ -26,26 +26,24 @@ export function DashboardSidebarSection({
     <DashboardSurfaceCard as="aside" variant="sidebar" className="app-attendance-sidebar-card">
       <div className="app-attendance-sidebar-stack">
         <div className="app-attendance-sidebar-fixed">
-          <div className="app-attendance-month-panel">
-            <div className="app-attendance-month-nav">
-              <button
-                type="button"
-                className="app-attendance-nav-button"
-                onClick={onPreviousMonth}
-                aria-label="Previous month"
-              >
-                &#8249;
-              </button>
-              <span className="app-attendance-month-label">{monthLabel}</span>
-              <button
-                type="button"
-                className="app-attendance-nav-button"
-                onClick={onNextMonth}
-                aria-label="Next month"
-              >
-                &#8250;
-              </button>
-            </div>
+          <div className="app-attendance-month-nav">
+            <button
+              type="button"
+              className="app-attendance-nav-button"
+              onClick={onPreviousMonth}
+              aria-label="Previous month"
+            >
+              &#8249;
+            </button>
+            <span className="app-attendance-month-label">{monthLabel}</span>
+            <button
+              type="button"
+              className="app-attendance-nav-button"
+              onClick={onNextMonth}
+              aria-label="Next month"
+            >
+              &#8250;
+            </button>
           </div>
 
           <section className="app-attendance-stats app-attendance-stats-sidebar">

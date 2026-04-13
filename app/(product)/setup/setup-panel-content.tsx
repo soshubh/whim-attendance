@@ -54,19 +54,17 @@ export function SetupPanelContent({
           </span>
         </div>
         <div className="app-step-item">
-          <strong>4. Office arrival URL</strong>
           <ShortcutLinkCard
-            label="Office arrival URL"
+            label="4. Office arrival URL"
             url={arrivalUrl}
-            showLabel={false}
+            copyButtonPlacement="header"
           />
         </div>
         <div className="app-step-item">
-          <strong>5. Office leave URL</strong>
           <ShortcutLinkCard
-            label="Office leave URL"
+            label="5. Office leave URL"
             url={leaveUrl}
-            showLabel={false}
+            copyButtonPlacement="header"
           />
         </div>
       </div>

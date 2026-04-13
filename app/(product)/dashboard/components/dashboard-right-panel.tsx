@@ -136,7 +136,10 @@ export function DashboardRightPanel({
                   className={`app-attendance-sidebar-detail-list${pendingDeleteEntry ? " is-locked" : ""}`}
                 >
                   {selectedDateDetail.entries.map((entry) => (
-                    <article key={entry.id} className="app-attendance-sidebar-detail-item">
+                    <article
+                      key={entry.id}
+                      className={`app-attendance-sidebar-detail-item is-${entry.tone}`}
+                    >
                       <div className="app-attendance-sidebar-detail-item-copy">
                         <strong className="app-attendance-sidebar-detail-title">{entry.title}</strong>
                         <span className="app-attendance-sidebar-detail-meta">{entry.meta}</span>
@@ -172,7 +175,12 @@ export function DashboardRightPanel({
                       <strong>Delete this entry?</strong>
                       <span>
                         {pendingDeleteEntry.title}
-                        {pendingDeleteEntry.value ? ` at ${pendingDeleteEntry.value}` : ""}
+                        {pendingDeleteEntry.value
+                          ? ` at ${pendingDeleteEntry.value}`
+                          : pendingDeleteEntry.tone === "present-in" ||
+                              pendingDeleteEntry.tone === "present-out"
+                            ? ` at ${pendingDeleteEntry.meta}`
+                            : ""}
                         {" "}will be removed.
                       </span>
                       {deleteEntryError ? (
