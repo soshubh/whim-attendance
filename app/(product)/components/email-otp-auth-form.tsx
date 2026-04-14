@@ -165,6 +165,7 @@ export function EmailOtpAuthForm({
   const hasEmailInput = email.trim().length > 0;
   const hasOtpInput = token.trim().length > 0;
   const hasNameInput = fullName.trim().length > 0;
+  const showInlineEmailSubmit = hasEmailInput && !oauthing && !submitting;
 
   useEffect(() => {
     if (resendCooldown <= 0) {
@@ -349,7 +350,7 @@ export function EmailOtpAuthForm({
                       onChange={(event) => setEmail(event.target.value)}
                       placeholder={emailPlaceholder}
                       className={`min-h-[var(--foundation-space-60)] rounded-[var(--foundation-radius-full)] border-transparent bg-transparent px-[var(--foundation-space-20)] text-[length:var(--foundation-type-16)] shadow-none transition-[padding] duration-300 ease-out focus-visible:border-transparent focus-visible:ring-0 md:text-[length:var(--foundation-type-16)] ${
-                        hasEmailInput
+                        showInlineEmailSubmit
                           ? "pr-[calc(var(--foundation-space-60)+var(--foundation-space-20))]"
                           : "pr-[var(--foundation-space-20)]"
                       }`}
@@ -360,7 +361,7 @@ export function EmailOtpAuthForm({
                       variant="primary"
                       disabled={submitting || oauthing}
                       className={`absolute right-0 top-1/2 size-[var(--foundation-space-60)] rounded-[var(--foundation-radius-full)] border-[3px] border-white px-0 transition-all duration-300 ease-out ${
-                        hasEmailInput
+                        showInlineEmailSubmit
                           ? "-translate-y-1/2 scale-100 opacity-100"
                           : "-translate-y-1/2 translate-x-[calc(var(--foundation-space-12)+4px)] scale-90 opacity-0 pointer-events-none"
                       }`}

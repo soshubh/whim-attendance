@@ -28,7 +28,7 @@ export function SetupForm({ showActions = true }: SetupFormProps) {
       return;
     }
 
-    router.replace("/dashboard");
+    router.replace("/attendance");
   }
 
   return (

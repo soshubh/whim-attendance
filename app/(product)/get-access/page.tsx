@@ -12,7 +12,7 @@ export default async function GetAccessPage() {
   } = await supabase.auth.getUser();
 
   if (user) {
-    redirect("/dashboard");
+    redirect("/attendance");
   }
 
   return (

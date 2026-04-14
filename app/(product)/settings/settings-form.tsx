@@ -341,7 +341,7 @@ export function SettingsForm({
       {hasSecondaryFooterAction ? (
         <div className="app-inline-actions app-settings-actions">
           {showBackLink ? (
-            <Link className="app-button app-button-secondary" href="/dashboard">
+            <Link className="app-button app-button-secondary" href="/attendance">
               Back to dashboard
             </Link>
           ) : logoutHref ? (

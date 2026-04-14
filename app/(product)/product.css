@@ -73,6 +73,8 @@ select {
 .app-auth-shell {
   align-content: center;
   justify-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .app-flow-shell,
@@ -81,6 +83,8 @@ select {
 }
 
 .app-auth-surface {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 560px;
   margin-inline: auto;
@@ -88,9 +92,6 @@ select {
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-36);
   background: var(--foundation-color-background);
-  color: inherit;
-  box-shadow: none;
-  overflow: hidden;
 }
 
 .app-auth-surface-header {

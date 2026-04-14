@@ -7,9 +7,9 @@ export function GetAccessForm() {
       description="Enter your email for a one-time code."
       otpType="email"
       shouldCreateUser={true}
-      redirectPath="/dashboard"
+      redirectPath="/attendance"
       flowLabel="sign-in"
-      googleRedirectPath="/dashboard"
+      googleRedirectPath="/attendance"
       googleCtaMode="default"
       submitCtaMode="inline"
       sendLabel={<ArrowRightIcon />}

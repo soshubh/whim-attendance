@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getAttendancePath } from "@/lib/attendance-handle";
 import { requireAuthenticatedContext } from "@/lib/auth";
 
-export default async function DashboardPage() {
+export default async function AttendanceIndexPage() {
   const { user, profile } = await requireAuthenticatedContext();
 
   redirect(
