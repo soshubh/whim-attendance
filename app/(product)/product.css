@@ -985,11 +985,10 @@ select {
 
   border-radius: var(--foundation-radius-36);
   border: 1px solid var(--foundation-stroke-neutral);
-  background: transparent;
+  background: var(--foundation-color-background);
   box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
   min-height: 0;
   height: 100%;
-  overflow: hidden;
   background: var(--foundation-color-background);
 }
 
@@ -1065,7 +1064,6 @@ select {
   min-width: 0;
   height: 100%;
   min-height: 0;
-  overflow: hidden;
   pointer-events: none;
   transition:
     width 0.36s ease-in-out,
