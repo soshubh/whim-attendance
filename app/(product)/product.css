@@ -178,13 +178,7 @@ select {
 
 .app-settings-section-title {
   font-size: var(--foundation-type-16);
-  font-weight: var(--foundation-weight-semibold);
-}
-
-.app-copy {
-  font-size: var(--foundation-type-14);
   font-weight: var(--foundation-weight-medium);
-  color: var(--foundation-color-text-inverse);
 }
 
 .app-form,
@@ -419,6 +413,61 @@ select {
   gap: var(--foundation-space-16);
 }
 
+.app-settings-info {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-settings-info-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: 50%;
+  background: var(--foundation-color-background);
+  color: var(--foundation-neutral-500);
+  font-size: var(--foundation-type-12);
+  font-weight: var(--foundation-weight-semibold);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.app-settings-info-popover {
+  position: absolute;
+  top: calc(100% + var(--foundation-space-8));
+  right: 0;
+  width: max-content;
+  max-width: min(260px, calc(100vw - 48px));
+  padding: var(--foundation-space-12) var(--foundation-space-14);
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-12);
+  background: var(--foundation-color-background);
+  color: var(--foundation-neutral-700);
+  font-size: var(--foundation-type-13);
+  line-height: 1.5;
+  box-shadow: 0 8px 20px rgb(18 18 18 / 0.08);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    visibility 160ms ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.app-settings-info:hover .app-settings-info-popover,
+.app-settings-info:focus-within .app-settings-info-popover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
 .app-settings-preference-row {
   display: flex;
   align-items: center;
@@ -426,24 +475,37 @@ select {
   gap: var(--foundation-space-20);
 }
 
-.app-settings-preference-row-weekday {
-  padding-bottom: var(--foundation-space-8);
-}
-
 .app-settings-preference-copy {
   display: grid;
   gap: 4px;
 }
 
+.app-settings-preference-copy-weekday {
+  min-width: 0;
+}
+
+.app-settings-weekday-copy-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--foundation-space-12);
+}
+
 .app-settings-day-title {
-  margin: 0;
   font-size: var(--foundation-type-16);
   font-weight: var(--foundation-weight-semibold);
-  line-height: 1.2;
+}
+
+.app-settings-day-summary {
+  color: var(--foundation-neutral-500);
+  font-size: var(--foundation-type-14);
+  font-weight: var(--foundation-weight-medium);
+  line-height: 1.4;
 }
 
 .app-settings-preference-hint {
-  font-size: var(--foundation-type-16);
+  font-size: var(--foundation-type-14);
+  font-weight: var(--foundation-weight-light);
 }
 
 .app-settings-chip-row {
@@ -460,13 +522,32 @@ select {
 .app-settings-weekday-item {
   display: grid;
   gap: var(--foundation-space-12);
-  padding-bottom: var(--foundation-space-12);
-  border-bottom: 1px solid var(--foundation-stroke-neutral);
+  padding: var(--foundation-space-20);
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-24);
+  background: var(--foundation-color-background);
 }
 
-.app-settings-weekday-item:last-child {
-  padding-bottom: 0;
-  border-bottom: 0;
+.app-settings-weekday-item.is-active {
+  border-color: var(--foundation-stroke-primary);
+}
+
+.app-settings-weekday-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--foundation-space-12);
+}
+
+.app-settings-weekday-status {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--foundation-neutral-300);
+}
+
+.app-settings-weekday-item.is-active .app-settings-weekday-status {
+  background: var(--foundation-color-background-inverse);
 }
 
 .app-settings-rule-list {
@@ -477,10 +558,10 @@ select {
 .app-settings-rule-card {
   display: grid;
   gap: var(--foundation-space-16);
-  padding: var(--foundation-space-20);
-  border: 1px solid var(--foundation-stroke-neutral);
-  border-radius: var(--foundation-radius-16);
-  background: var(--foundation-color-background);
+  padding: 0 0 0 calc(12px + var(--foundation-space-12));
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .app-settings-rule-copy {
@@ -508,11 +589,24 @@ select {
 
 .app-settings-chip,
 .app-settings-toggle {
+  min-height: 44px;
   padding: 0 var(--foundation-space-20);
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-full);
   background: var(--foundation-color-background);
   cursor: pointer;
+}
+
+.app-settings-rule-card .app-settings-rule-options {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--foundation-space-12);
+}
+
+.app-settings-rule-card .app-settings-toggle {
+  justify-content: center;
+  min-width: 0;
+  padding-inline: var(--foundation-space-16);
 }
 
 .app-settings-chip.is-active,
@@ -1101,6 +1195,8 @@ select {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  margin-right: calc(var(--foundation-space-20) * -1);
+  padding-right: var(--foundation-space-20);
   scrollbar-width: thin;
   scrollbar-color: color-mix(
       in srgb,
@@ -1452,6 +1548,14 @@ select {
     var(--foundation-color-background)
   );
   color: var(--foundation-color-text);
+}
+
+.app-attendance-right-panel-body .app-settings-weekday-item {
+  border-color: var(--foundation-stroke-neutral);
+}
+
+.app-attendance-right-panel-body .app-settings-weekday-item.is-active {
+  border-color: var(--foundation-stroke-primary);
 }
 
 .app-attendance-right-panel-body .app-button-primary {
@@ -2029,6 +2133,8 @@ select {
   .app-attendance-right-panel-body {
     max-height: min(70vh, 720px);
     overflow-y: auto;
+    margin-right: calc(var(--foundation-space-20) * -1);
+    padding-right: var(--foundation-space-20);
   }
 
   .app-attendance-calendar-body {
@@ -2164,20 +2270,8 @@ select {
     max-height: min(60vh, 520px);
     margin-top: 0;
     pointer-events: none;
-  }
-
-  .app-dashboard-mobile-panel.is-open {
-    margin-top: 0;
-    pointer-events: auto;
-  }
-
-  .app-dashboard-mobile-panel-inner {
-    display: grid;
-    gap: 14px;
-    max-height: min(60vh, 520px);
     overflow-y: auto;
     overscroll-behavior: contain;
-    padding: 16px 14px 14px;
     border: 1px solid var(--foundation-stroke-neutral);
     border-radius: 16px;
     background: var(--foundation-color-background);
@@ -2191,15 +2285,26 @@ select {
       transparent;
   }
 
-  .app-dashboard-mobile-panel-inner::-webkit-scrollbar {
+  .app-dashboard-mobile-panel.is-open {
+    margin-top: 0;
+    pointer-events: auto;
+  }
+
+  .app-dashboard-mobile-panel-inner {
+    display: grid;
+    gap: 14px;
+    padding: 16px 14px 14px;
+  }
+
+  .app-dashboard-mobile-panel::-webkit-scrollbar {
     width: 6px;
   }
 
-  .app-dashboard-mobile-panel-inner::-webkit-scrollbar-track {
+  .app-dashboard-mobile-panel::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .app-dashboard-mobile-panel-inner::-webkit-scrollbar-thumb {
+  .app-dashboard-mobile-panel::-webkit-scrollbar-thumb {
     border-radius: var(--foundation-radius-full);
     background: color-mix(
       in srgb,
@@ -2208,7 +2313,7 @@ select {
     );
   }
 
-  .app-dashboard-mobile-panel-inner::-webkit-scrollbar-thumb:hover {
+  .app-dashboard-mobile-panel::-webkit-scrollbar-thumb:hover {
     background: color-mix(
       in srgb,
       var(--foundation-color-text-inverse) 42%,
@@ -2226,13 +2331,14 @@ select {
 
   .app-dashboard-mobile-panel-inner .app-settings-weekday-item {
     gap: var(--foundation-space-12);
-    padding-bottom: var(--foundation-space-12);
-    border-bottom: 1px solid var(--foundation-stroke-primary);
+    padding: var(--foundation-space-16);
+    border: 1px solid var(--foundation-stroke-neutral);
+    border-radius: var(--foundation-radius-24);
   }
 
   .app-dashboard-mobile-panel-inner .app-settings-rule-card {
     gap: var(--foundation-space-12);
-    padding: 0;
+    padding: 0 0 0 calc(12px + var(--foundation-space-12));
     border: 0;
     border-radius: 0;
     background: transparent;

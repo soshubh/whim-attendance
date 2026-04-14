@@ -18,13 +18,11 @@ export type WfhDateInput = {
   date: string;
 };
 
-export type RecurringLeaveMode = "every" | "alternate";
-export type AlternatePattern = "first-third" | "second-fourth";
+export type RecurringLeaveWeek = 1 | 2 | 3 | 4 | 5;
 
 export type RecurringLeaveRuleInput = {
   weekday: number;
-  mode: RecurringLeaveMode;
-  pattern?: AlternatePattern | null;
+  weeks: RecurringLeaveWeek[];
 };
 
 export type AttendanceSettingsPayload = {
@@ -34,9 +32,17 @@ export type AttendanceSettingsPayload = {
 };
 
 const AUTO_RECURRING_PREFIX = "AUTO_WEEKLY_OFF:RULE:";
+const RANGE_MONTHS_BACK = 24;
+const RANGE_MONTHS_FORWARD = 24;
+
 function getRangeStart() {
   const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1);
+  return new Date(now.getFullYear(), now.getMonth() - RANGE_MONTHS_BACK, 1);
+}
+
+function getRangeEnd() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth() + RANGE_MONTHS_FORWARD + 1, 1);
 }
 
 function parseRecurringRule(label: string | null): RecurringLeaveRuleInput | null {
@@ -54,17 +60,36 @@ function parseRecurringRule(label: string | null): RecurringLeaveRuleInput | nul
   if (modePart === "every") {
     return {
       weekday,
-      mode: "every",
-      pattern: null,
+      weeks: [1, 2, 3, 4, 5],
     };
   }
 
-  if (modePart === "alternate" && (patternPart === "first-third" || patternPart === "second-fourth")) {
+  if (modePart === "alternate" && patternPart === "first-third") {
     return {
       weekday,
-      mode: "alternate",
-      pattern: patternPart,
+      weeks: [1, 3],
     };
+  }
+
+  if (modePart === "alternate" && patternPart === "second-fourth") {
+    return {
+      weekday,
+      weeks: [2, 4],
+    };
+  }
+
+  if (modePart === "weeks") {
+    const weeks = patternPart
+      .split(",")
+      .map((value) => Number(value))
+      .filter((value): value is RecurringLeaveWeek => Number.isInteger(value) && value >= 1 && value <= 5);
+
+    if (weeks.length > 0) {
+      return {
+        weekday,
+        weeks: [...new Set(weeks)].sort((left, right) => left - right) as RecurringLeaveWeek[],
+      };
+    }
   }
 
   return null;
@@ -73,12 +98,14 @@ function parseRecurringRule(label: string | null): RecurringLeaveRuleInput | nul
 export async function getAttendanceSettingsForUser(userId: string): Promise<AttendanceSettingsPayload> {
   const admin = createSupabaseAdminClient();
   const start = getRangeStart().toISOString();
+  const end = getRangeEnd().toISOString();
 
   const { data, error } = await admin
     .from("attendance_logs")
     .select("id, event_type, event_time, leave_category, event_label")
     .eq("user_id", userId)
     .gte("event_time", start)
+    .lt("event_time", end)
     .order("event_time", { ascending: true })
     .returns<AttendanceLogRow[]>();
 

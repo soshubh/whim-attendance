@@ -6,13 +6,19 @@ import { SettingsForm } from "@/app/(product)/settings/settings-form";
 import { SetupPanelContent } from "@/app/(product)/setup/setup-panel-content";
 import type { AttendanceSettingsPayload } from "@/lib/attendance-settings";
 
-import type { DashboardPanelType, SelectedDateDetail } from "../dashboard-shared";
+import type {
+  AddRecordInput,
+  AddRecordType,
+  DashboardPanelType,
+  SelectedDateDetail,
+} from "../dashboard-shared";
 import { DashboardSurfaceCard } from "./dashboard-surface-card";
 
 type DashboardRightPanelProps = {
   activePanel: DashboardPanelType | null;
   isOpen: boolean;
   selectedDateDetail: SelectedDateDetail | null;
+  selectedDateKey: string | null;
   settingsState: AttendanceSettingsPayload;
   arrivalUrl: string;
   leaveUrl: string;
@@ -21,8 +27,27 @@ type DashboardRightPanelProps = {
   onClose: () => void;
   onCloseActivity: () => void;
   onDeleteEntry: (entryId: number) => Promise<boolean>;
+  onAddEntry: (dateKey: string, payload: AddRecordInput) => Promise<void>;
   onSettingsSaved: (settings: AttendanceSettingsPayload) => void;
 };
+
+const ADD_RECORD_TYPES: Array<{ value: AddRecordType; label: string }> = [
+  { value: "IN", label: "Check-in" },
+  { value: "OUT", label: "Check-out" },
+  { value: "LEAVE", label: "Leave" },
+  { value: "WFH", label: "WFH" },
+  { value: "WEEKLY_OFF", label: "Weekly Off" },
+];
+
+const LEAVE_CATEGORIES = [
+  "Earned Leave",
+  "Casual Leave",
+  "Sick Leave",
+  "Compensatory Off",
+  "Public Holidays",
+  "Restricted Holidays",
+  "Loss of Pay (LOP)",
+] as const;
 
 function DeleteIcon() {
   return (
@@ -42,6 +67,7 @@ export function DashboardRightPanel({
   activePanel,
   isOpen,
   selectedDateDetail,
+  selectedDateKey,
   settingsState,
   arrivalUrl,
   leaveUrl,
@@ -50,14 +76,28 @@ export function DashboardRightPanel({
   onClose,
   onCloseActivity,
   onDeleteEntry,
+  onAddEntry,
   onSettingsSaved,
 }: DashboardRightPanelProps) {
   const [pendingDeleteEntry, setPendingDeleteEntry] = useState<SelectedDateDetail["entries"][number] | null>(
     null,
   );
+  const [isAddRecordOpen, setIsAddRecordOpen] = useState(false);
+  const [addRecordType, setAddRecordType] = useState<AddRecordType>("IN");
+  const [addRecordTime, setAddRecordTime] = useState("09:00");
+  const [addRecordLeaveCategory, setAddRecordLeaveCategory] = useState<(typeof LEAVE_CATEGORIES)[number]>("Casual Leave");
+  const [addRecordLabel, setAddRecordLabel] = useState("");
+  const [addRecordError, setAddRecordError] = useState("");
+  const [isAddingRecord, setIsAddingRecord] = useState(false);
 
   useEffect(() => {
     setPendingDeleteEntry(null);
+    setIsAddRecordOpen(false);
+    setAddRecordType("IN");
+    setAddRecordTime("09:00");
+    setAddRecordLeaveCategory("Casual Leave");
+    setAddRecordLabel("");
+    setAddRecordError("");
   }, [activePanel, selectedDateDetail?.label]);
 
   async function confirmDeleteEntry() {
@@ -68,6 +108,40 @@ export function DashboardRightPanel({
     const deleted = await onDeleteEntry(pendingDeleteEntry.id);
     if (deleted) {
       setPendingDeleteEntry(null);
+    }
+  }
+
+  async function handleAddRecordSubmit() {
+    if (!selectedDateKey) {
+      setAddRecordError("Choose a date first.");
+      return;
+    }
+
+    setIsAddingRecord(true);
+    setAddRecordError("");
+
+    try {
+      await onAddEntry(selectedDateKey, {
+        type: addRecordType,
+        time: addRecordType === "IN" || addRecordType === "OUT" ? addRecordTime : undefined,
+        leaveCategory: addRecordType === "LEAVE" ? addRecordLeaveCategory : undefined,
+        label:
+          addRecordType === "LEAVE"
+            ? addRecordLabel
+            : addRecordType === "WEEKLY_OFF"
+              ? "Manual Weekly Off"
+              : undefined,
+      });
+
+      setIsAddRecordOpen(false);
+      setAddRecordType("IN");
+      setAddRecordTime("09:00");
+      setAddRecordLeaveCategory("Casual Leave");
+      setAddRecordLabel("");
+    } catch (error) {
+      setAddRecordError(error instanceof Error ? error.message : "Could not add record.");
+    } finally {
+      setIsAddingRecord(false);
     }
   }
 
@@ -131,6 +205,115 @@ export function DashboardRightPanel({
             </div>
 
             <div className="app-attendance-right-panel-body">
+              <section className="app-attendance-add-record-card">
+                <div className="app-attendance-add-record-head">
+                  <div className="app-attendance-add-record-copy">
+                    <strong>Add new record</strong>
+                    <span>Choose what you want to add for this date.</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="app-button app-button-secondary app-button-compact"
+                    onClick={() => {
+                      setIsAddRecordOpen((current) => !current);
+                      setAddRecordError("");
+                    }}
+                  >
+                    {isAddRecordOpen ? "Close" : "Add record"}
+                  </button>
+                </div>
+
+                {isAddRecordOpen ? (
+                  <div className="app-attendance-add-record-form">
+                    <div className="app-attendance-add-record-types">
+                      {ADD_RECORD_TYPES.map((type) => (
+                        <button
+                          key={type.value}
+                          type="button"
+                          className={`app-settings-toggle${addRecordType === type.value ? " is-active" : ""}`}
+                          onClick={() => setAddRecordType(type.value)}
+                          disabled={isAddingRecord}
+                        >
+                          {type.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {addRecordType === "IN" || addRecordType === "OUT" ? (
+                      <label className="app-field">
+                        <span>Time</span>
+                        <input
+                          className="app-input"
+                          type="time"
+                          value={addRecordTime}
+                          onChange={(event) => setAddRecordTime(event.target.value)}
+                          disabled={isAddingRecord}
+                        />
+                      </label>
+                    ) : null}
+
+                    {addRecordType === "LEAVE" ? (
+                      <>
+                        <label className="app-field">
+                          <span>Leave type</span>
+                          <select
+                            className="app-input"
+                            value={addRecordLeaveCategory}
+                            onChange={(event) =>
+                              setAddRecordLeaveCategory(
+                                event.target.value as (typeof LEAVE_CATEGORIES)[number],
+                              )
+                            }
+                            disabled={isAddingRecord}
+                          >
+                            {LEAVE_CATEGORIES.map((category) => (
+                              <option key={category} value={category}>
+                                {category}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+
+                        <label className="app-field">
+                          <span>Note</span>
+                          <input
+                            className="app-input"
+                            type="text"
+                            value={addRecordLabel}
+                            onChange={(event) => setAddRecordLabel(event.target.value)}
+                            placeholder="Optional note"
+                            disabled={isAddingRecord}
+                          />
+                        </label>
+                      </>
+                    ) : null}
+
+                    {addRecordError ? (
+                      <div className="app-attendance-add-record-error">{addRecordError}</div>
+                    ) : null}
+
+                    <div className="app-attendance-add-record-actions">
+                      <button
+                        type="button"
+                        className="app-button app-button-secondary app-button-compact"
+                        onClick={() => setIsAddRecordOpen(false)}
+                        disabled={isAddingRecord}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        className="app-button app-button-primary app-button-compact"
+                        onClick={handleAddRecordSubmit}
+                        disabled={isAddingRecord}
+                      >
+                        {isAddingRecord ? "Saving..." : "Save"}
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+              </section>
+
               {selectedDateDetail.entries.length ? (
                 <div
                   className={`app-attendance-sidebar-detail-list${pendingDeleteEntry ? " is-locked" : ""}`}

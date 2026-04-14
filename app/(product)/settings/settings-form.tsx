@@ -6,18 +6,27 @@ import type {
   AttendanceSettingsPayload,
   LeaveDateInput,
   RecurringLeaveRuleInput,
+  RecurringLeaveWeek,
   WfhDateInput,
 } from "@/lib/attendance-settings";
 import { useTheme } from "@/components/ui/theme-provider";
 
 const WEEKDAY_OPTIONS = [
-  { value: 0, label: "Sun" },
-  { value: 1, label: "Mon" },
-  { value: 2, label: "Tue" },
-  { value: 3, label: "Wed" },
-  { value: 4, label: "Thu" },
-  { value: 5, label: "Fri" },
-  { value: 6, label: "Sat" },
+  { value: 0, label: "Sunday" },
+  { value: 1, label: "Monday" },
+  { value: 2, label: "Tuesday" },
+  { value: 3, label: "Wednesday" },
+  { value: 4, label: "Thursday" },
+  { value: 5, label: "Friday" },
+  { value: 6, label: "Saturday" },
+] as const;
+
+const WEEK_ORDINAL_OPTIONS = [
+  { value: 1, label: "1st" },
+  { value: 2, label: "2nd" },
+  { value: 3, label: "3rd" },
+  { value: 4, label: "4th" },
+  { value: 5, label: "5th" },
 ] as const;
 
 type SettingsFormProps = {
@@ -158,8 +167,7 @@ export function SettingsForm({
             ...current,
             {
               weekday,
-              mode: "every",
-              pattern: null,
+              weeks: [1, 2, 3, 4, 5],
             } satisfies RecurringLeaveRuleInput,
           ].sort((left, right) => left.weekday - right.weekday);
 
@@ -173,28 +181,20 @@ export function SettingsForm({
     });
   }
 
-  function updateRecurringRule(
-    weekday: number,
-    next: Partial<Pick<RecurringLeaveRuleInput, "mode" | "pattern">>,
-  ) {
+  function updateRecurringRule(weekday: number, weeks: RecurringLeaveWeek[]) {
     setRecurringRules((current) => {
-      const nextRules = current.map((rule) => {
-        if (rule.weekday !== weekday) {
-          return rule;
-        }
-
-        const nextMode = next.mode ?? rule.mode;
-        const nextPattern =
-          nextMode === "alternate"
-            ? (next.pattern ?? rule.pattern ?? "second-fourth")
-            : null;
-
-        return {
-          ...rule,
-          mode: nextMode,
-          pattern: nextPattern,
-        };
-      });
+      const normalizedWeeks = [...new Set(weeks)].sort((left, right) => left - right) as RecurringLeaveWeek[];
+      const nextRules =
+        normalizedWeeks.length === 0
+          ? current.filter((rule) => rule.weekday !== weekday)
+          : current.map((rule) =>
+              rule.weekday !== weekday
+                ? rule
+                : {
+                    ...rule,
+                    weeks: normalizedWeeks,
+                  },
+            );
 
       void persistSettings({
         recurringRules: nextRules,
@@ -204,6 +204,34 @@ export function SettingsForm({
 
       return nextRules;
     });
+  }
+
+  function getRuleSummary(rule: RecurringLeaveRuleInput | null) {
+    if (!rule) {
+      return "Off";
+    }
+
+    if (rule.weeks.length === 5) {
+      return "Every week";
+    }
+
+    return WEEK_ORDINAL_OPTIONS.filter((option) => rule.weeks.includes(option.value)).map((option) => option.label).join(", ");
+  }
+
+  function isOrdinalActive(
+    rule: RecurringLeaveRuleInput | null,
+    ordinal: RecurringLeaveWeek,
+  ) {
+    return Boolean(rule?.weeks.includes(ordinal));
+  }
+
+  function toggleRecurringWeek(weekday: number, ordinal: RecurringLeaveWeek) {
+    const currentRule = recurringRules.find((rule) => rule.weekday === weekday) ?? null;
+    const nextWeeks = currentRule?.weeks.includes(ordinal)
+      ? currentRule.weeks.filter((week) => week !== ordinal)
+      : [...(currentRule?.weeks ?? []), ordinal];
+
+    updateRecurringRule(weekday, nextWeeks as RecurringLeaveWeek[]);
   }
 
   if (loading) {
@@ -218,9 +246,6 @@ export function SettingsForm({
         <div className="app-settings-preference-row">
           <div className="app-settings-preference-copy">
             <h2 className="app-settings-section-title">Dark mode</h2>
-            <p className="app-copy app-settings-preference-hint">
-              Switch the dashboard appearance.
-            </p>
           </div>
           <button
             type="button"
@@ -240,10 +265,26 @@ export function SettingsForm({
 
       <section className="app-settings-block">
         <div className="app-settings-section-copy">
-          <h2 className="app-settings-section-title">Weekly off days</h2>
-          <p className="app-copy app-settings-preference-hint">
-            Pick the days you&apos;re off each week.
-          </p>
+          <div className="app-settings-section-heading-row">
+            <h2 className="app-settings-section-title">Weekly off days</h2>
+            <div className="app-settings-info">
+              <button
+                type="button"
+                className="app-settings-info-button"
+                aria-label="Weekly off days info"
+                aria-describedby="weekly-off-days-info"
+              >
+                i
+              </button>
+              <div
+                className="app-settings-info-popover"
+                id="weekly-off-days-info"
+                role="tooltip"
+              >
+                Pick the days you&apos;re off each week.
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="app-settings-weekday-list">
@@ -253,10 +294,17 @@ export function SettingsForm({
             const dayLabel = weekday.label;
 
             return (
-              <div className="app-settings-weekday-item" key={weekday.value}>
-                <div className="app-settings-preference-row app-settings-preference-row-weekday">
-                  <div className="app-settings-preference-copy">
-                    <h3 className="app-settings-day-title">{dayLabel}</h3>
+              <div
+                className={`app-settings-weekday-item${rule ? " is-active" : ""}`}
+                key={weekday.value}
+              >
+                <div className="app-settings-weekday-head">
+                  <div className="app-settings-weekday-status" aria-hidden="true" />
+                  <div className="app-settings-preference-copy app-settings-preference-copy-weekday">
+                    <div className="app-settings-weekday-copy-line">
+                      <h3 className="app-settings-day-title">{dayLabel}</h3>
+                      <span className="app-settings-day-summary">{getRuleSummary(rule)}</span>
+                    </div>
                   </div>
                   <button
                     type="button"
@@ -276,60 +324,20 @@ export function SettingsForm({
                 {rule ? (
                   <div className="app-settings-rule-card">
                     <div className="app-settings-rule-options">
-                      <button
-                        type="button"
-                        className={`app-settings-toggle${rule.mode === "every" ? " is-active" : ""}`}
-                        onClick={() =>
-                          updateRecurringRule(rule.weekday, { mode: "every" })
-                        }
-                        disabled={saving}
-                      >
-                        Every
-                      </button>
-                      <button
-                        type="button"
-                        className={`app-settings-toggle${rule.mode === "alternate" ? " is-active" : ""}`}
-                        onClick={() =>
-                          updateRecurringRule(rule.weekday, { mode: "alternate" })
-                        }
-                        disabled={saving}
-                      >
-                        Alternate
-                      </button>
+                      {WEEK_ORDINAL_OPTIONS.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          className={`app-settings-toggle${
+                            isOrdinalActive(rule, option.value) ? " is-active" : ""
+                          }`}
+                          onClick={() => toggleRecurringWeek(rule.weekday, option.value)}
+                          disabled={saving}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
                     </div>
-
-                    {rule.mode === "alternate" ? (
-                      <div className="app-settings-rule-options">
-                        <button
-                          type="button"
-                          className={`app-settings-toggle${
-                            rule.pattern === "first-third" ? " is-active" : ""
-                          }`}
-                          onClick={() =>
-                            updateRecurringRule(rule.weekday, {
-                              pattern: "first-third",
-                            })
-                          }
-                          disabled={saving}
-                        >
-                          1st & 3rd
-                        </button>
-                        <button
-                          type="button"
-                          className={`app-settings-toggle${
-                            rule.pattern === "second-fourth" ? " is-active" : ""
-                          }`}
-                          onClick={() =>
-                            updateRecurringRule(rule.weekday, {
-                              pattern: "second-fourth",
-                            })
-                          }
-                          disabled={saving}
-                        >
-                          2nd & 4th
-                        </button>
-                      </div>
-                    ) : null}
                   </div>
                 ) : null}
               </div>

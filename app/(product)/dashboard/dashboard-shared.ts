@@ -60,3 +60,12 @@ export type SelectedDateDetail = {
   label: string;
   entries: SelectedDateEntry[];
 };
+
+export type AddRecordType = "IN" | "OUT" | "LEAVE" | "WFH" | "WEEKLY_OFF";
+
+export type AddRecordInput = {
+  type: AddRecordType;
+  time?: string;
+  leaveCategory?: string;
+  label?: string;
+};

@@ -49,19 +49,51 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const unauthorized = await assertAdminSession();
-  if (unauthorized) return unauthorized;
-
   const body = await request.json().catch(() => null);
   if (!body || typeof body.eventType !== "string" || typeof body.eventTime !== "string") {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  if (!["IN", "OUT"].includes(body.eventType)) {
+  if (!["IN", "OUT", "LEAVE", "WFH"].includes(body.eventType)) {
     return NextResponse.json({ error: "Invalid event type" }, { status: 400 });
   }
 
   try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const insertPayload = {
+        user_id: user.id,
+        event_type: body.eventType,
+        event_time: body.eventTime,
+        leave_category:
+          body.eventType === "LEAVE" && typeof body.leaveCategory === "string"
+            ? body.leaveCategory
+            : null,
+        event_label: typeof body.eventLabel === "string" && body.eventLabel.trim()
+          ? body.eventLabel.trim()
+          : null,
+      };
+
+      const { data, error } = await supabase
+        .from("attendance_logs")
+        .insert(insertPayload)
+        .select("id, event_type, event_time, leave_category, event_label")
+        .single();
+
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+
+      return NextResponse.json({ log: data });
+    }
+
+    const unauthorized = await assertAdminSession();
+    if (unauthorized) return unauthorized;
+
     const inserted = await supabaseRequest(`${TABLES.logs}`, {
       method: "POST",
       headers: {
@@ -71,6 +103,14 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         [COLUMNS.eventTime]: body.eventTime,
         [COLUMNS.eventType]: body.eventType,
+        [COLUMNS.leaveCategory]:
+          body.eventType === "LEAVE" && typeof body.leaveCategory === "string"
+            ? body.leaveCategory
+            : null,
+        [COLUMNS.eventLabel]:
+          typeof body.eventLabel === "string" && body.eventLabel.trim()
+            ? body.eventLabel.trim()
+            : null,
       }),
     });
 

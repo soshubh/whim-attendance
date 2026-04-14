@@ -22,13 +22,11 @@ type WfhDateInput = {
   date: string;
 };
 
-type RecurringLeaveMode = "every" | "alternate";
-type AlternatePattern = "first-third" | "second-fourth";
+type RecurringLeaveWeek = 1 | 2 | 3 | 4 | 5;
 
 type RecurringLeaveRuleInput = {
   weekday: number;
-  mode: RecurringLeaveMode;
-  pattern?: AlternatePattern | null;
+  weeks: RecurringLeaveWeek[];
 };
 
 type SettingsBody = {
@@ -38,7 +36,8 @@ type SettingsBody = {
 };
 
 const AUTO_RECURRING_PREFIX = "AUTO_WEEKLY_OFF:RULE:";
-const RANGE_MONTHS = 18;
+const RANGE_MONTHS_BACK = 24;
+const RANGE_MONTHS_FORWARD = 24;
 const LEAVE_CATEGORIES = [
   "Weekly Off",
   "Earned Leave",
@@ -63,11 +62,11 @@ function toDateKey(date: Date) {
 
 function getRangeStart() {
   const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1);
+  return new Date(now.getFullYear(), now.getMonth() - RANGE_MONTHS_BACK, 1);
 }
 
 function getRangeEnd(start: Date) {
-  return new Date(start.getFullYear(), start.getMonth() + RANGE_MONTHS, 1);
+  return new Date(start.getFullYear(), start.getMonth() + RANGE_MONTHS_BACK + RANGE_MONTHS_FORWARD + 1, 1);
 }
 
 function getWeekNumberInMonth(date: Date) {
@@ -75,11 +74,7 @@ function getWeekNumberInMonth(date: Date) {
 }
 
 function getRecurringLabel(rule: RecurringLeaveRuleInput) {
-  if (rule.mode === "every") {
-    return `${AUTO_RECURRING_PREFIX}${rule.weekday}:every`;
-  }
-
-  return `${AUTO_RECURRING_PREFIX}${rule.weekday}:alternate:${rule.pattern}`;
+  return `${AUTO_RECURRING_PREFIX}${rule.weekday}:weeks:${rule.weeks.join(",")}`;
 }
 
 function doesRuleMatchDate(date: Date, rule: RecurringLeaveRuleInput) {
@@ -87,17 +82,8 @@ function doesRuleMatchDate(date: Date, rule: RecurringLeaveRuleInput) {
     return false;
   }
 
-  if (rule.mode === "every") {
-    return true;
-  }
-
   const weekNumber = getWeekNumberInMonth(date);
-
-  if (rule.pattern === "first-third") {
-    return weekNumber === 1 || weekNumber === 3;
-  }
-
-  return weekNumber === 2 || weekNumber === 4;
+  return rule.weeks.includes(weekNumber as RecurringLeaveWeek);
 }
 
 function getRecurringLeaveDates(rules: RecurringLeaveRuleInput[]) {
@@ -121,14 +107,13 @@ function getRecurringLeaveDates(rules: RecurringLeaveRuleInput[]) {
 }
 
 function normalizeRecurringRules(value: unknown[]) {
-  return [...new Set(value)]
+  return value
     .filter((item): item is RecurringLeaveRuleInput => {
       if (!item || typeof item !== "object") return false;
 
       const record = item as Record<string, unknown>;
       const weekday = record.weekday;
-      const mode = record.mode;
-      const pattern = record.pattern;
+      const weeks = record.weeks;
 
       if (
         typeof weekday !== "number" ||
@@ -139,20 +124,21 @@ function normalizeRecurringRules(value: unknown[]) {
         return false;
       }
 
-      if (mode !== "every" && mode !== "alternate") {
+      if (!Array.isArray(weeks) || weeks.length === 0) {
         return false;
       }
 
-      if (mode === "alternate") {
-        return pattern === "first-third" || pattern === "second-fourth";
-      }
-
-      return pattern === null || typeof pattern === "undefined";
+      return weeks.every(
+        (week) =>
+          typeof week === "number" &&
+          Number.isInteger(week) &&
+          week >= 1 &&
+          week <= 5,
+      );
     })
     .map((item) => ({
       weekday: item.weekday,
-      mode: item.mode,
-      pattern: item.mode === "alternate" ? item.pattern ?? "second-fourth" : null,
+      weeks: [...new Set(item.weeks)].sort((left, right) => left - right) as RecurringLeaveWeek[],
     }))
     .sort((left, right) => left.weekday - right.weekday)
     .filter(
@@ -286,7 +272,10 @@ export async function POST(request: Request) {
 
   const recurringLeaveRows =
     existingRows?.filter(
-      (row) => row.event_type === "LEAVE" && isRecurringLabel(row.event_label),
+      (row) =>
+        row.event_type === "LEAVE" &&
+        row.leave_category === "Weekly Off" &&
+        (isRecurringLabel(row.event_label) || !row.event_label),
     ) ?? [];
   const explicitLeaveRows =
     existingRows?.filter(

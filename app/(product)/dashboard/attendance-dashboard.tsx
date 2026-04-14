@@ -9,6 +9,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import { SettingsForm } from "@/app/(product)/settings/settings-form";
 import { SetupPanelContent } from "@/app/(product)/setup/setup-panel-content";
 import type {
+  AddRecordInput,
   CalendarBadge,
   CalendarCell,
   DashboardAttendanceLog,
@@ -34,13 +35,9 @@ type LeaveCategory =
   | "Restricted Holidays"
   | "Loss of Pay (LOP)";
 
-type RecurringLeaveMode = "every" | "alternate";
-type AlternatePattern = "first-third" | "second-fourth";
-
 type RecurringLeaveRule = {
   weekday: number;
-  mode: RecurringLeaveMode;
-  pattern: AlternatePattern | null;
+  weeks: Array<1 | 2 | 3 | 4 | 5>;
 };
 
 type LeaveDateInput = {
@@ -169,6 +166,13 @@ function isWeeklyOffLog(log: DashboardAttendanceLog) {
   return log.event_type === "LEAVE" && log.leave_category === "Weekly Off";
 }
 
+function isAutoWeeklyOffLog(log: DashboardAttendanceLog) {
+  return (
+    isWeeklyOffLog(log) &&
+    (!log.event_label || log.event_label.startsWith("AUTO_WEEKLY_OFF:"))
+  );
+}
+
 function getPresentEntry(log: DashboardAttendanceLog) {
   if (log.event_type === "IN") {
     return {
@@ -202,7 +206,7 @@ function getSelectedDateEntry(log: DashboardAttendanceLog) {
     return {
       tone: "weekoff" as const,
       title: "Leave",
-      meta: "Weekly Off",
+      meta: log.event_label && !log.event_label.startsWith("AUTO_") ? log.event_label : "Weekly Off",
     };
   }
 
@@ -513,6 +517,8 @@ export function AttendanceDashboard({
     setSettingsState(nextSettings);
 
     startTransition(async () => {
+      monthCacheRef.current.clear();
+
       const nextLogs = await fetchMonthLogs(monthKey);
 
       if (!nextLogs) {
@@ -521,6 +527,12 @@ export function AttendanceDashboard({
 
       setLogs(nextLogs);
       setSelectedDateKey((current) => (current?.startsWith(monthKey) ? current : null));
+
+      const previousMonthKey = getNextMonthKey(monthKey, -1);
+      const nextMonthKey = getNextMonthKey(monthKey, 1);
+
+      void fetchMonthLogs(previousMonthKey);
+      void fetchMonthLogs(nextMonthKey);
     });
   }
 
@@ -563,6 +575,55 @@ export function AttendanceDashboard({
     } finally {
       setDeletingEntryId(null);
     }
+  }
+
+  async function handleAddEntry(dateKey: string, payload: AddRecordInput) {
+    const eventTime =
+      payload.type === "IN" || payload.type === "OUT"
+        ? `${dateKey}T${payload.time ?? "09:00"}:00`
+        : `${dateKey}T00:00:00`;
+
+    const eventType = payload.type === "WEEKLY_OFF" ? "LEAVE" : payload.type;
+    const leaveCategory =
+      payload.type === "LEAVE"
+        ? payload.leaveCategory ?? "Casual Leave"
+        : payload.type === "WEEKLY_OFF"
+          ? "Weekly Off"
+          : null;
+    const eventLabel =
+      payload.type === "WEEKLY_OFF"
+        ? "Manual Weekly Off"
+        : payload.type === "LEAVE"
+          ? payload.label?.trim() || null
+          : null;
+
+    const response = await fetch("/api/attendance", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        eventType,
+        eventTime,
+        leaveCategory,
+        eventLabel,
+      }),
+    });
+
+    const responsePayload = (await response.json().catch(() => ({}))) as { error?: string };
+
+    if (!response.ok) {
+      throw new Error(responsePayload.error ?? "Could not add record.");
+    }
+
+    monthCacheRef.current.delete(monthKey);
+    const nextLogs = await fetchMonthLogs(monthKey);
+    if (nextLogs) {
+      setLogs(nextLogs);
+      setSelectedDateKey((current) => (current?.startsWith(monthKey) ? current : null));
+    }
+
+    await refreshSettingsState();
   }
 
   function openQuickAction(action: QuickActionType) {
@@ -976,7 +1037,7 @@ export function AttendanceDashboard({
       return [
         {
           id: log.id,
-          deletable: !isWeeklyOffLog(log),
+          deletable: !isAutoWeeklyOffLog(log),
           ...getSelectedDateEntry(log),
         },
       ];
@@ -1057,6 +1118,7 @@ export function AttendanceDashboard({
             activePanel={sidePanel}
             isOpen={Boolean(sidePanel && isRightPanelOpen)}
             selectedDateDetail={selectedDateDetail}
+            selectedDateKey={selectedDateKey}
             settingsState={settingsState}
             arrivalUrl={arrivalUrl}
             leaveUrl={leaveUrl}
@@ -1069,6 +1131,7 @@ export function AttendanceDashboard({
               setSelectedDateKey(null);
             }}
             onDeleteEntry={handleDeleteEntry}
+            onAddEntry={handleAddEntry}
             onSettingsSaved={handleSettingsSaved}
           />
         </div>
