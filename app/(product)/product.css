@@ -1482,7 +1482,7 @@ select {
 
 .app-attendance-sidebar-detail-item.is-weekoff {
   background: var(--foundation-primary-50);
-  color: var(--foundation-primary-600);
+  color: var(--foundation-primary-200);
 }
 
 .app-attendance-sidebar-detail-item.is-wfh {
