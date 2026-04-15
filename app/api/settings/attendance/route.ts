@@ -69,7 +69,7 @@ function getRangeEnd(start: Date) {
   return new Date(start.getFullYear(), start.getMonth() + RANGE_MONTHS_BACK + RANGE_MONTHS_FORWARD + 1, 1);
 }
 
-function getWeekNumberInMonth(date: Date) {
+function getWeekdayOccurrenceInMonth(date: Date) {
   return Math.floor((date.getDate() - 1) / 7) + 1;
 }
 
@@ -82,8 +82,8 @@ function doesRuleMatchDate(date: Date, rule: RecurringLeaveRuleInput) {
     return false;
   }
 
-  const weekNumber = getWeekNumberInMonth(date);
-  return rule.weeks.includes(weekNumber as RecurringLeaveWeek);
+  const weekdayOccurrence = getWeekdayOccurrenceInMonth(date);
+  return rule.weeks.includes(weekdayOccurrence as RecurringLeaveWeek);
 }
 
 function getRecurringLeaveDates(rules: RecurringLeaveRuleInput[]) {

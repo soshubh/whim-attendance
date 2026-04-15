@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type {
   AttendanceSettingsPayload,
   LeaveDateInput,
@@ -119,7 +119,10 @@ export function SettingsForm({
     };
   }, [initialSettings]);
 
-  async function persistSettings(nextSettings: AttendanceSettingsPayload) {
+  async function persistSettings(
+    nextSettings: AttendanceSettingsPayload,
+    previousSettings: AttendanceSettingsPayload,
+  ) {
     const requestId = saveRequestIdRef.current + 1;
     saveRequestIdRef.current = requestId;
 
@@ -127,6 +130,8 @@ export function SettingsForm({
       setSaving(true);
       setError("");
     }
+
+    onSettingsSaved?.(nextSettings);
 
     const response = await fetch("/api/settings/attendance", {
       method: "POST",
@@ -142,13 +147,12 @@ export function SettingsForm({
 
     if (!response.ok) {
       if (isMountedRef.current && saveRequestIdRef.current === requestId) {
+        onSettingsSaved?.(previousSettings);
         setError(payload.error ?? "Could not save settings.");
         setSaving(false);
       }
       return;
     }
-
-    onSettingsSaved?.(nextSettings);
 
     if (!isMountedRef.current || saveRequestIdRef.current !== requestId) {
       return;
@@ -158,52 +162,64 @@ export function SettingsForm({
   }
 
   function toggleWeekday(weekday: number) {
-    setRecurringRules((current) => {
-      const exists = current.some((rule) => rule.weekday === weekday);
+    const previousRules = recurringRules;
+    const exists = previousRules.some((rule) => rule.weekday === weekday);
 
-      const nextRules = exists
-        ? current.filter((rule) => rule.weekday !== weekday)
-        : [
-            ...current,
-            {
-              weekday,
-              weeks: [1, 2, 3, 4, 5],
-            } satisfies RecurringLeaveRuleInput,
-          ].sort((left, right) => left.weekday - right.weekday);
+    const nextRules = exists
+      ? previousRules.filter((rule) => rule.weekday !== weekday)
+      : [
+          ...previousRules,
+          {
+            weekday,
+            weeks: [1, 2, 3, 4, 5],
+          } satisfies RecurringLeaveRuleInput,
+        ].sort((left, right) => left.weekday - right.weekday);
 
-      void persistSettings({
+    setRecurringRules(nextRules);
+    void persistSettings(
+      {
         recurringRules: nextRules,
         leaveDates,
         wfhDates,
-      });
-
-      return nextRules;
-    });
+      },
+      {
+        recurringRules: previousRules,
+        leaveDates,
+        wfhDates,
+      },
+    );
   }
 
   function updateRecurringRule(weekday: number, weeks: RecurringLeaveWeek[]) {
-    setRecurringRules((current) => {
-      const normalizedWeeks = [...new Set(weeks)].sort((left, right) => left - right) as RecurringLeaveWeek[];
-      const nextRules =
-        normalizedWeeks.length === 0
-          ? current.filter((rule) => rule.weekday !== weekday)
-          : current.map((rule) =>
-              rule.weekday !== weekday
-                ? rule
-                : {
-                    ...rule,
-                    weeks: normalizedWeeks,
-                  },
-            );
+    const previousRules = recurringRules;
+    const normalizedWeeks = [...new Set(weeks)].sort(
+      (left, right) => left - right,
+    ) as RecurringLeaveWeek[];
+    const nextRules =
+      normalizedWeeks.length === 0
+        ? previousRules.filter((rule) => rule.weekday !== weekday)
+        : previousRules.map((rule) =>
+            rule.weekday !== weekday
+              ? rule
+              : {
+                  ...rule,
+                  weeks: normalizedWeeks,
+                },
+          );
 
-      void persistSettings({
+    setRecurringRules(nextRules);
+    void persistSettings(
+      {
         recurringRules: nextRules,
         leaveDates,
         wfhDates,
-      });
-
-      return nextRules;
-    });
+      },
+      {
+        recurringRules: previousRules,
+        leaveDates,
+        wfhDates,
+      },
+    );
   }
 
   function getRuleSummary(rule: RecurringLeaveRuleInput | null) {
@@ -215,7 +231,11 @@ export function SettingsForm({
       return "Every week";
     }
 
-    return WEEK_ORDINAL_OPTIONS.filter((option) => rule.weeks.includes(option.value)).map((option) => option.label).join(", ");
+    return WEEK_ORDINAL_OPTIONS.filter((option) =>
+      rule.weeks.includes(option.value),
+    )
+      .map((option) => option.label)
+      .join(", ");
   }
 
   function isOrdinalActive(
@@ -226,12 +246,26 @@ export function SettingsForm({
   }
 
   function toggleRecurringWeek(weekday: number, ordinal: RecurringLeaveWeek) {
-    const currentRule = recurringRules.find((rule) => rule.weekday === weekday) ?? null;
+    const currentRule =
+      recurringRules.find((rule) => rule.weekday === weekday) ?? null;
     const nextWeeks = currentRule?.weeks.includes(ordinal)
       ? currentRule.weeks.filter((week) => week !== ordinal)
       : [...(currentRule?.weeks ?? []), ordinal];
 
     updateRecurringRule(weekday, nextWeeks as RecurringLeaveWeek[]);
+  }
+
+  function handleRecurringWeekKeyDown(
+    event: KeyboardEvent<HTMLSpanElement>,
+    weekday: number,
+    ordinal: RecurringLeaveWeek,
+  ) {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    event.preventDefault();
+    toggleRecurringWeek(weekday, ordinal);
   }
 
   if (loading) {
@@ -290,7 +324,9 @@ export function SettingsForm({
         <div className="app-settings-weekday-list">
           {WEEKDAY_OPTIONS.map((weekday) => {
             const rule =
-              recurringRules.find((currentRule) => currentRule.weekday === weekday.value) ?? null;
+              recurringRules.find(
+                (currentRule) => currentRule.weekday === weekday.value,
+              ) ?? null;
             const dayLabel = weekday.label;
 
             return (
@@ -299,11 +335,12 @@ export function SettingsForm({
                 key={weekday.value}
               >
                 <div className="app-settings-weekday-head">
-                  <div className="app-settings-weekday-status" aria-hidden="true" />
                   <div className="app-settings-preference-copy app-settings-preference-copy-weekday">
                     <div className="app-settings-weekday-copy-line">
                       <h3 className="app-settings-day-title">{dayLabel}</h3>
-                      <span className="app-settings-day-summary">{getRuleSummary(rule)}</span>
+                      <span className="app-settings-day-summary">
+                        {getRuleSummary(rule)}
+                      </span>
                     </div>
                   </div>
                   <button
@@ -315,29 +352,42 @@ export function SettingsForm({
                     aria-checked={Boolean(rule)}
                     aria-label={`Toggle ${dayLabel} weekly off`}
                   >
-                    <span className="app-settings-switch-track" aria-hidden="true">
+                    <span
+                      className="app-settings-switch-track"
+                      aria-hidden="true"
+                    >
                       <span className="app-settings-switch-thumb" />
                     </span>
                   </button>
                 </div>
 
                 {rule ? (
-                  <div className="app-settings-rule-card">
-                    <div className="app-settings-rule-options">
-                      {WEEK_ORDINAL_OPTIONS.map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          className={`app-settings-toggle${
-                            isOrdinalActive(rule, option.value) ? " is-active" : ""
-                          }`}
-                          onClick={() => toggleRecurringWeek(rule.weekday, option.value)}
-                          disabled={saving}
-                        >
-                          {option.label}
-                        </button>
-                      ))}
-                    </div>
+                  <div className="app-settings-rule-options">
+                    {WEEK_ORDINAL_OPTIONS.map((option) => (
+                      <span
+                        key={option.value}
+                        className="app-week-pill"
+                        onClick={
+                          saving
+                            ? undefined
+                            : () =>
+                                toggleRecurringWeek(rule.weekday, option.value)
+                        }
+                        onKeyDown={(event) =>
+                          handleRecurringWeekKeyDown(
+                            event,
+                            rule.weekday,
+                            option.value,
+                          )
+                        }
+                        role="button"
+                        tabIndex={saving ? -1 : 0}
+                        aria-disabled={saving}
+                        aria-pressed={isOrdinalActive(rule, option.value)}
+                      >
+                        {option.label}
+                      </span>
+                    ))}
                   </div>
                 ) : null}
               </div>
@@ -349,7 +399,10 @@ export function SettingsForm({
       {hasSecondaryFooterAction ? (
         <div className="app-inline-actions app-settings-actions">
           {showBackLink ? (
-            <Link className="app-button app-button-secondary" href="/attendance">
+            <Link
+              className="app-button app-button-secondary"
+              href="/attendance"
+            >
               Back to dashboard
             </Link>
           ) : logoutHref ? (

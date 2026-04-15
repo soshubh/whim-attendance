@@ -94,7 +94,7 @@ export function ShortcutLinkCard({
     <div className="app-shortcut-link-card">
       {showLabel ? (
         <div className="app-shortcut-link-header">
-          <span className="app-eyebrow">{label}</span>
+          <strong className="app-shortcut-link-title">{label}</strong>
           {copyButtonPlacement === "header" ? (
             <button
               className={`app-shortcut-code-copy app-shortcut-code-copy-header${copyState === "copied" ? " is-success" : ""}`}

@@ -89,6 +89,11 @@ function getDateKeyFromTimestamp(timestamp: string) {
   return timestamp.slice(0, 10);
 }
 
+function getDateFromDateKey(dateKey: string) {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
 function getDisplayDate(year: number, month: number, day: number) {
   return new Date(Date.UTC(year, month - 1, day, 12));
 }
@@ -171,6 +176,21 @@ function isAutoWeeklyOffLog(log: DashboardAttendanceLog) {
     isWeeklyOffLog(log) &&
     (!log.event_label || log.event_label.startsWith("AUTO_WEEKLY_OFF:"))
   );
+}
+
+function getWeekdayOccurrenceInMonth(date: Date) {
+  return Math.floor((date.getDate() - 1) / 7) + 1;
+}
+
+function doesRecurringRuleMatchDate(dateKey: string, rule: RecurringLeaveRule) {
+  const date = getDateFromDateKey(dateKey);
+
+  if (date.getDay() !== rule.weekday) {
+    return false;
+  }
+
+  const weekdayOccurrence = getWeekdayOccurrenceInMonth(date);
+  return rule.weeks.includes(weekdayOccurrence as RecurringLeaveRule["weeks"][number]);
 }
 
 function getPresentEntry(log: DashboardAttendanceLog) {
@@ -288,6 +308,7 @@ export function AttendanceDashboard({
   const [deletingEntryId, setDeletingEntryId] = useState<number | null>(null);
   const [deleteEntryError, setDeleteEntryError] = useState("");
   const [settingsState, setSettingsState] = useState(initialSettings);
+  const [hasHydrated, setHasHydrated] = useState(false);
   const monthCacheRef = useRef(new Map<string, DashboardAttendanceLog[]>(Object.entries(initialMonthCache)));
   const refreshTimeoutRef = useRef<number | null>(null);
 
@@ -409,6 +430,10 @@ export function AttendanceDashboard({
       void fetchMonthLogs(nextMonthKey);
     }
   }, [monthKey]);
+
+  useEffect(() => {
+    setHasHydrated(true);
+  }, []);
 
   useEffect(() => {
     function updateLocalClock() {
@@ -897,6 +922,58 @@ export function AttendanceDashboard({
     }));
   }, [logs]);
 
+  const explicitLeaveDateSet = useMemo(
+    () => new Set(settingsState.leaveDates.map((item) => item.date)),
+    [settingsState.leaveDates],
+  );
+
+  const wfhDateSet = useMemo(
+    () => new Set(settingsState.wfhDates.map((item) => item.date)),
+    [settingsState.wfhDates],
+  );
+
+  const derivedWeeklyOffDateSet = useMemo(() => {
+    if (!hasHydrated) {
+      return new Set<string>();
+    }
+
+    const [year, month] = monthKey.split("-").map(Number);
+    const totalDays = new Date(year, month, 0).getDate();
+    const nextDateKeys = new Set<string>();
+
+    for (let day = 1; day <= totalDays; day += 1) {
+      const date = new Date(year, month - 1, day);
+      const dateKey = getDateKey(date);
+      const dayLogs = logsByDate.get(dateKey) ?? [];
+      const hasPresent = dayLogs.some(
+        (log) => log.event_type === "IN" || log.event_type === "OUT",
+      );
+      const hasExplicitLeave = explicitLeaveDateSet.has(dateKey);
+      const hasWfh = wfhDateSet.has(dateKey);
+
+      if (hasPresent || hasExplicitLeave || hasWfh) {
+        continue;
+      }
+
+      if (
+        settingsState.recurringRules.some((rule) =>
+          doesRecurringRuleMatchDate(dateKey, rule),
+        )
+      ) {
+        nextDateKeys.add(dateKey);
+      }
+    }
+
+    return nextDateKeys;
+  }, [
+    hasHydrated,
+    explicitLeaveDateSet,
+    logsByDate,
+    monthKey,
+    settingsState.recurringRules,
+    wfhDateSet,
+  ]);
+
   const { calendarCells, calendarRowCount } = useMemo(() => {
     const [year, month] = monthKey.split("-").map(Number);
     const firstDay = new Date(year, month - 1, 1);
@@ -922,11 +999,16 @@ export function AttendanceDashboard({
       }
 
       const dateKey = getDateKey(date);
-      const dayLogs = logsByDate.get(dateKey) ?? [];
+      const sourceDayLogs = logsByDate.get(dateKey) ?? [];
+      const dayLogs = hasHydrated
+        ? sourceDayLogs.filter((log) => !isAutoWeeklyOffLog(log))
+        : sourceDayLogs;
       const hasPresent = dayLogs.some(
         (log) => log.event_type === "IN" || log.event_type === "OUT",
       );
-      const hasWeeklyOff = dayLogs.some((log) => isWeeklyOffLog(log));
+      const hasWeeklyOff =
+        dayLogs.some((log) => isWeeklyOffLog(log)) ||
+        (hasHydrated && derivedWeeklyOffDateSet.has(dateKey));
       const hasLeave = dayLogs.some(
         (log) => log.event_type === "LEAVE" && !isWeeklyOffLog(log),
       );
@@ -998,14 +1080,17 @@ export function AttendanceDashboard({
       calendarCells: cells,
       calendarRowCount: totalGridCells / 7,
     };
-  }, [logsByDate, monthKey, todayKey]);
+  }, [derivedWeeklyOffDateSet, hasHydrated, logsByDate, monthKey, todayKey]);
 
   const selectedDateDetail = useMemo<SelectedDateDetail | null>(() => {
     if (!selectedDateKey) {
       return null;
     }
 
-    const dayLogs = logsByDate.get(selectedDateKey) ?? [];
+    const sourceDayLogs = logsByDate.get(selectedDateKey) ?? [];
+    const dayLogs = hasHydrated
+      ? sourceDayLogs.filter((log) => !isAutoWeeklyOffLog(log))
+      : sourceDayLogs;
     const seenAllDayEntries = new Set<string>();
     const entries = dayLogs.flatMap((log) => {
       if (
@@ -1043,11 +1128,25 @@ export function AttendanceDashboard({
       ];
     });
 
+    if (
+      hasHydrated &&
+      derivedWeeklyOffDateSet.has(selectedDateKey) &&
+      !entries.some((entry) => entry.tone === "weekoff")
+    ) {
+      entries.unshift({
+        id: Number.MIN_SAFE_INTEGER,
+        deletable: false,
+        tone: "weekoff",
+        title: "Leave",
+        meta: "Weekly Off",
+      });
+    }
+
     return {
       label: getLongDateLabel(selectedDateKey),
       entries,
     };
-  }, [logsByDate, selectedDateKey]);
+  }, [derivedWeeklyOffDateSet, hasHydrated, logsByDate, selectedDateKey]);
 
   const mobileHeaderPanel =
     isMobileViewport && (renderedPanel === "settings" || renderedPanel === "setup")

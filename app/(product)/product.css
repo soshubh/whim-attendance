@@ -493,7 +493,7 @@ select {
 
 .app-settings-day-title {
   font-size: var(--foundation-type-16);
-  font-weight: var(--foundation-weight-semibold);
+  font-weight: var(--foundation-weight-regular);
 }
 
 .app-settings-day-summary {
@@ -508,12 +508,6 @@ select {
   font-weight: var(--foundation-weight-light);
 }
 
-.app-settings-chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--foundation-space-12);
-}
-
 .app-settings-weekday-list {
   display: grid;
   gap: var(--foundation-space-12);
@@ -522,10 +516,11 @@ select {
 .app-settings-weekday-item {
   display: grid;
   gap: var(--foundation-space-12);
-  padding: var(--foundation-space-20);
+  padding: var(--foundation-space-16);
   border: 1px solid var(--foundation-stroke-neutral);
   border-radius: var(--foundation-radius-24);
   background: var(--foundation-color-background);
+  box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
 }
 
 .app-settings-weekday-item.is-active {
@@ -534,90 +529,39 @@ select {
 
 .app-settings-weekday-head {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--foundation-space-12);
 }
 
-.app-settings-weekday-status {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--foundation-neutral-300);
-}
-
-.app-settings-weekday-item.is-active .app-settings-weekday-status {
-  background: var(--foundation-color-background-inverse);
-}
-
-.app-settings-rule-list {
-  display: grid;
-  gap: var(--foundation-space-16);
-}
-
-.app-settings-rule-card {
-  display: grid;
-  gap: var(--foundation-space-16);
-  padding: 0 0 0 calc(12px + var(--foundation-space-12));
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-.app-settings-rule-copy {
-  display: grid;
-  gap: var(--foundation-space-4);
-}
-
-.app-settings-rule-copy strong {
-  color: var(--foundation-color-text);
-  font-size: var(--foundation-type-16);
-  font-weight: var(--foundation-weight-semibold);
-}
-
-.app-settings-rule-copy span {
-  color: var(--foundation-neutral-700);
-  font-size: var(--foundation-type-14);
-  line-height: 1.5;
-}
-
 .app-settings-rule-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--foundation-space-12);
-}
-
-.app-settings-chip,
-.app-settings-toggle {
-  min-height: 44px;
-  padding: 0 var(--foundation-space-20);
-  border: 1px solid var(--foundation-stroke-neutral);
-  border-radius: var(--foundation-radius-full);
-  background: var(--foundation-color-background);
-  cursor: pointer;
-}
-
-.app-settings-rule-card .app-settings-rule-options {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--foundation-space-12);
+  padding-top: 2px;
 }
 
-.app-settings-rule-card .app-settings-toggle {
+.app-week-pill {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  min-width: 0;
-  padding-inline: var(--foundation-space-16);
+  min-height: 40px;
+  padding: 0 var(--foundation-space-18);
+  border: 1px var(--foundation-stroke-neutral) solid;
+  border-radius: var(--foundation-radius-full);
+  background: var(--foundation-color-background);
+
+  font-size: var(--foundation-type-14);
+  font-weight: var(--foundation-weight-regular);
+
+  cursor: pointer;
 }
 
-.app-settings-chip.is-active,
-.app-settings-toggle.is-active {
-  border-color: var(--foundation-color-background-inverse);
-  background: color-mix(
-    in srgb,
-    var(--foundation-color-background) 84%,
-    var(--foundation-primary-100)
-  );
-  color: var(--foundation-primary-800);
+.app-week-pill[aria-pressed="true"] {
+  border-color: var(--foundation-stroke-primary);
+
+  background-color: var(--foundation-color-background-inverse);
+  color: var(--foundation-color-text-tertiary);
 }
 
 .app-settings-theme-options {
@@ -728,6 +672,12 @@ select {
   width: 100%;
 }
 
+.app-shortcut-link-title {
+  margin: 0;
+  font-size: var(--foundation-type-16);
+  font-weight: var(--foundation-weight-medium);
+}
+
 .app-shortcut-code-wrap {
   position: relative;
   width: 100%;
@@ -738,7 +688,7 @@ select {
   display: block;
   width: 100%;
   padding: var(--foundation-space-12);
-  padding-right: calc(var(--foundation-space-12) + 26px);
+  padding-right: var(--foundation-space-12);
   border-radius: var(--foundation-radius-16);
   color: var(--foundation-color-text-inverse);
   font-size: var(--foundation-type-14);
@@ -1211,8 +1161,6 @@ select {
 .app-attendance-right-panel-body .app-title,
 .app-attendance-right-panel-body .app-copy,
 .app-attendance-right-panel-body .app-settings-section-title,
-.app-attendance-right-panel-body .app-settings-rule-copy strong,
-.app-attendance-right-panel-body .app-settings-rule-copy span,
 .app-attendance-right-panel-body .app-settings-list-item p,
 .app-attendance-right-panel-body .app-shortcut-feedback,
 .app-attendance-right-panel-body .app-settings-status {
@@ -1512,7 +1460,6 @@ select {
 
 .app-attendance-right-panel-body .app-settings-section,
 .app-attendance-right-panel-body .app-settings-list-item,
-.app-attendance-right-panel-body .app-settings-rule-card,
 .app-attendance-right-panel-body .app-shortcut-box {
   border: 0;
   background: transparent;
@@ -1522,29 +1469,15 @@ select {
 }
 
 .app-attendance-right-panel-body .app-form,
-.app-attendance-right-panel-body .app-shortcut-box,
-.app-attendance-right-panel-body .app-settings-rule-list {
+.app-attendance-right-panel-body .app-shortcut-box {
   gap: var(--foundation-space-12);
 }
 
-.app-attendance-right-panel-body .app-settings-chip,
-.app-attendance-right-panel-body .app-settings-toggle,
 .app-attendance-right-panel-body .app-button-secondary {
   border-color: var(--foundation-stroke-primary);
   background: color-mix(
     in srgb,
     var(--foundation-color-background-inverse) 4%,
-    var(--foundation-color-background)
-  );
-  color: var(--foundation-color-text);
-}
-
-.app-attendance-right-panel-body .app-settings-chip.is-active,
-.app-attendance-right-panel-body .app-settings-toggle.is-active {
-  border-color: var(--foundation-color-text-inverse);
-  background: color-mix(
-    in srgb,
-    var(--foundation-color-background-inverse) 10%,
     var(--foundation-color-background)
   );
   color: var(--foundation-color-text);
@@ -2336,36 +2269,15 @@ select {
     border-radius: var(--foundation-radius-24);
   }
 
-  .app-dashboard-mobile-panel-inner .app-settings-rule-card {
-    gap: var(--foundation-space-12);
-    padding: 0 0 0 calc(12px + var(--foundation-space-12));
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-  }
-
   .app-dashboard-mobile-panel-inner .app-settings-rule-options {
     gap: var(--foundation-space-10);
   }
 
-  .app-dashboard-mobile-panel-inner .app-settings-toggle,
-  .app-dashboard-mobile-panel-inner .app-settings-chip,
   .app-dashboard-mobile-panel-inner .app-button-secondary {
     border-color: var(--foundation-stroke-primary);
     background: color-mix(
       in srgb,
       var(--foundation-color-background-inverse) 8%,
-      var(--foundation-color-background)
-    );
-    color: var(--foundation-color-text);
-  }
-
-  .app-dashboard-mobile-panel-inner .app-settings-toggle.is-active,
-  .app-dashboard-mobile-panel-inner .app-settings-chip.is-active {
-    border-color: var(--foundation-color-text-inverse);
-    background: color-mix(
-      in srgb,
-      var(--foundation-color-background-inverse) 16%,
       var(--foundation-color-background)
     );
     color: var(--foundation-color-text);
@@ -2585,7 +2497,7 @@ select {
   }
 
   .app-settings-rule-options {
-    flex-direction: column;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .app-shortcut-link-header {
