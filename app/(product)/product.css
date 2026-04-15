@@ -2316,20 +2316,26 @@ select {
   }
 
   .app-dashboard-mobile-panel {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: calc(100% + 10px);
-    width: 100%;
-    max-height: min(60vh, 520px);
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
+    width: auto;
+    max-height: none;
+    display: block;
+    grid-template-rows: none;
+    opacity: 0;
     margin-top: 0;
     pointer-events: none;
+    overflow: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
     border: 1px solid var(--foundation-stroke-neutral);
     border-radius: 16px;
     background: var(--foundation-color-background);
     box-shadow: none;
+    z-index: 44;
     scrollbar-width: thin;
     scrollbar-color: color-mix(
         in srgb,
@@ -2341,13 +2347,16 @@ select {
 
   .app-dashboard-mobile-panel.is-open {
     margin-top: 0;
+    opacity: 1;
     pointer-events: auto;
   }
 
   .app-dashboard-mobile-panel-inner {
     display: grid;
+    min-height: 100%;
     gap: 14px;
-    padding: 16px 14px 14px;
+    padding: 16px;
+    overflow: visible;
   }
 
   .app-dashboard-mobile-panel::-webkit-scrollbar {
