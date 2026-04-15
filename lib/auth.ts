@@ -24,6 +24,10 @@ export type ShortcutTokenRecord = {
   is_active: boolean;
 };
 
+const SHORTCUT_TOKEN_ALPHABET =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const SHORTCUT_TOKEN_LENGTH = 8;
+
 export async function ensureProfileForUser(user: User) {
   const admin = createSupabaseAdminClient();
   const fullName =
@@ -100,7 +104,15 @@ export async function requireAuthenticatedUser() {
 }
 
 export function generateShortcutToken() {
-  return `usr_tok_${crypto.randomUUID().replace(/-/g, "")}`;
+  const bytes = crypto.getRandomValues(new Uint8Array(SHORTCUT_TOKEN_LENGTH));
+
+  return Array.from(bytes, (byte) =>
+    SHORTCUT_TOKEN_ALPHABET[byte % SHORTCUT_TOKEN_ALPHABET.length] ?? "0",
+  ).join("");
+}
+
+function isShortShortcutToken(token: string) {
+  return token.length === SHORTCUT_TOKEN_LENGTH && /^[A-Za-z0-9]+$/.test(token);
 }
 
 export async function ensureShortcutTokenForUser(userId: string) {
@@ -116,27 +128,58 @@ export async function ensureShortcutTokenForUser(userId: string) {
     throw existingTokenError;
   }
 
-  if (existingToken) {
+  if (existingToken && isShortShortcutToken(existingToken.token)) {
     return existingToken;
   }
 
-  const token = generateShortcutToken();
-
-  const { data: createdToken, error: createdTokenError } = await admin
-    .from("shortcut_tokens")
-    .insert({
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const token = generateShortcutToken();
+    const tokenPayload = {
       user_id: userId,
       token,
-      is_active: true,
-    })
-    .select("token, is_active")
-    .single<ShortcutTokenRecord>();
+      is_active: existingToken?.is_active ?? true,
+    };
 
-  if (createdTokenError) {
+    if (existingToken) {
+      const { data: updatedToken, error: updatedTokenError } = await admin
+        .from("shortcut_tokens")
+        .update({
+          token,
+          is_active: existingToken.is_active,
+        })
+        .eq("user_id", userId)
+        .select("token, is_active")
+        .single<ShortcutTokenRecord>();
+
+      if (!updatedTokenError) {
+        return updatedToken;
+      }
+
+      if ((updatedTokenError as { code?: string }).code === "23505") {
+        continue;
+      }
+
+      throw updatedTokenError;
+    }
+
+    const { data: createdToken, error: createdTokenError } = await admin
+      .from("shortcut_tokens")
+      .insert(tokenPayload)
+      .select("token, is_active")
+      .single<ShortcutTokenRecord>();
+
+    if (!createdTokenError) {
+      return createdToken;
+    }
+
+    if ((createdTokenError as { code?: string }).code === "23505") {
+      continue;
+    }
+
     throw createdTokenError;
   }
 
-  return createdToken;
+  throw new Error("Could not generate a unique shortcut token.");
 }
 
 export function isOnboardingComplete(params: {

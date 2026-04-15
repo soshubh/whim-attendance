@@ -84,8 +84,8 @@ export async function AttendanceDashboardPage({ expectedHandle }: { expectedHand
   const initialMonthKey = getMonthKey(now);
   const initialMonthCache: Record<string, DashboardAttendanceLog[]> = {};
   const shortcutTokenValue = shortcutToken?.token ?? "";
-  const arrivalUrl = `${getEnv().appUrl}/api/shortcut/log?token=${shortcutTokenValue}&event=IN`;
-  const leaveUrl = `${getEnv().appUrl}/api/shortcut/log?token=${shortcutTokenValue}&event=OUT`;
+  const arrivalUrl = `${getEnv().appUrl}/i/${shortcutTokenValue}`;
+  const leaveUrl = `${getEnv().appUrl}/o/${shortcutTokenValue}`;
 
   for (let offset = -INITIAL_MONTH_WINDOW.before; offset <= INITIAL_MONTH_WINDOW.after; offset += 1) {
     const targetDate = new Date(now.getFullYear(), now.getMonth() + offset, 1);

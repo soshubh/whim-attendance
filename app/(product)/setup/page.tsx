@@ -9,8 +9,9 @@ import { SetupPanelContent } from "./setup-panel-content";
 export default async function SetupPage() {
   const user = await requireAuthenticatedUser();
   const shortcutToken = await ensureShortcutTokenForUser(user.id);
-  const arrivalUrl = `${getEnv().appUrl}/api/shortcut/log?token=${shortcutToken?.token ?? ""}&event=IN`;
-  const leaveUrl = `${getEnv().appUrl}/api/shortcut/log?token=${shortcutToken?.token ?? ""}&event=OUT`;
+  const shortcutTokenValue = shortcutToken?.token ?? "";
+  const arrivalUrl = `${getEnv().appUrl}/i/${shortcutTokenValue}`;
+  const leaveUrl = `${getEnv().appUrl}/o/${shortcutTokenValue}`;
 
   return (
     <main className="app-shell app-flow-shell">
