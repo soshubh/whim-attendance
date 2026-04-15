@@ -59,7 +59,13 @@ export function SettingsForm({
     initialSettings?.wfhDates ?? [],
   );
   const isMountedRef = useRef(true);
-  const saveRequestIdRef = useRef(0);
+  const saveInFlightRef = useRef(false);
+  const queuedSettingsRef = useRef<AttendanceSettingsPayload | null>(null);
+  const committedSettingsRef = useRef<AttendanceSettingsPayload>({
+    recurringRules: initialSettings?.recurringRules ?? [],
+    leaveDates: initialSettings?.leaveDates ?? [],
+    wfhDates: initialSettings?.wfhDates ?? [],
+  });
 
   useEffect(() => {
     return () => {
@@ -109,6 +115,11 @@ export function SettingsForm({
       setRecurringRules(payload.recurringRules ?? []);
       setLeaveDates(payload.leaveDates ?? []);
       setWfhDates(payload.wfhDates ?? []);
+      committedSettingsRef.current = {
+        recurringRules: payload.recurringRules ?? [],
+        leaveDates: payload.leaveDates ?? [],
+        wfhDates: payload.wfhDates ?? [],
+      };
       setLoading(false);
     }
 
@@ -119,19 +130,19 @@ export function SettingsForm({
     };
   }, [initialSettings]);
 
-  async function persistSettings(
-    nextSettings: AttendanceSettingsPayload,
-    previousSettings: AttendanceSettingsPayload,
-  ) {
-    const requestId = saveRequestIdRef.current + 1;
-    saveRequestIdRef.current = requestId;
+  async function flushQueuedSettings() {
+    if (saveInFlightRef.current || !queuedSettingsRef.current) {
+      return;
+    }
+
+    const nextSettings = queuedSettingsRef.current;
+    queuedSettingsRef.current = null;
+    saveInFlightRef.current = true;
 
     if (isMountedRef.current) {
       setSaving(true);
       setError("");
     }
-
-    onSettingsSaved?.(nextSettings);
 
     const response = await fetch("/api/settings/attendance", {
       method: "POST",
@@ -146,19 +157,34 @@ export function SettingsForm({
     };
 
     if (!response.ok) {
-      if (isMountedRef.current && saveRequestIdRef.current === requestId) {
-        onSettingsSaved?.(previousSettings);
+      if (isMountedRef.current && !queuedSettingsRef.current) {
+        const rollbackSettings = committedSettingsRef.current;
+        setRecurringRules(rollbackSettings.recurringRules);
+        setLeaveDates(rollbackSettings.leaveDates);
+        setWfhDates(rollbackSettings.wfhDates);
+        onSettingsSaved?.(rollbackSettings);
         setError(payload.error ?? "Could not save settings.");
-        setSaving(false);
       }
+    } else {
+      committedSettingsRef.current = nextSettings;
+    }
+
+    saveInFlightRef.current = false;
+
+    if (queuedSettingsRef.current) {
+      void flushQueuedSettings();
       return;
     }
 
-    if (!isMountedRef.current || saveRequestIdRef.current !== requestId) {
-      return;
+    if (isMountedRef.current) {
+      setSaving(false);
     }
+  }
 
-    setSaving(false);
+  function persistSettings(nextSettings: AttendanceSettingsPayload) {
+    onSettingsSaved?.(nextSettings);
+    queuedSettingsRef.current = nextSettings;
+    void flushQueuedSettings();
   }
 
   function toggleWeekday(weekday: number) {
@@ -176,18 +202,11 @@ export function SettingsForm({
         ].sort((left, right) => left.weekday - right.weekday);
 
     setRecurringRules(nextRules);
-    void persistSettings(
-      {
-        recurringRules: nextRules,
-        leaveDates,
-        wfhDates,
-      },
-      {
-        recurringRules: previousRules,
-        leaveDates,
-        wfhDates,
-      },
-    );
+    persistSettings({
+      recurringRules: nextRules,
+      leaveDates,
+      wfhDates,
+    });
   }
 
   function updateRecurringRule(weekday: number, weeks: RecurringLeaveWeek[]) {
@@ -208,18 +227,11 @@ export function SettingsForm({
           );
 
     setRecurringRules(nextRules);
-    void persistSettings(
-      {
-        recurringRules: nextRules,
-        leaveDates,
-        wfhDates,
-      },
-      {
-        recurringRules: previousRules,
-        leaveDates,
-        wfhDates,
-      },
-    );
+    persistSettings({
+      recurringRules: nextRules,
+      leaveDates,
+      wfhDates,
+    });
   }
 
   function getRuleSummary(rule: RecurringLeaveRuleInput | null) {
@@ -285,7 +297,6 @@ export function SettingsForm({
             type="button"
             className={`app-settings-switch${isDark ? " is-active" : ""}`}
             onClick={() => setTheme(isDark ? "light" : "dark")}
-            disabled={saving}
             role="switch"
             aria-checked={isDark}
             aria-label="Toggle dark mode"
@@ -347,7 +358,6 @@ export function SettingsForm({
                     type="button"
                     className={`app-settings-switch${rule ? " is-active" : ""}`}
                     onClick={() => toggleWeekday(weekday.value)}
-                    disabled={saving}
                     role="switch"
                     aria-checked={Boolean(rule)}
                     aria-label={`Toggle ${dayLabel} weekly off`}
@@ -367,11 +377,8 @@ export function SettingsForm({
                       <span
                         key={option.value}
                         className="app-week-pill"
-                        onClick={
-                          saving
-                            ? undefined
-                            : () =>
-                                toggleRecurringWeek(rule.weekday, option.value)
+                        onClick={() =>
+                          toggleRecurringWeek(rule.weekday, option.value)
                         }
                         onKeyDown={(event) =>
                           handleRecurringWeekKeyDown(
@@ -381,8 +388,7 @@ export function SettingsForm({
                           )
                         }
                         role="button"
-                        tabIndex={saving ? -1 : 0}
-                        aria-disabled={saving}
+                        tabIndex={0}
                         aria-pressed={isOrdinalActive(rule, option.value)}
                       >
                         {option.label}
