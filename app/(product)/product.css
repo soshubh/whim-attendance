@@ -1397,6 +1397,10 @@ select {
   width: 24px;
 }
 
+.app-attendance-mobile-stats-toggle {
+  display: none;
+}
+
 .app-attendance-sidebar-entry-list {
   display: grid;
   gap: var(--foundation-space-6);
@@ -2495,63 +2499,40 @@ select {
   }
 
   .app-attendance-day-badge.is-present-in {
-    background: color-mix(
-      in srgb,
-      var(--foundation-color-background-inverse) 10%,
-      var(--foundation-color-background)
-    );
-    border-color: var(--foundation-color-text-inverse);
-    color: var(--foundation-color-text-inverse);
+    background: #00b84416;
+    border-color: transparent;
+    color: #00b843;
   }
 
   .app-attendance-day-badge.is-present-out {
-    background: color-mix(
-      in srgb,
-      var(--foundation-color-text) 6%,
-      var(--foundation-color-background)
-    );
-    border-color: var(--foundation-color-text);
-    color: var(--foundation-color-text);
+    background: #f8717119;
+    border-color: transparent;
+    color: #f87171;
   }
 
   .app-attendance-day-badge.is-leave {
-    background: color-mix(
-      in srgb,
-      var(--foundation-primary-50) 68%,
-      var(--foundation-color-background)
-    );
-    border-color: var(--foundation-primary-300);
-    color: var(--foundation-primary-700);
+    background: #ffde2129;
+    border-color: transparent;
+    color: #dba400;
   }
 
   .app-attendance-day-badge.is-weekoff {
-    background: color-mix(
-      in srgb,
-      var(--foundation-primary-50) 48%,
-      var(--foundation-color-background)
-    );
-    border-color: var(--foundation-primary-200);
-    color: var(--foundation-primary-500);
+    background: var(--foundation-primary-50);
+    border-color: transparent;
+    color: var(--foundation-primary-200);
   }
 
   .app-attendance-day-badge.is-wfh {
-    background: color-mix(
-      in srgb,
-      var(--foundation-primary-50) 28%,
-      var(--foundation-color-background)
-    );
-    border-color: var(--foundation-primary-100);
-    color: var(--foundation-primary-600);
+    background: #0062ff12;
+    border-color: transparent;
+    color: #0062ff;
   }
 
   .app-attendance-day-badge.is-summary {
-    background: color-mix(
-      in srgb,
-      var(--foundation-color-background) 90%,
-      var(--foundation-color-text)
-    );
+    background: var(--foundation-neutral-100);
     border-color: var(--foundation-stroke-neutral);
     color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
+    box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
   }
 
   .app-attendance-sidebar-detail-list {
@@ -2624,6 +2605,55 @@ select {
   .app-dashboard-modal-header {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .app-attendance-mobile-stats-toggle {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--foundation-color-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: translate(-50%, 50%);
+    z-index: 1;
+  }
+
+  .app-attendance-mobile-stats-toggle-icon {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--foundation-stroke-neutral);
+    border-radius: var(--foundation-radius-full);
+    background: var(--foundation-color-background);
+    box-shadow: 0 0px 20px var(--foundation-stroke-neutral);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+  }
+
+  .app-attendance-mobile-stats-toggle.is-open .app-attendance-mobile-stats-toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .app-attendance-sidebar-card.is-compact-collapsed {
+    max-height: none;
+  }
+
+  .app-attendance-sidebar-stack.is-compact-collapsed {
+    grid-template-rows: auto;
+    gap: 0;
+  }
+
+  .app-attendance-sidebar-scroll.is-hidden {
+    display: none;
   }
 
   .app-settings-rule-options {
