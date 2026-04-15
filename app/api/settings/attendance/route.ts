@@ -282,11 +282,6 @@ export async function POST(request: Request) {
       (row) => row.event_type === "LEAVE" && !isRecurringLabel(row.event_label),
     ) ?? [];
   const explicitWfhRows = existingRows?.filter((row) => row.event_type === "WFH") ?? [];
-  const occupiedDates = new Set(
-    (existingRows ?? [])
-      .filter((row) => row.event_type === "IN" || row.event_type === "OUT")
-      .map((row) => row.event_time.slice(0, 10)),
-  );
 
   if (recurringLeaveRows.length > 0) {
     const { error } = await admin
@@ -403,7 +398,7 @@ export async function POST(request: Request) {
   const wfhDateSet = new Set(wfhDates.map((item) => item.date));
 
   const recurringRows = [...recurringDates.entries()]
-    .filter(([date]) => !occupiedDates.has(date) && !leaveDateSet.has(date) && !wfhDateSet.has(date))
+    .filter(([date]) => !leaveDateSet.has(date) && !wfhDateSet.has(date))
     .map(([date, label]) => ({
       user_id: userId,
       event_type: "LEAVE" as const,

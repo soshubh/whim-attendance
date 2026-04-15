@@ -945,13 +945,10 @@ export function AttendanceDashboard({
       const date = new Date(year, month - 1, day);
       const dateKey = getDateKey(date);
       const dayLogs = logsByDate.get(dateKey) ?? [];
-      const hasPresent = dayLogs.some(
-        (log) => log.event_type === "IN" || log.event_type === "OUT",
-      );
       const hasExplicitLeave = explicitLeaveDateSet.has(dateKey);
       const hasWfh = wfhDateSet.has(dateKey);
 
-      if (hasPresent || hasExplicitLeave || hasWfh) {
+      if (hasExplicitLeave || hasWfh) {
         continue;
       }
 

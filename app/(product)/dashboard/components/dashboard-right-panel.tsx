@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 
@@ -36,7 +37,6 @@ const ADD_RECORD_TYPES: Array<{ value: AddRecordType; label: string }> = [
   { value: "OUT", label: "Check-out" },
   { value: "LEAVE", label: "Leave" },
   { value: "WFH", label: "WFH" },
-  { value: "WEEKLY_OFF", label: "Weekly Off" },
 ];
 
 const LEAVE_CATEGORIES = [
@@ -63,6 +63,19 @@ function DeleteIcon() {
   );
 }
 
+function AddIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 5.5v13m6.5-6.5h-13"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export function DashboardRightPanel({
   activePanel,
   isOpen,
@@ -79,6 +92,7 @@ export function DashboardRightPanel({
   onAddEntry,
   onSettingsSaved,
 }: DashboardRightPanelProps) {
+  const [hasMounted, setHasMounted] = useState(false);
   const [pendingDeleteEntry, setPendingDeleteEntry] = useState<SelectedDateDetail["entries"][number] | null>(
     null,
   );
@@ -91,6 +105,10 @@ export function DashboardRightPanel({
   const [isAddingRecord, setIsAddingRecord] = useState(false);
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
     setPendingDeleteEntry(null);
     setIsAddRecordOpen(false);
     setAddRecordType("IN");
@@ -99,6 +117,29 @@ export function DashboardRightPanel({
     setAddRecordLabel("");
     setAddRecordError("");
   }, [activePanel, selectedDateDetail?.label]);
+
+  useEffect(() => {
+    if (!isAddRecordOpen) {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsAddRecordOpen(false);
+        setAddRecordError("");
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isAddRecordOpen]);
 
   async function confirmDeleteEntry() {
     if (!pendingDeleteEntry) {
@@ -125,12 +166,7 @@ export function DashboardRightPanel({
         type: addRecordType,
         time: addRecordType === "IN" || addRecordType === "OUT" ? addRecordTime : undefined,
         leaveCategory: addRecordType === "LEAVE" ? addRecordLeaveCategory : undefined,
-        label:
-          addRecordType === "LEAVE"
-            ? addRecordLabel
-            : addRecordType === "WEEKLY_OFF"
-              ? "Manual Weekly Off"
-              : undefined,
+        label: addRecordType === "LEAVE" ? addRecordLabel : undefined,
       });
 
       setIsAddRecordOpen(false);
@@ -206,112 +242,21 @@ export function DashboardRightPanel({
 
             <div className="app-attendance-right-panel-body">
               <section className="app-attendance-add-record-card">
-                <div className="app-attendance-add-record-head">
-                  <div className="app-attendance-add-record-copy">
-                    <strong>Add new record</strong>
-                    <span>Choose what you want to add for this date.</span>
-                  </div>
-                  <button
-                    type="button"
-                    className="app-button app-button-secondary app-button-compact"
-                    onClick={() => {
-                      setIsAddRecordOpen((current) => !current);
-                      setAddRecordError("");
-                    }}
-                  >
-                    {isAddRecordOpen ? "Close" : "Add record"}
-                  </button>
-                </div>
-
-                {isAddRecordOpen ? (
-                  <div className="app-attendance-add-record-form">
-                    <div className="app-attendance-add-record-types">
-                      {ADD_RECORD_TYPES.map((type) => (
-                        <button
-                          key={type.value}
-                          type="button"
-                          className={`app-settings-toggle${addRecordType === type.value ? " is-active" : ""}`}
-                          onClick={() => setAddRecordType(type.value)}
-                          disabled={isAddingRecord}
-                        >
-                          {type.label}
-                        </button>
-                      ))}
-                    </div>
-
-                    {addRecordType === "IN" || addRecordType === "OUT" ? (
-                      <label className="app-field">
-                        <span>Time</span>
-                        <input
-                          className="app-input"
-                          type="time"
-                          value={addRecordTime}
-                          onChange={(event) => setAddRecordTime(event.target.value)}
-                          disabled={isAddingRecord}
-                        />
-                      </label>
-                    ) : null}
-
-                    {addRecordType === "LEAVE" ? (
-                      <>
-                        <label className="app-field">
-                          <span>Leave type</span>
-                          <select
-                            className="app-input"
-                            value={addRecordLeaveCategory}
-                            onChange={(event) =>
-                              setAddRecordLeaveCategory(
-                                event.target.value as (typeof LEAVE_CATEGORIES)[number],
-                              )
-                            }
-                            disabled={isAddingRecord}
-                          >
-                            {LEAVE_CATEGORIES.map((category) => (
-                              <option key={category} value={category}>
-                                {category}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-
-                        <label className="app-field">
-                          <span>Note</span>
-                          <input
-                            className="app-input"
-                            type="text"
-                            value={addRecordLabel}
-                            onChange={(event) => setAddRecordLabel(event.target.value)}
-                            placeholder="Optional note"
-                            disabled={isAddingRecord}
-                          />
-                        </label>
-                      </>
-                    ) : null}
-
-                    {addRecordError ? (
-                      <div className="app-attendance-add-record-error">{addRecordError}</div>
-                    ) : null}
-
-                    <div className="app-attendance-add-record-actions">
-                      <button
-                        type="button"
-                        className="app-button app-button-secondary app-button-compact"
-                        onClick={() => setIsAddRecordOpen(false)}
-                        disabled={isAddingRecord}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        className="app-button app-button-primary app-button-compact"
-                        onClick={handleAddRecordSubmit}
-                        disabled={isAddingRecord}
-                      >
-                        {isAddingRecord ? "Saving..." : "Save"}
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
+                <button
+                  type="button"
+                  className="app-attendance-add-record-trigger"
+                  onClick={() => {
+                    setIsAddRecordOpen(true);
+                    setAddRecordError("");
+                  }}
+                >
+                  <span className="app-attendance-add-record-trigger-icon" aria-hidden="true">
+                    <AddIcon />
+                  </span>
+                  <span className="app-attendance-add-record-trigger-label">
+                    Add new record
+                  </span>
+                </button>
               </section>
 
               {selectedDateDetail.entries.length ? (
@@ -351,46 +296,6 @@ export function DashboardRightPanel({
                   No activity recorded for this date.
                 </div>
               )}
-              {pendingDeleteEntry ? (
-                <div className="app-attendance-right-panel-confirm-overlay">
-                  <div className="app-attendance-right-panel-confirm-card">
-                    <div className="app-attendance-right-panel-confirm-copy">
-                      <strong>Delete this entry?</strong>
-                      <span>
-                        {pendingDeleteEntry.title}
-                        {pendingDeleteEntry.value
-                          ? ` at ${pendingDeleteEntry.value}`
-                          : pendingDeleteEntry.tone === "present-in" ||
-                              pendingDeleteEntry.tone === "present-out"
-                            ? ` at ${pendingDeleteEntry.meta}`
-                            : ""}
-                        {" "}will be removed.
-                      </span>
-                      {deleteEntryError ? (
-                        <span className="app-attendance-right-panel-confirm-error">{deleteEntryError}</span>
-                      ) : null}
-                    </div>
-                    <div className="app-attendance-right-panel-confirm-actions">
-                      <button
-                        type="button"
-                        className="app-button app-button-secondary app-button-compact"
-                        onClick={() => setPendingDeleteEntry(null)}
-                        disabled={deletingEntryId === pendingDeleteEntry.id}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        className="app-button app-button-primary app-button-compact"
-                        onClick={confirmDeleteEntry}
-                        disabled={deletingEntryId === pendingDeleteEntry.id}
-                      >
-                        {deletingEntryId === pendingDeleteEntry.id ? "Deleting..." : "Delete"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
             </div>
           </>
         ) : null}
@@ -422,6 +327,181 @@ export function DashboardRightPanel({
           </>
         ) : null}
       </DashboardSurfaceCard>
+      {hasMounted && pendingDeleteEntry
+        ? createPortal(
+            <div className="app-dashboard-modal-backdrop">
+              <div className="app-attendance-right-panel-confirm-card">
+                <div className="app-attendance-right-panel-confirm-copy">
+                  <strong>
+                    Delete this entry? ({selectedDateDetail?.label ?? selectedDateKey})
+                  </strong>
+                  <span>
+                    {pendingDeleteEntry.title}
+                    {pendingDeleteEntry.value
+                      ? ` at ${pendingDeleteEntry.value}`
+                      : pendingDeleteEntry.tone === "present-in" ||
+                          pendingDeleteEntry.tone === "present-out"
+                        ? ` at ${pendingDeleteEntry.meta}`
+                        : ""}
+                    {" "}will be removed.
+                  </span>
+                  {deleteEntryError ? (
+                    <span className="app-attendance-right-panel-confirm-error">{deleteEntryError}</span>
+                  ) : null}
+                </div>
+                <div className="app-attendance-right-panel-confirm-actions">
+                  <button
+                    type="button"
+                    className="app-button app-button-secondary app-button-compact"
+                    onClick={() => setPendingDeleteEntry(null)}
+                    disabled={deletingEntryId === pendingDeleteEntry.id}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="app-button app-button-primary app-button-compact"
+                    onClick={confirmDeleteEntry}
+                    disabled={deletingEntryId === pendingDeleteEntry.id}
+                  >
+                    {deletingEntryId === pendingDeleteEntry.id ? "Deleting..." : "Delete"}
+                  </button>
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
+      {hasMounted && isAddRecordOpen
+        ? createPortal(
+            <div className="app-dashboard-modal-backdrop">
+              <div className="app-attendance-right-panel-confirm-card app-attendance-add-record-dialog">
+                <div className="app-attendance-add-record-dialog-head">
+                  <div className="app-attendance-right-panel-confirm-copy">
+                    <strong>
+                      Add new record ({selectedDateDetail?.label ?? selectedDateKey})
+                    </strong>
+                  </div>
+                  <button
+                    type="button"
+                    className="app-dashboard-modal-close"
+                    aria-label="Close add record"
+                    onClick={() => {
+                      setIsAddRecordOpen(false);
+                      setAddRecordError("");
+                    }}
+                  >
+                    <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="size-5" />
+                  </button>
+                </div>
+
+                <div className="app-attendance-add-record-form">
+                  <label className="app-field">
+                    <span>Record type</span>
+                    <select
+                      className="app-input"
+                      value={addRecordType}
+                      onChange={(event) => {
+                        const nextType = event.target.value as Exclude<
+                          AddRecordType,
+                          "WEEKLY_OFF"
+                        >;
+
+                        setAddRecordType(nextType);
+
+                        if (nextType === "OUT") {
+                          setAddRecordTime("17:00");
+                        } else if (nextType === "IN") {
+                          setAddRecordTime("09:00");
+                        }
+                      }}
+                      disabled={isAddingRecord}
+                    >
+                      {ADD_RECORD_TYPES.map((type) => (
+                        <option key={type.value} value={type.value}>
+                          {type.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  {addRecordType === "IN" || addRecordType === "OUT" ? (
+                    <label className="app-field">
+                      <span>Time</span>
+                      <input
+                        className="app-input"
+                        type="time"
+                        value={addRecordTime}
+                        onChange={(event) => setAddRecordTime(event.target.value)}
+                        disabled={isAddingRecord}
+                      />
+                    </label>
+                  ) : null}
+
+                  {addRecordType === "LEAVE" ? (
+                    <>
+                      <label className="app-field">
+                        <span>Leave type</span>
+                        <select
+                          className="app-input"
+                          value={addRecordLeaveCategory}
+                          onChange={(event) =>
+                            setAddRecordLeaveCategory(
+                              event.target.value as (typeof LEAVE_CATEGORIES)[number],
+                            )
+                          }
+                          disabled={isAddingRecord}
+                        >
+                          {LEAVE_CATEGORIES.map((category) => (
+                            <option key={category} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      <label className="app-field">
+                        <span>Note</span>
+                        <input
+                          className="app-input"
+                          type="text"
+                          value={addRecordLabel}
+                          onChange={(event) => setAddRecordLabel(event.target.value)}
+                          placeholder="Optional note"
+                          disabled={isAddingRecord}
+                        />
+                      </label>
+                    </>
+                  ) : null}
+
+                  {addRecordError ? (
+                    <div className="app-attendance-add-record-error">{addRecordError}</div>
+                  ) : null}
+
+                  <div className="app-attendance-add-record-actions">
+                    <button
+                      type="button"
+                      className="app-button app-button-secondary app-button-compact"
+                      onClick={() => setIsAddRecordOpen(false)}
+                      disabled={isAddingRecord}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className="app-button app-button-primary app-button-compact"
+                      onClick={handleAddRecordSubmit}
+                      disabled={isAddingRecord}
+                    >
+                      {isAddingRecord ? "Saving..." : "Save"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </aside>
   );
 }
