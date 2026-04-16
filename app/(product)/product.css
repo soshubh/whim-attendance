@@ -2237,7 +2237,7 @@ select {
   .app-attendance-mobile-top-summary-card {
     display: grid;
     gap: var(--foundation-space-8);
-    padding: 14px;
+    padding: var(--foundation-space-8);
     border: 1px solid var(--foundation-stroke-neutral);
     border-radius: var(--foundation-radius-16);
     background: var(--foundation-color-background);
