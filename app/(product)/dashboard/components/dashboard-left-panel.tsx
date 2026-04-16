@@ -30,7 +30,6 @@ export function DashboardLeftPanel({
 }: DashboardLeftPanelProps) {
   const [openSection, setOpenSection] = useState<"present" | "leave" | "wfh" | null>(null);
   const [isCompactMobile, setIsCompactMobile] = useState(false);
-  const [isMobileStatsOpen, setIsMobileStatsOpen] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 1100px)");
@@ -56,7 +55,6 @@ export function DashboardLeftPanel({
           : compactMobileQuery.matches;
 
       setIsCompactMobile(isCompact);
-      setIsMobileStatsOpen((current) => (isCompact ? current : true));
     }
 
     syncOpenSection();
@@ -109,15 +107,9 @@ export function DashboardLeftPanel({
     <DashboardSurfaceCard
       as="aside"
       variant="sidebar"
-      className={`app-attendance-sidebar-card${
-        isCompactMobile && !isMobileStatsOpen ? " is-compact-collapsed" : ""
-      }`}
+      className="app-attendance-sidebar-card"
     >
-      <div
-        className={`app-attendance-sidebar-stack${
-          isCompactMobile && !isMobileStatsOpen ? " is-compact-collapsed" : ""
-        }`}
-      >
+      <div className="app-attendance-sidebar-stack">
         <div className="app-attendance-sidebar-fixed">
           <div className="app-attendance-month-nav">
             <button
@@ -138,31 +130,33 @@ export function DashboardLeftPanel({
               &#8250;
             </button>
           </div>
+
           {isCompactMobile ? (
-            <button
-              type="button"
-              className={`app-attendance-mobile-stats-toggle${
-                isMobileStatsOpen ? " is-open" : ""
-              }`}
-              aria-expanded={isMobileStatsOpen}
-              aria-label={
-                isMobileStatsOpen ? "Hide attendance stats" : "Show attendance stats"
-              }
-              onClick={() => setIsMobileStatsOpen((current) => !current)}
-            >
-              <span className="app-attendance-mobile-stats-toggle-icon" aria-hidden="true">
-                ˅
-              </span>
-            </button>
+            <div className="app-attendance-mobile-top-summary" aria-label="Attendance summary">
+              <article className="app-attendance-mobile-top-summary-card is-present">
+                <span className="app-attendance-mobile-summary-label">Days Present</span>
+                <strong className="app-attendance-mobile-summary-value">
+                  {stats.presentDays}
+                </strong>
+              </article>
+              <article className="app-attendance-mobile-top-summary-card is-leave">
+                <span className="app-attendance-mobile-summary-label">Leave Days</span>
+                <strong className="app-attendance-mobile-summary-value">
+                  {stats.leaveDays}
+                </strong>
+              </article>
+              <article className="app-attendance-mobile-top-summary-card is-wfh">
+                <span className="app-attendance-mobile-summary-label">WFH Days</span>
+                <strong className="app-attendance-mobile-summary-value">
+                  {stats.wfhDays}
+                </strong>
+              </article>
+            </div>
           ) : null}
         </div>
 
-        <div
-          className={`app-attendance-sidebar-scroll${
-            isCompactMobile && !isMobileStatsOpen ? " is-hidden" : ""
-          }`}
-        >
-          {!isCompactMobile || isMobileStatsOpen ? (
+        {!isCompactMobile ? (
+          <div className="app-attendance-sidebar-scroll">
             <section className="app-attendance-stats app-attendance-stats-sidebar">
               <article className={`app-attendance-stat-card${openSection === "present" ? " is-open" : ""}`}>
                 <div className="app-attendance-stat-card-head">
@@ -214,8 +208,8 @@ export function DashboardLeftPanel({
                 {renderDropdownTrigger("wfh", `${stats.wfhDays} Days`)}
               </article>
             </section>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
     </DashboardSurfaceCard>
   );

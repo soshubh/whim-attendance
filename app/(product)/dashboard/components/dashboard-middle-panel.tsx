@@ -1,6 +1,7 @@
 import type { CalendarCell } from "../dashboard-shared";
 import { DashboardDateCard } from "./dashboard-date-card";
 import { DashboardSurfaceCard } from "./dashboard-surface-card";
+import { DashboardWeekdayCell } from "./dashboard-weekday-cell";
 
 type DashboardMiddlePanelProps = {
   dayLabels: string[];
@@ -22,30 +23,24 @@ export function DashboardMiddlePanel({
   return (
     <section className="app-attendance-calendar-shell">
       <DashboardSurfaceCard variant="calendar" className="app-attendance-calendar-card">
-        <div className="app-attendance-weekdays">
+        <div className="app-attendance-weekday-grid">
           {dayLabels.map((label) => (
-            <div className="app-attendance-weekday" key={label}>
-              {label}
-            </div>
+            <DashboardWeekdayCell key={label} label={label} />
           ))}
         </div>
 
-        <div className="app-attendance-calendar-body">
-          <div className="app-attendance-grid-shell">
-            <div
-              className={`app-attendance-grid${loadingMonth ? " is-loading" : ""}`}
-              style={{ gridTemplateRows: `repeat(${calendarRowCount}, minmax(0, 1fr))` }}
-            >
-              {calendarCells.map((cell) => (
-                <DashboardDateCard
-                  key={cell.dateKey}
-                  cell={cell}
-                  isSelected={cell.dateKey === selectedDateKey}
-                  onClick={onDateClick}
-                />
-              ))}
-            </div>
-          </div>
+        <div
+          className={`app-attendance-date-grid${loadingMonth ? " is-loading" : ""}`}
+          style={{ gridTemplateRows: `repeat(${calendarRowCount}, minmax(0, 1fr))` }}
+        >
+          {calendarCells.map((cell) => (
+            <DashboardDateCard
+              key={cell.dateKey}
+              cell={cell}
+              isSelected={cell.dateKey === selectedDateKey}
+              onClick={onDateClick}
+            />
+          ))}
         </div>
       </DashboardSurfaceCard>
     </section>
