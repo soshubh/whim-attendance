@@ -2236,8 +2236,7 @@ select {
 
   .app-attendance-mobile-top-summary-card {
     display: grid;
-    gap: 8px;
-    min-height: 84px;
+    gap: var(--foundation-space-8);
     padding: 14px;
     border: 1px solid var(--foundation-stroke-neutral);
     border-radius: var(--foundation-radius-16);
@@ -2245,16 +2244,16 @@ select {
   }
 
   .app-attendance-mobile-summary-label {
-    font-size: 11px;
-    font-weight: var(--foundation-weight-semibold);
-    letter-spacing: 0.08em;
+    font-size: var(--foundation-type-10);
+    font-weight: var(--foundation-weight-medium);
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--foundation-color-text) 74%, transparent);
+    letter-spacing: 0.8px;
+    color: var(--foundation-color-text);
   }
 
   .app-attendance-mobile-summary-value {
     align-self: end;
-    font-size: clamp(30px, 7vw, 40px);
+    font-size: var(--foundation-type-24);
     line-height: 0.95;
     font-weight: var(--foundation-weight-semibold);
     letter-spacing: -0.04em;
