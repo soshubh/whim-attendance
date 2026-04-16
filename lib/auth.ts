@@ -8,6 +8,8 @@ export type ProfileRecord = {
   id: string;
   full_name: string | null;
   onboarding_completed: boolean;
+  role: "admin" | "user" | null;
+  is_deactivated: boolean;
 };
 
 export type OfficeSettingsRecord = {
@@ -27,6 +29,7 @@ export type ShortcutTokenRecord = {
 const SHORTCUT_TOKEN_ALPHABET =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const SHORTCUT_TOKEN_LENGTH = 8;
+export const DEACTIVATED_ACCOUNT_MESSAGE = "Your account has been disabled from the admin side.";
 
 export async function ensureProfileForUser(user: User) {
   const admin = createSupabaseAdminClient();
@@ -65,9 +68,13 @@ export async function getAuthenticatedContext() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, full_name, onboarding_completed")
+    .select("id, full_name, onboarding_completed, role, is_deactivated")
     .eq("id", user.id)
     .maybeSingle<ProfileRecord>();
+
+  if (profile?.is_deactivated) {
+    redirect(`/logout?message=${encodeURIComponent(DEACTIVATED_ACCOUNT_MESSAGE)}`);
+  }
 
   return {
     supabase,

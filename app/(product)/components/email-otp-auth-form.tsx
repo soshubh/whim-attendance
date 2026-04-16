@@ -43,6 +43,7 @@ type EmailOtpAuthFormProps = {
   sendLabel?: ReactNode;
   verifyLabel?: ReactNode;
   links: LinkItem[];
+  initialMessage?: string;
 };
 
 function GoogleIcon() {
@@ -89,8 +90,21 @@ function getRequestErrorMessage(
 ) {
   const normalized = message.toLowerCase();
 
-  if (normalized.includes("too many requests")) {
+  if (
+    normalized.includes("too many requests") ||
+    normalized.includes("rate limit") ||
+    normalized.includes("security purposes") ||
+    normalized.includes("over_email_send_rate_limit")
+  ) {
     return "Too many code requests. Wait a moment and try again.";
+  }
+
+  if (
+    normalized.includes("email rate limit exceeded") ||
+    normalized.includes("email link is invalid") ||
+    normalized.includes("otp_disabled")
+  ) {
+    return "Too many sign-in attempts for this email. Wait a moment and try again.";
   }
 
   if (!shouldCreateUser && normalized.includes("signups not allowed")) {
@@ -101,7 +115,35 @@ function getRequestErrorMessage(
     return "This email cannot create a WHIM account right now.";
   }
 
-  return `We could not send your ${flowLabel} code right now. Please try again.`;
+  if (
+    normalized.includes("disabled from admin side") ||
+    normalized.includes("account has been disabled") ||
+    normalized.includes("account disabled")
+  ) {
+    return "Your account has been disabled from the admin side.";
+  }
+
+  if (
+    normalized.includes("smtp") ||
+    normalized.includes("email provider") ||
+    normalized.includes("send email") ||
+    normalized.includes("failed to send") ||
+    normalized.includes("error sending") ||
+    normalized.includes("email address is invalid")
+  ) {
+    return "We could not deliver your sign-in code email right now. Please try again in a moment.";
+  }
+
+  if (
+    normalized.includes("fetch failed") ||
+    normalized.includes("network") ||
+    normalized.includes("network request failed") ||
+    normalized.includes("failed to fetch")
+  ) {
+    return "Network issue while sending your sign-in code. Check your connection and try again.";
+  }
+
+  return `We could not send your ${flowLabel} code right now. ${message || "Please try again."}`;
 }
 
 function getVerifyErrorMessage(message: string, flowLabel: string) {
@@ -116,11 +158,32 @@ function getVerifyErrorMessage(message: string, flowLabel: string) {
     return `This ${flowLabel} code is invalid or expired. Request a new one and try again.`;
   }
 
-  if (normalized.includes("too many requests")) {
+  if (
+    normalized.includes("too many requests") ||
+    normalized.includes("rate limit") ||
+    normalized.includes("security purposes")
+  ) {
     return `Too many ${flowLabel} attempts. Wait a moment and try again.`;
   }
 
-  return `We could not verify your ${flowLabel} code right now. Please try again.`;
+  if (
+    normalized.includes("disabled from admin side") ||
+    normalized.includes("account has been disabled") ||
+    normalized.includes("account disabled")
+  ) {
+    return "Your account has been disabled from the admin side.";
+  }
+
+  if (
+    normalized.includes("fetch failed") ||
+    normalized.includes("network") ||
+    normalized.includes("network request failed") ||
+    normalized.includes("failed to fetch")
+  ) {
+    return `Network issue while verifying your ${flowLabel} code. Please try again.`;
+  }
+
+  return `We could not verify your ${flowLabel} code right now. ${message || "Please try again."}`;
 }
 
 function normalizeOtpInput(value: string) {
@@ -145,6 +208,7 @@ export function EmailOtpAuthForm({
   sendLabel = "Send code",
   verifyLabel = "Verify code",
   links,
+  initialMessage = "",
 }: EmailOtpAuthFormProps) {
   const router = useRouter();
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
@@ -255,11 +319,14 @@ export function EmailOtpAuthForm({
     });
 
     const statePayload = (await stateResponse.json().catch(() => ({}))) as {
-      next?: "name" | "setup" | "dashboard";
+      next?: "name" | "setup" | "dashboard" | "admin";
       error?: string;
     };
 
     if (!stateResponse.ok) {
+      if (stateResponse.status === 403) {
+        await supabase.auth.signOut();
+      }
       showAuthError(statePayload.error ?? "We could not continue your access flow.");
       setVerifying(false);
       return;
@@ -272,7 +339,13 @@ export function EmailOtpAuthForm({
       return;
     }
 
-    router.replace(statePayload.next === "setup" ? "/setup" : redirectPath);
+    router.replace(
+      statePayload.next === "setup"
+        ? "/setup"
+        : statePayload.next === "admin"
+          ? "/admin"
+          : redirectPath,
+    );
   }
 
   async function saveName(event: FormEvent<HTMLFormElement>) {
@@ -330,6 +403,7 @@ export function EmailOtpAuthForm({
 
   return (
     <AuthFormShell title={title} description={description}>
+      {initialMessage ? <div className="app-success">{initialMessage}</div> : null}
       {success && !isOtpStep ? <div className="app-success">{success}</div> : null}
 
       <div className="grid gap-[var(--foundation-space-20)]">

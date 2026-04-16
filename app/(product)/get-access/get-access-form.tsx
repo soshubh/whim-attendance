@@ -1,6 +1,6 @@
 import { ArrowRightIcon, EmailOtpAuthForm } from "../components/email-otp-auth-form";
 
-export function GetAccessForm() {
+export function GetAccessForm({ initialMessage = "" }: { initialMessage?: string }) {
   return (
     <EmailOtpAuthForm
       title="Access WHIM attendance"
@@ -15,6 +15,7 @@ export function GetAccessForm() {
       sendLabel={<ArrowRightIcon />}
       verifyLabel="Continue"
       links={[]}
+      initialMessage={initialMessage}
     />
   );
 }

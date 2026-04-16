@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { isAdminProfile } from "@/lib/admin-access";
 import {
   ensureProfileForUser,
   isOnboardingComplete,
@@ -23,7 +24,7 @@ export async function GET() {
   const [{ data: profile }, { data: shortcutToken }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, full_name, onboarding_completed")
+      .select("id, full_name, onboarding_completed, role, is_deactivated")
       .eq("id", user.id)
       .maybeSingle<ProfileRecord>(),
     supabase
@@ -32,6 +33,17 @@ export async function GET() {
       .eq("user_id", user.id)
       .maybeSingle<ShortcutTokenRecord>(),
   ]);
+
+  if (profile?.is_deactivated) {
+    return NextResponse.json(
+      { error: "Your account has been disabled from the admin side." },
+      { status: 403 },
+    );
+  }
+
+  if (isAdminProfile(profile)) {
+    return NextResponse.json({ next: "admin" });
+  }
 
   if (!profile?.full_name?.trim()) {
     return NextResponse.json({ next: "name" });

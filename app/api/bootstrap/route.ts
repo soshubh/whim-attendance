@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-import { hasAdminSession } from "@/lib/admin-session";
 import { COLUMNS, TABLES, supabaseRequest } from "@/lib/supabase-rest";
 
 export async function GET() {
@@ -13,7 +12,6 @@ export async function GET() {
     return NextResponse.json({
       rows,
       settings,
-      adminAuthenticated: await hasAdminSession(),
     });
   } catch (error) {
     return NextResponse.json(

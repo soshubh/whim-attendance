@@ -1,7 +1,7 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
-import { ensureProfileForUser } from "@/lib/auth";
+import { ensureProfileForUser, DEACTIVATED_ACCOUNT_MESSAGE } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export async function GET(request: NextRequest) {
@@ -30,6 +30,21 @@ export async function GET(request: NextRequest) {
 
     if (user) {
       await ensureProfileForUser(user);
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("is_deactivated")
+        .eq("id", user.id)
+        .maybeSingle<{ is_deactivated: boolean }>();
+
+      if (profile?.is_deactivated) {
+        await supabase.auth.signOut();
+        return NextResponse.redirect(
+          new URL(
+            `/get-access?message=${encodeURIComponent(DEACTIVATED_ACCOUNT_MESSAGE)}`,
+            requestUrl.origin,
+          ),
+        );
+      }
     }
 
     return NextResponse.redirect(new URL(redirectPath, requestUrl.origin));

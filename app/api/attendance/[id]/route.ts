@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { assertAdminSession } from "@/lib/admin-session";
+import { assertAdminAccess } from "@/lib/admin-access";
 import { TABLES, supabaseRequest } from "@/lib/supabase-rest";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
@@ -34,7 +34,7 @@ export async function DELETE(_request: NextRequest, context: Context) {
       return NextResponse.json({ ok: true });
     }
 
-    const unauthorized = await assertAdminSession();
+    const unauthorized = await assertAdminAccess();
     if (unauthorized) return unauthorized;
 
     await supabaseRequest(`${TABLES.logs}?id=eq.${encodeURIComponent(id)}`, {

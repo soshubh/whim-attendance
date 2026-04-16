@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { assertAdminSession } from "@/lib/admin-session";
+import { assertAdminAccess } from "@/lib/admin-access";
 import { COLUMNS, TABLES, supabaseRequest } from "@/lib/supabase-rest";
 
 type LeaveDate = {
@@ -22,7 +22,7 @@ type ExistingLeaveRecord = {
 };
 
 export async function POST(request: NextRequest) {
-  const unauthorized = await assertAdminSession();
+  const unauthorized = await assertAdminAccess();
   if (unauthorized) return unauthorized;
 
   const body = (await request.json().catch(() => null)) as LeaveSyncBody | null;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { assertAdminSession } from "@/lib/admin-session";
+import { assertAdminAccess } from "@/lib/admin-access";
 import { COLUMNS, TABLES, supabaseRequest } from "@/lib/supabase-rest";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ log: data });
     }
 
-    const unauthorized = await assertAdminSession();
+    const unauthorized = await assertAdminAccess();
     if (unauthorized) return unauthorized;
 
     const inserted = await supabaseRequest(`${TABLES.logs}`, {

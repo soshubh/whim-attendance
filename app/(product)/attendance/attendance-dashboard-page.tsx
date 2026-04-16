@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { GridBackground } from "@/app/components/grid-background";
 import { getAttendanceSettingsForUser } from "@/lib/attendance-settings";
 import { getAttendanceHandle } from "@/lib/attendance-handle";
+import { isAdminProfile } from "@/lib/admin-access";
 import {
   isOnboardingComplete,
   type ShortcutTokenRecord,
@@ -37,6 +38,11 @@ function getMonthKey(date: Date) {
 
 export async function AttendanceDashboardPage({ expectedHandle }: { expectedHandle?: string }) {
   const { supabase, user, profile } = await requireAuthenticatedContext();
+
+  if (isAdminProfile(profile)) {
+    redirect("/admin");
+  }
+
   const handle = getAttendanceHandle({
     email: user.email ?? null,
     fullName: profile?.full_name ?? null,

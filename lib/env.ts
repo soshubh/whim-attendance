@@ -12,7 +12,5 @@ export function getEnv() {
     supabaseUrl: requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
     supabasePublishableKey: requireEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
     supabaseServiceRoleKey: requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
-    adminPin: process.env.ADMIN_PIN ?? "",
-    adminSessionSecret: process.env.ADMIN_SESSION_SECRET ?? "",
   };
 }
