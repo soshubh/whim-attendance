@@ -2239,7 +2239,7 @@ select {
     gap: var(--foundation-space-8);
     padding: var(--foundation-space-8);
     border: 1px solid var(--foundation-stroke-neutral);
-    border-radius: var(--foundation-radius-16);
+    border-radius: var(--foundation-radius-12);
     background: var(--foundation-color-background);
   }
 
@@ -2249,6 +2249,7 @@ select {
     text-transform: uppercase;
     letter-spacing: 0.8px;
     color: var(--foundation-color-text);
+    text-align: center;
   }
 
   .app-attendance-mobile-summary-value {
@@ -2257,6 +2258,8 @@ select {
     line-height: 0.95;
     font-weight: var(--foundation-weight-semibold);
     letter-spacing: -0.04em;
+
+    text-align: center;
   }
 
   .app-attendance-mobile-top-summary-card.is-present
