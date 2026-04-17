@@ -3,11 +3,19 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { ArrowRightIcon } from "../components/email-otp-auth-form";
+
 type SetupFormProps = {
   showActions?: boolean;
+  revealActions?: boolean;
+  mode?: "default" | "topbar";
 };
 
-export function SetupForm({ showActions = true }: SetupFormProps) {
+export function SetupForm({
+  showActions = true,
+  revealActions = true,
+  mode = "default",
+}: SetupFormProps) {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -33,18 +41,30 @@ export function SetupForm({ showActions = true }: SetupFormProps) {
 
   return (
     <>
-      {error ? <div className="app-error">{error}</div> : null}
+      {error ? (
+        <div className={mode === "topbar" ? "app-setup-top-error" : "app-error"}>
+          {error}
+        </div>
+      ) : null}
       {showActions ? (
-        <>
-          <button className="app-button app-button-primary" type="button" disabled={submitting} onClick={handleComplete}>
-            {submitting ? "Opening dashboard..." : "Open dashboard"}
+        <div
+          className={`app-setup-actions${revealActions ? " is-revealed" : ""}${mode === "topbar" ? " is-topbar" : ""}`}
+        >
+          <button
+            className={mode === "topbar"
+              ? "app-dashboard-settings-trigger app-setup-forward-trigger"
+              : "app-button app-button-primary app-setup-forward-button"}
+            type="button"
+            disabled={submitting}
+            onClick={handleComplete}
+            aria-label={submitting ? "Opening dashboard" : "Open dashboard"}
+            title={submitting ? "Opening dashboard" : "Open dashboard"}
+          >
+            <span className={submitting ? "animate-pulse" : ""}>
+              <ArrowRightIcon />
+            </span>
           </button>
-          <div className="app-inline-actions">
-            <a className="app-button app-button-secondary" href="/logout">
-              Log out
-            </a>
-          </div>
-        </>
+        </div>
       ) : null}
     </>
   );

@@ -1,10 +1,11 @@
+import { GridBackground } from "@/app/components/grid-background";
 import {
   ensureShortcutTokenForUser,
   requireAuthenticatedUser,
 } from "@/lib/auth";
 import { getEnv } from "@/lib/env";
 
-import { SetupPanelContent } from "./setup-panel-content";
+import { SetupSurface } from "./setup-surface";
 
 export default async function SetupPage() {
   const user = await requireAuthenticatedUser();
@@ -14,12 +15,9 @@ export default async function SetupPage() {
   const leaveUrl = `${getEnv().appUrl}/o/${shortcutTokenValue}`;
 
   return (
-    <main className="app-shell app-flow-shell">
-      <section className="app-setup-wrap">
-        <div className="app-panel app-panel-sticky">
-          <SetupPanelContent arrivalUrl={arrivalUrl} leaveUrl={leaveUrl} />
-        </div>
-      </section>
+    <main className="app-shell app-auth-shell product-surface">
+      <GridBackground />
+      <SetupSurface arrivalUrl={arrivalUrl} leaveUrl={leaveUrl} />
     </main>
   );
 }

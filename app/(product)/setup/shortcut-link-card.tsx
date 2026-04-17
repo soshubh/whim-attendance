@@ -7,6 +7,7 @@ type ShortcutLinkCardProps = {
   url: string;
   showLabel?: boolean;
   copyButtonPlacement?: "header" | "box";
+  hideFeedback?: boolean;
 };
 
 async function copyTextToClipboard(text: string) {
@@ -64,6 +65,7 @@ export function ShortcutLinkCard({
   url,
   showLabel = true,
   copyButtonPlacement = "box",
+  hideFeedback = false,
 }: ShortcutLinkCardProps) {
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
 
@@ -120,7 +122,9 @@ export function ShortcutLinkCard({
         ) : null}
         <code>{url}</code>
       </div>
-      {copyState === "error" ? <p className="app-shortcut-feedback">Copy failed. Copy the URL manually.</p> : null}
+      {copyState === "error" && !hideFeedback ? (
+        <p className="app-shortcut-feedback">Copy failed. Copy the URL manually.</p>
+      ) : null}
     </div>
   );
 }
