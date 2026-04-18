@@ -274,11 +274,12 @@
 
 @media (max-width: 720px) {
   .marketing-shell {
-    padding: var(--foundation-space-16);
+    padding: var(--foundation-space-24) var(--foundation-space-16)
+      var(--foundation-space-16);
   }
 
   .marketing-topbar {
-    top: var(--foundation-space-8);
+    top: var(--foundation-space-16);
     padding: var(--foundation-space-12);
     border-radius: var(--foundation-radius-16);
   }
@@ -336,7 +337,6 @@
   place-content: center;
   min-height: 90vh;
   margin-inline: auto;
-  padding: 0;
   text-align: center;
   gap: var(--foundation-space-32);
 }
