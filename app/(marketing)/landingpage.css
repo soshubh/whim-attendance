@@ -635,8 +635,81 @@
   text-decoration: none;
 }
 
+.marketing-footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--foundation-space-16);
+  flex-wrap: wrap;
+}
+
+a.marketing-footer-meta:hover {
+  color: var(--foundation-color-text);
+}
+
 .marketing-footer-bottom {
   align-items: center;
+}
+
+.marketing-legal-page {
+  display: grid;
+  gap: var(--foundation-space-24);
+}
+
+.marketing-legal-hero {
+  display: grid;
+  gap: var(--foundation-space-24);
+  padding: var(--foundation-space-96) 0 var(--foundation-space-12);
+}
+
+.marketing-legal-heading {
+  display: grid;
+  gap: var(--foundation-space-16);
+  width: min(100%, var(--landing-layout-tablet));
+}
+
+.marketing-legal-updated {
+  font-size: var(--foundation-type-16);
+  color: var(--foundation-neutral-600);
+}
+
+.marketing-legal-section {
+  display: grid;
+}
+
+.marketing-legal-stack {
+  display: grid;
+  gap: var(--foundation-space-20);
+}
+
+.marketing-legal-card {
+  display: grid;
+  gap: var(--foundation-space-20);
+  padding: var(--foundation-space-32);
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-24);
+  background: var(--foundation-color-background);
+}
+
+.marketing-legal-card h2 {
+  margin: 0;
+  font-size: clamp(var(--foundation-type-24), 3vw, var(--foundation-type-32));
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--foundation-color-text);
+}
+
+.marketing-legal-copy {
+  display: grid;
+  gap: var(--foundation-space-16);
+  width: min(100%, 78ch);
+}
+
+.marketing-legal-copy p {
+  margin: 0;
+  font-size: var(--foundation-type-20);
+  line-height: 1.65;
+  color: var(--foundation-neutral-700);
 }
 
 @media (max-width: 1120px) {
@@ -724,5 +797,13 @@
     margin-top: var(--foundation-space-72);
     padding: var(--foundation-space-20) var(--foundation-space-24);
     border-radius: var(--foundation-radius-24);
+  }
+
+  .marketing-legal-hero {
+    padding-top: var(--foundation-space-72);
+  }
+
+  .marketing-footer-links {
+    justify-content: flex-start;
   }
 }

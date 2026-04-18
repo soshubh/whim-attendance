@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function MarketingFooter() {
   const year = new Date().getFullYear();
 
@@ -11,7 +13,15 @@ export function MarketingFooter() {
 
       <div className="marketing-footer-bottom">
         <span className="marketing-footer-meta">{`© ${year} WHIM`}</span>
-        <span className="marketing-footer-meta">BY SHUBH</span>
+        <div className="marketing-footer-links">
+          <Link href="/privacy" className="marketing-footer-meta">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" className="marketing-footer-meta">
+            Terms of Service
+          </Link>
+          <span className="marketing-footer-meta">BY SHUBH</span>
+        </div>
       </div>
     </footer>
   );
