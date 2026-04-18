@@ -872,6 +872,148 @@ select {
   color: var(--foundation-neutral-700);
 }
 
+.app-setup-guide {
+  display: grid;
+  gap: var(--foundation-space-28);
+}
+
+.app-setup-mode-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--foundation-space-12);
+}
+
+.app-setup-mode-button {
+  padding: var(--foundation-space-4) 0;
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-16);
+  background: var(--foundation-color-background);
+  color: var(--foundation-color-text);
+  font-size: var(--foundation-type-14);
+  font-weight: var(--foundation-weight-medium);
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.app-setup-mode-button.is-active {
+  border-color: var(--foundation-stroke-primary);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 8%,
+    var(--foundation-color-background)
+  );
+}
+
+.app-setup-guide-section {
+  display: grid;
+  gap: var(--foundation-space-12);
+}
+
+.app-setup-guide-label {
+  margin: 0;
+  font-size: var(--foundation-type-12);
+  font-weight: var(--foundation-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--foundation-color-text) 68%, transparent);
+}
+
+.app-setup-guide-url {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--foundation-space-12);
+  padding: var(--foundation-space-8) var(--foundation-space-8)
+    var(--foundation-space-8) var(--foundation-space-12);
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-16);
+  background: var(--foundation-color-background);
+}
+.app-setup-guide-url code {
+  min-width: 0;
+  font-size: var(--foundation-type-14);
+  line-height: 1.2;
+  color: var(--foundation-color-text-inverse);
+  overflow-wrap: anywhere;
+}
+
+.app-setup-guide-copy-button {
+  padding: var(--foundation-space-4) var(--foundation-space-12);
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-16);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 5%,
+    var(--foundation-color-background)
+  );
+  color: var(--foundation-color-text);
+  font-size: var(--foundation-type-16);
+  font-weight: var(--foundation-weight-medium);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.app-setup-guide-copy-button.is-success {
+  border-color: var(--foundation-stroke-primary);
+  background: var(--foundation-color-background-inverse);
+  color: var(--foundation-color-text-tertiary);
+}
+
+.app-setup-guide-steps {
+  display: grid;
+}
+
+.app-setup-guide-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+
+  gap: var(--foundation-space-12);
+  padding: var(--foundation-space-12) 0;
+  border-bottom: 1px solid var(--foundation-stroke-neutral);
+}
+
+.app-setup-guide-step:first-child {
+  border-top: 1px solid var(--foundation-stroke-neutral);
+}
+
+.app-setup-guide-step-index {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-full);
+  color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
+  font-size: var(--foundation-type-16);
+  font-weight: var(--foundation-weight-medium);
+}
+
+.app-setup-guide-step-copy {
+  display: grid;
+  gap: var(--foundation-space-8);
+  padding-top: 2px;
+}
+
+.app-setup-guide-step-copy strong {
+  font-size: var(--foundation-type-16);
+  line-height: 1.5;
+  font-weight: var(--foundation-weight-medium);
+  color: var(--foundation-color-text);
+}
+
+.app-setup-guide-step-copy span {
+  font-size: var(--foundation-type-14);
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--foundation-color-text) 68%, transparent);
+}
+
 .app-dashboard-topbar {
   display: flex;
   align-items: flex-start;

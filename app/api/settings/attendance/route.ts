@@ -73,39 +73,6 @@ function getWeekdayOccurrenceInMonth(date: Date) {
   return Math.floor((date.getDate() - 1) / 7) + 1;
 }
 
-function getRecurringLabel(rule: RecurringLeaveRuleInput) {
-  return `${AUTO_RECURRING_PREFIX}${rule.weekday}:weeks:${rule.weeks.join(",")}`;
-}
-
-function doesRuleMatchDate(date: Date, rule: RecurringLeaveRuleInput) {
-  if (date.getDay() !== rule.weekday) {
-    return false;
-  }
-
-  const weekdayOccurrence = getWeekdayOccurrenceInMonth(date);
-  return rule.weeks.includes(weekdayOccurrence as RecurringLeaveWeek);
-}
-
-function getRecurringLeaveDates(rules: RecurringLeaveRuleInput[]) {
-  const start = getRangeStart();
-  const end = getRangeEnd(start);
-  const dates = new Map<string, string>();
-
-  for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
-    const date = new Date(cursor);
-    const dateKey = toDateKey(date);
-
-    for (const rule of rules) {
-      if (doesRuleMatchDate(date, rule)) {
-        dates.set(dateKey, getRecurringLabel(rule));
-        break;
-      }
-    }
-  }
-
-  return dates;
-}
-
 function normalizeRecurringRules(value: unknown[]) {
   return value
     .filter((item): item is RecurringLeaveRuleInput => {
@@ -393,26 +360,17 @@ export async function POST(request: Request) {
     ),
   );
 
-  const recurringDates = getRecurringLeaveDates(recurringRules);
-  const leaveDateSet = new Set(leaveDates.map((item) => item.date));
-  const wfhDateSet = new Set(wfhDates.map((item) => item.date));
-
-  const recurringRows = [...recurringDates.entries()]
-    .filter(([date]) => !leaveDateSet.has(date) && !wfhDateSet.has(date))
-    .map(([date, label]) => ({
+  const { error: officeSettingsError } = await admin.from("office_settings").upsert(
+    {
       user_id: userId,
-      event_type: "LEAVE" as const,
-      event_time: `${date}T00:00:00`,
-      leave_category: "Weekly Off",
-      event_label: label,
-    }));
+      weekly_off_rules: recurringRules,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" },
+  );
 
-  if (recurringRows.length > 0) {
-    const { error } = await admin.from("attendance_logs").insert(recurringRows);
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+  if (officeSettingsError) {
+    return NextResponse.json({ error: officeSettingsError.message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

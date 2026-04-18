@@ -1,4 +1,5 @@
 import { MarketingPageShell } from "./components/marketing-page-shell";
+import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 const setupMetrics = [
   {
@@ -121,29 +122,47 @@ const essentials = [
   "Nothing to maintain, nothing to break",
 ];
 
-const updates = [
-  {
-    meta: "Experience",
-    date: "9 Apr 2026",
-    time: "8:10 pm",
-    title: "Navigation now has dedicated marketing pages",
-    copy: "The top navigation no longer jumps between anchor sections only. It now routes to focused pages for product audience, product approach, and ongoing changes.",
-  },
-  {
-    meta: "Layout",
-    date: "8 Apr 2026",
-    time: "11:40 pm",
-    title: "Desktop width is standardized at 1200px",
-    copy: "Marketing and product surfaces now use the same layout cap so the interface feels more deliberate and less stretched on larger screens.",
-  },
-  {
-    meta: "Interaction",
-    date: "8 Apr 2026",
-    time: "7:20 pm",
-    title: "Landing navigation stays visible while scrolling",
-    copy: "The header remains pinned during page scroll so navigation is available without forcing the user back to the top.",
-  },
-] as const;
+type ProductUpdate = {
+  meta: string;
+  date: string;
+  time: string;
+  title: string;
+  copy: string;
+};
+
+async function getProductUpdates(): Promise<ProductUpdate[]> {
+  try {
+    const admin = createSupabaseAdminClient();
+    const { data, error } = await admin
+      .from("product_updates")
+      .select("meta, title, copy, published_at")
+      .not("published_at", "is", null)
+      .order("published_at", { ascending: false })
+      .limit(6);
+
+    if (error || !data?.length) {
+      return [];
+    }
+
+    return data.map((update) => {
+      const publishedDate = new Date(update.published_at as string);
+
+      return {
+        meta: update.meta,
+        date: new Intl.DateTimeFormat("en-IN", {
+          dateStyle: "medium",
+        }).format(publishedDate),
+        time: new Intl.DateTimeFormat("en-IN", {
+          timeStyle: "short",
+        }).format(publishedDate),
+        title: update.title,
+        copy: update.copy,
+      };
+    });
+  } catch {
+    return [];
+  }
+}
 
 function CheckIcon() {
   return (
@@ -162,7 +181,9 @@ function CheckIcon() {
   );
 }
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const updates = await getProductUpdates();
+
   return (
     <MarketingPageShell className="marketing-home-page">
       <section className="marketing-home-hero">
@@ -270,20 +291,30 @@ export default function LandingPage() {
         <p className="marketing-home-section-copy">
           Recent changes across the marketing surface and the product flow.
         </p>
-        <div className="marketing-home-update-grid">
-          {updates.map((update) => (
-            <article key={update.title} className="marketing-home-update-card">
-              <div className="marketing-home-update-top">
-                <span className="marketing-home-update-tag">{update.meta}</span>
-                <time className="marketing-home-update-time" dateTime={update.date}>
-                  {update.date} · {update.time}
-                </time>
-              </div>
-              <h3>{update.title}</h3>
-              <p>{update.copy}</p>
-            </article>
-          ))}
-        </div>
+        {updates.length ? (
+          <div className="marketing-home-update-grid">
+            {updates.map((update) => (
+              <article key={update.title} className="marketing-home-update-card">
+                <div className="marketing-home-update-top">
+                  <span className="marketing-home-update-tag">{update.meta}</span>
+                  <time className="marketing-home-update-time" dateTime={update.date}>
+                    {update.date} · {update.time}
+                  </time>
+                </div>
+                <h3>{update.title}</h3>
+                <p>{update.copy}</p>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <article className="marketing-home-update-card">
+            <div className="marketing-home-update-top">
+              <span className="marketing-home-update-tag">No updates yet</span>
+            </div>
+            <h3>The changelog is empty for this project.</h3>
+            <p>Publish your first product update from the admin portal and it will appear here.</p>
+          </article>
+        )}
       </section>
     </MarketingPageShell>
   );

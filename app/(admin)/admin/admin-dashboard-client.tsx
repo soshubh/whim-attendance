@@ -28,6 +28,19 @@ type AdminPayload = {
   rows: AdminUserRow[];
 };
 
+type ProductUpdateRow = {
+  id: string;
+  meta: string;
+  title: string;
+  copy: string;
+  publishedAt: string | null;
+  createdAt: string;
+};
+
+type ProductUpdatesPayload = {
+  rows: ProductUpdateRow[];
+};
+
 function formatDateTime(value: string | null) {
   if (!value) return "—";
 
@@ -58,11 +71,21 @@ function getOnboardingLabel(stage: AdminUserRow["onboardingStage"]) {
 }
 
 export function AdminDashboardClient() {
+  const [activeTab, setActiveTab] = useState<"users" | "updates">("users");
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const [loadingData, setLoadingData] = useState(false);
   const [dataError, setDataError] = useState("");
   const [data, setData] = useState<AdminPayload | null>(null);
   const [mutatingUserId, setMutatingUserId] = useState<string | null>(null);
+  const [updatesLoading, setUpdatesLoading] = useState(false);
+  const [updatesError, setUpdatesError] = useState("");
+  const [updates, setUpdates] = useState<ProductUpdateRow[]>([]);
+  const [updateMeta, setUpdateMeta] = useState("");
+  const [updateTitle, setUpdateTitle] = useState("");
+  const [updateCopy, setUpdateCopy] = useState("");
+  const [creatingUpdate, setCreatingUpdate] = useState(false);
+  const [editingUpdateId, setEditingUpdateId] = useState<string | null>(null);
+  const [deletingUpdateId, setDeletingUpdateId] = useState<string | null>(null);
 
   async function loadUsers() {
     setLoadingData(true);
@@ -90,6 +113,32 @@ export function AdminDashboardClient() {
     }
   }
 
+  async function loadUpdates() {
+    setUpdatesLoading(true);
+    setUpdatesError("");
+
+    try {
+      const response = await fetch("/api/admin/updates", { cache: "no-store" });
+      const payload = (await response.json().catch(() => null)) as
+        | ProductUpdatesPayload
+        | { error?: string }
+        | null;
+
+      if (!response.ok) {
+        setUpdatesError(
+          payload && "error" in payload
+            ? payload.error ?? "Could not load updates."
+            : "Could not load updates.",
+        );
+        return;
+      }
+
+      setUpdates((payload as ProductUpdatesPayload).rows);
+    } finally {
+      setUpdatesLoading(false);
+    }
+  }
+
   useEffect(() => {
     async function bootstrap() {
       const response = await fetch("/api/admin/session", { cache: "no-store" });
@@ -101,8 +150,10 @@ export function AdminDashboardClient() {
 
       if (isAuthenticated) {
         void loadUsers();
+        void loadUpdates();
       } else {
         setData(null);
+        setUpdates([]);
       }
     }
 
@@ -209,6 +260,131 @@ export function AdminDashboardClient() {
     window.location.href = "/logout";
   }
 
+  async function handleCreateUpdate(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setCreatingUpdate(true);
+    setUpdatesError("");
+
+    try {
+      const response = await fetch("/api/admin/updates", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          meta: updateMeta,
+          title: updateTitle,
+          copy: updateCopy,
+          publish: true,
+        }),
+      });
+
+      const payload = (await response.json().catch(() => null)) as
+        | { row?: ProductUpdateRow; error?: string }
+        | null;
+
+      if (!response.ok || !payload?.row) {
+        setUpdatesError(payload?.error ?? "Could not create update.");
+        return;
+      }
+
+      setUpdates((current) => [payload.row!, ...current]);
+      setUpdateMeta("");
+      setUpdateTitle("");
+      setUpdateCopy("");
+    } finally {
+      setCreatingUpdate(false);
+    }
+  }
+
+  function handleStartEdit(update: ProductUpdateRow) {
+    setActiveTab("updates");
+    setEditingUpdateId(update.id);
+    setUpdateMeta(update.meta);
+    setUpdateTitle(update.title);
+    setUpdateCopy(update.copy);
+    setUpdatesError("");
+  }
+
+  function handleResetUpdateForm() {
+    setEditingUpdateId(null);
+    setUpdateMeta("");
+    setUpdateTitle("");
+    setUpdateCopy("");
+    setUpdatesError("");
+  }
+
+  async function handleSaveUpdate(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!editingUpdateId) {
+      await handleCreateUpdate(event);
+      return;
+    }
+
+    setCreatingUpdate(true);
+    setUpdatesError("");
+
+    try {
+      const response = await fetch(`/api/admin/updates/${editingUpdateId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          meta: updateMeta,
+          title: updateTitle,
+          copy: updateCopy,
+          publish: true,
+        }),
+      });
+
+      const payload = (await response.json().catch(() => null)) as
+        | { row?: ProductUpdateRow; error?: string }
+        | null;
+
+      if (!response.ok || !payload?.row) {
+        setUpdatesError(payload?.error ?? "Could not update product update.");
+        return;
+      }
+
+      setUpdates((current) =>
+        current.map((update) => (update.id === editingUpdateId ? payload.row! : update)),
+      );
+      handleResetUpdateForm();
+    } finally {
+      setCreatingUpdate(false);
+    }
+  }
+
+  async function handleDeleteUpdate(updateId: string) {
+    setDeletingUpdateId(updateId);
+    setUpdatesError("");
+
+    try {
+      const response = await fetch(`/api/admin/updates/${updateId}`, {
+        method: "DELETE",
+      });
+
+      const payload = (await response.json().catch(() => null)) as
+        | { error?: string }
+        | null;
+
+      if (!response.ok) {
+        setUpdatesError(payload?.error ?? "Could not delete update.");
+        return;
+      }
+
+      setUpdates((current) => current.filter((update) => update.id !== updateId));
+      if (editingUpdateId === updateId) {
+        handleResetUpdateForm();
+      }
+    } finally {
+      setDeletingUpdateId(null);
+    }
+  }
+
   return (
     <main className="app-admin-page">
       <section className="app-admin-shell">
@@ -260,93 +436,204 @@ export function AdminDashboardClient() {
               </article>
             </section>
 
-            <section className="app-admin-table-card">
-              <div className="app-admin-table-scroll">
-                <table className="app-admin-table">
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Gmail</th>
-                      <th>Role</th>
-                      <th>Provider</th>
-                      <th>Joined</th>
-                      <th>Last login</th>
-                      <th>Last active</th>
-                      <th>Onboarding</th>
-                      <th>Access</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.rows.map((row) => {
-                      const isBusy = mutatingUserId === row.id;
-
-                      return (
-                        <tr key={row.id}>
-                          <td>
-                            <div className="app-admin-user-cell">
-                              <strong>{row.fullName?.trim() || "Unnamed user"}</strong>
-                              <span>{row.id}</span>
-                            </div>
-                          </td>
-                          <td>{row.email ?? "—"}</td>
-                          <td>
-                            <select
-                              className="app-admin-select"
-                              value={row.role}
-                              disabled={isBusy || row.isCurrentUser}
-                              onChange={(event) =>
-                                void handleRoleChange(
-                                  row.id,
-                                  event.target.value === "admin" ? "admin" : "user",
-                                )
-                              }
-                            >
-                              <option value="user">User</option>
-                              <option value="admin">Admin</option>
-                            </select>
-                          </td>
-                          <td>{row.providers.length ? row.providers.join(", ") : "email"}</td>
-                          <td>{formatJoined(row.joinedAt)}</td>
-                          <td>{formatDateTime(row.lastLoginAt)}</td>
-                          <td>{formatDateTime(row.lastActiveAt)}</td>
-                          <td>
-                            <span
-                              className={`app-admin-status-pill${
-                                row.onboardingStage === "complete"
-                                  ? " is-success"
-                                  : row.onboardingStage === "setup"
-                                    ? " is-info"
-                                    : " is-muted"
-                              }`}
-                            >
-                              {getOnboardingLabel(row.onboardingStage)}
-                            </span>
-                          </td>
-                          <td>
-                            {row.isCurrentUser ? (
-                              <span className="app-admin-status-pill is-muted">Current account</span>
-                            ) : (
-                              <button
-                                type="button"
-                                className={`app-admin-button ${
-                                  row.isDeactivated
-                                    ? "app-admin-button-primary"
-                                    : "app-admin-button-secondary"
-                                } app-admin-inline-button`}
-                                disabled={isBusy}
-                                onClick={() => void handleAccessToggle(row.id, !row.isDeactivated)}
-                              >
-                                {row.isDeactivated ? "Activate" : "Deactivate"}
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+            <section className="app-admin-tab-row">
+              <button
+                type="button"
+                className={`app-admin-tab${activeTab === "users" ? " is-active" : ""}`}
+                onClick={() => setActiveTab("users")}
+              >
+                Users
+              </button>
+              <button
+                type="button"
+                className={`app-admin-tab${activeTab === "updates" ? " is-active" : ""}`}
+                onClick={() => setActiveTab("updates")}
+              >
+                Product updates
+              </button>
             </section>
+
+            {activeTab === "updates" ? (
+              <section className="app-admin-table-card">
+                <div className="app-admin-section-copy">
+                  <strong>Product updates</strong>
+                  <span>Add, edit, and delete the updates shown in marketing.</span>
+                </div>
+
+                <form className="app-admin-update-form" onSubmit={handleSaveUpdate}>
+                  <input
+                    className="app-admin-input"
+                    type="text"
+                    placeholder="Meta, for example Experience or Layout"
+                    value={updateMeta}
+                    onChange={(event) => setUpdateMeta(event.target.value)}
+                  />
+                  <input
+                    className="app-admin-input"
+                    type="text"
+                    placeholder="Update title"
+                    value={updateTitle}
+                    onChange={(event) => setUpdateTitle(event.target.value)}
+                  />
+                  <textarea
+                    className="app-admin-textarea"
+                    placeholder="What changed?"
+                    value={updateCopy}
+                    onChange={(event) => setUpdateCopy(event.target.value)}
+                    rows={4}
+                  />
+                  <div className="app-admin-actions">
+                    {editingUpdateId ? (
+                      <button
+                        type="button"
+                        className="app-admin-button app-admin-button-secondary"
+                        onClick={handleResetUpdateForm}
+                      >
+                        Cancel
+                      </button>
+                    ) : null}
+                    <button
+                      type="submit"
+                      className="app-admin-button app-admin-button-primary"
+                      disabled={creatingUpdate}
+                    >
+                      {creatingUpdate
+                        ? editingUpdateId
+                          ? "Saving..."
+                          : "Publishing..."
+                        : editingUpdateId
+                          ? "Save update"
+                          : "Publish update"}
+                    </button>
+                  </div>
+                </form>
+
+                {updatesError ? <p className="app-admin-error">{updatesError}</p> : null}
+                {updatesLoading ? <p className="app-admin-loading">Loading updates…</p> : null}
+
+                {updates.length ? (
+                  <div className="app-admin-update-list">
+                    {updates.map((update) => (
+                      <article key={update.id} className="app-admin-update-card">
+                        <div className="app-admin-update-top">
+                          <span className="app-admin-status-pill is-muted">{update.meta}</span>
+                          <span>{formatDateTime(update.publishedAt ?? update.createdAt)}</span>
+                        </div>
+                        <strong>{update.title}</strong>
+                        <p>{update.copy}</p>
+                        <div className="app-admin-update-actions">
+                          <button
+                            type="button"
+                            className="app-admin-button app-admin-button-secondary app-admin-inline-button"
+                            onClick={() => handleStartEdit(update)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="app-admin-button app-admin-button-secondary app-admin-inline-button"
+                            disabled={deletingUpdateId === update.id}
+                            onClick={() => void handleDeleteUpdate(update.id)}
+                          >
+                            {deletingUpdateId === update.id ? "Deleting..." : "Delete"}
+                          </button>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                ) : null}
+              </section>
+            ) : (
+              <section className="app-admin-table-card">
+                <div className="app-admin-table-scroll">
+                  <table className="app-admin-table">
+                    <thead>
+                      <tr>
+                        <th>User</th>
+                        <th>Gmail</th>
+                        <th>Role</th>
+                        <th>Provider</th>
+                        <th>Joined</th>
+                        <th>Last login</th>
+                        <th>Last active</th>
+                        <th>Onboarding</th>
+                        <th>Access</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.rows.map((row) => {
+                        const isBusy = mutatingUserId === row.id;
+
+                        return (
+                          <tr key={row.id}>
+                            <td>
+                              <div className="app-admin-user-cell">
+                                <strong>{row.fullName?.trim() || "Unnamed user"}</strong>
+                                <span>{row.id}</span>
+                              </div>
+                            </td>
+                            <td>{row.email ?? "—"}</td>
+                            <td>
+                              <select
+                                className="app-admin-select"
+                                value={row.role}
+                                disabled={isBusy || row.isCurrentUser}
+                                onChange={(event) =>
+                                  void handleRoleChange(
+                                    row.id,
+                                    event.target.value === "admin" ? "admin" : "user",
+                                  )
+                                }
+                              >
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                              </select>
+                            </td>
+                            <td>{row.providers.length ? row.providers.join(", ") : "email"}</td>
+                            <td>{formatJoined(row.joinedAt)}</td>
+                            <td>{formatDateTime(row.lastLoginAt)}</td>
+                            <td>{formatDateTime(row.lastActiveAt)}</td>
+                            <td>
+                              <span
+                                className={`app-admin-status-pill${
+                                  row.onboardingStage === "complete"
+                                    ? " is-success"
+                                    : row.onboardingStage === "setup"
+                                      ? " is-info"
+                                      : " is-muted"
+                                }`}
+                              >
+                                {getOnboardingLabel(row.onboardingStage)}
+                              </span>
+                            </td>
+                            <td>
+                              {row.isCurrentUser ? (
+                                <span className="app-admin-status-pill is-muted">Current account</span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  className={`app-admin-button ${
+                                    row.isDeactivated
+                                      ? "app-admin-button-primary"
+                                      : "app-admin-button-secondary"
+                                  } app-admin-inline-button`}
+                                  disabled={isBusy}
+                                  onClick={() =>
+                                    void handleAccessToggle(row.id, !row.isDeactivated)
+                                  }
+                                >
+                                  {row.isDeactivated ? "Activate" : "Deactivate"}
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
           </>
         ) : null}
 

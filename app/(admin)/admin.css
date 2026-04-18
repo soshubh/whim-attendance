@@ -53,7 +53,10 @@
 
 .app-admin-auth-copy span,
 .app-admin-note span,
-.app-admin-user-cell span {
+.app-admin-user-cell span,
+.app-admin-section-copy span,
+.app-admin-update-top span,
+.app-admin-update-card p {
   color: color-mix(in srgb, var(--foundation-color-text) 72%, transparent);
 }
 
@@ -98,6 +101,32 @@
   gap: var(--foundation-space-16);
 }
 
+.app-admin-tab-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--foundation-space-12);
+}
+
+.app-admin-tab {
+  min-height: 46px;
+  padding: 0 var(--foundation-space-20);
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-full);
+  background: var(--foundation-color-background);
+  color: var(--foundation-color-text);
+  font-size: var(--foundation-type-14);
+  font-weight: var(--foundation-weight-medium);
+}
+
+.app-admin-tab.is-active {
+  border-color: var(--foundation-stroke-primary);
+  background: color-mix(
+    in srgb,
+    var(--foundation-color-background-inverse) 8%,
+    var(--foundation-color-background)
+  );
+}
+
 .app-admin-stat-card {
   display: grid;
   gap: var(--foundation-space-8);
@@ -123,6 +152,62 @@
 
 .app-admin-table-scroll {
   overflow-x: auto;
+}
+
+.app-admin-section-copy {
+  display: grid;
+  gap: var(--foundation-space-8);
+}
+
+.app-admin-update-form {
+  display: grid;
+  gap: var(--foundation-space-12);
+}
+
+.app-admin-input,
+.app-admin-textarea {
+  width: 100%;
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-16);
+  background: var(--foundation-color-background);
+  color: var(--foundation-color-text);
+  padding: var(--foundation-space-16);
+}
+
+.app-admin-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.app-admin-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.app-admin-update-list {
+  display: grid;
+  gap: var(--foundation-space-12);
+}
+
+.app-admin-update-card {
+  display: grid;
+  gap: var(--foundation-space-10);
+  padding: var(--foundation-space-16);
+  border: 1px solid var(--foundation-stroke-neutral);
+  border-radius: var(--foundation-radius-20);
+  background: var(--foundation-color-background);
+}
+
+.app-admin-update-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--foundation-space-12);
+}
+
+.app-admin-update-actions {
+  display: flex;
+  gap: var(--foundation-space-12);
 }
 
 .app-admin-table {

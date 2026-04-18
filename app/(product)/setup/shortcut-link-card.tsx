@@ -10,7 +10,7 @@ type ShortcutLinkCardProps = {
   hideFeedback?: boolean;
 };
 
-async function copyTextToClipboard(text: string) {
+export async function copyTextToClipboard(text: string) {
   if (navigator.clipboard?.writeText) {
     await navigator.clipboard.writeText(text);
     return;
