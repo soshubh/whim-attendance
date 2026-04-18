@@ -356,6 +356,7 @@
   background: var(--foundation-color-background-inverse);
   font-style: normal;
   color: var(--foundation-color-text-tertiary);
+  padding: 0 var(--foundation-space-12);
 }
 
 .marketing-home-section-title .marketing-home-title-chip {
