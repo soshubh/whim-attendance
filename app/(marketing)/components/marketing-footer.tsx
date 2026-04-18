@@ -13,14 +13,24 @@ export function MarketingFooter() {
 
       <div className="marketing-footer-bottom">
         <span className="marketing-footer-meta">{`© ${year} WHIM`}</span>
-        <div className="marketing-footer-links">
-          <Link href="/privacy" className="marketing-footer-meta">
+        <div className="marketing-footer-legal-links">
+          <Link href="/privacy" className="marketing-footer-legal-link">
             Privacy Policy
           </Link>
-          <Link href="/terms" className="marketing-footer-meta">
+          <Link href="/terms" className="marketing-footer-legal-link">
             Terms of Service
           </Link>
-          <span className="marketing-footer-meta">BY SHUBH</span>
+        </div>
+        <div className="marketing-footer-links">
+          <Link
+            href="https://www.instagram.com/shubhforux/"
+            className="marketing-footer-meta"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>BY </span>
+            <span className="marketing-footer-meta-accent">@shubhforux</span>
+          </Link>
         </div>
       </div>
     </footer>
