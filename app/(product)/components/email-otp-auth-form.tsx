@@ -385,7 +385,12 @@ export function EmailOtpAuthForm({
     setOauthing(true);
     setSuccess("");
 
-    const callbackUrl = new URL("/auth/callback", window.location.origin);
+    const callbackBase =
+      process.env.NEXT_PUBLIC_APP_URL && process.env.NEXT_PUBLIC_APP_URL.trim()
+        ? process.env.NEXT_PUBLIC_APP_URL
+        : window.location.origin;
+
+    const callbackUrl = new URL("/auth/callback", callbackBase);
     callbackUrl.searchParams.set("next", googleRedirectPath ?? redirectPath);
 
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
